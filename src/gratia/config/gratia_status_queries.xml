@@ -189,7 +189,7 @@
       </sql>
       <results/>
       <attribute name="title">Count of Sites used by VO Frontend</attribute>
-      <attribute name="column_names">Idle Jobs</attribute>
+      <attribute name="column_names">Num. of Sites</attribute>
     </query>
 
 

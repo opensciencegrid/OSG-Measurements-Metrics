@@ -1,4 +1,11 @@
 %changelog
+* Mon Jan 14 2013 Ashu Guru <aguru2@unl.edu>
+- Renamed the package to lower name and fixed minor labeling errors
+- (https://jira.opensciencegrid.org/browse/METRICS-15)
+
+* Thu Jan 10 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 1.1-1
+- Update to 1.1
+
 * Thu Jan 10 2013 Ashu Guru <aguru2@unl.edu>
 - Added Pie chart for XSEDE Project Names and fixed exclude project
 - (https://jira.opensciencegrid.org/browse/GRATIA-71)

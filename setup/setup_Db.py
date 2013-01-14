@@ -9,7 +9,7 @@ except:
 
 from setuptools import setup, find_packages
 
-setup(name="OSG-Measurements-Metrics-Db",
+setup(name="osg-measurements-metrics-db",
       version="1.1",
       author="Brian Bockelman",
       author_email="bbockelm@cse.unl.edu",

@@ -12,7 +12,7 @@ except:
 
 from setuptools import setup, find_packages
 
-setup(name="OSG-Measurements-Metrics-Web",
+setup(name="osg-measurements-metrics-web",
       version="1.1",
       author="Brian Bockelman",
       author_email="bbockelm@cse.unl.edu",
