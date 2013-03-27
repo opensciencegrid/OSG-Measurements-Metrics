@@ -1,4 +1,32 @@
 %changelog
+
+* Wed Mar 27 2013 Ashu Guru <aguru2@unl.edu>
+- https://jira.opensciencegrid.org/browse/GRATIAWEB-30
+- removed filter for proxy and added a change to displayName function     
+- dn=re.sub('/CN=proxy$', '', dn) and also a fix for blank names with if attr == 'CN' 
+- and not val.isdigit(): in file database/query_handler.py
+
+
+* Thu Mar 21 2013 Ashu Guru <aguru2@unl.edu>
+- http://jira.opensciencegrid.org/browse/GRATIAWEB-31 and
+- http://jira.opensciencegrid.org/browse/GRATIAWEB-30
+- fixed project_job_cnt graph ignores of filtering by ProjectName 
+- and added a filter for proxy respectively
+
+* Thu Mar 07 2013 Ashu Guru <aguru2@unl.edu>
+- Uppercased Project Names
+
+* Mon Mar 04 2013 Ashu Guru <aguru2@unl.edu>
+- Added exclude-projectname for unknowns to the projects graphs
+
+* Mon Mar 04 2013 Ashu Guru <aguru2@unl.edu>
+- Issue 1 resolved
+- (https://jira.opensciencegrid.org/browse/GRATIAWEB-29)
+
+* Mon Feb 18 2013 Ashu Guru <aguru2@unl.edu>
+- Added the Under Construction and BatchPilot 
+- (https://jira.opensciencegrid.org/browse/GRATIAWEB-28)
+
 * Mon Jan 14 2013 Ashu Guru <aguru2@unl.edu>
 - Renamed the package to lower name and fixed minor labeling errors
 - (https://jira.opensciencegrid.org/browse/METRICS-15)

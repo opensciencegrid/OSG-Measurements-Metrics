@@ -100,7 +100,6 @@ class WLCGReporter(Authenticate):
         # Pop off the headers
         for line in self.make_pledge_format(year, month):
             fed, pledge07, pledge08, VOMoU, VOaddl, accounting, site = line
-
             if accounting != '':
                 my_accounting = accounting
             if pledge07 != '':
@@ -143,7 +142,6 @@ class WLCGReporter(Authenticate):
         for row in apel_data:
             if row['ExecutingSite'] not in wlcg_sites:
                 wlcg_sites.append(row['ExecutingSite'])
-        #print wlcg_sites
         data['subclusters'], data['time_list'] = self.gratia_data()
 
         # Determine site normalization:
@@ -275,7 +273,7 @@ class WLCGReporter(Authenticate):
             apel_data.append(info)
         return apel_data, report_time
 
-
+    #MAIN ..............................................................
     def apel_data(self, gip_time=None, year=datetime.datetime.now().year, 
             month=datetime.datetime.now().month, **kw):
         data = dict(kw)
@@ -290,10 +288,10 @@ class WLCGReporter(Authenticate):
             raise 
         except Exception, e:
             print >> sys.stderr, "Exception occurred while APEL data: %s" % str(e)
-            data['title'] = "WLCG Reporting Info Error."
+            data['title'] = "WLCG Reporting Info Error"
             data['error'] = True
-            data['error_message'] = 'An error occurred when retrieving the data.'
-            raise e
+            data['error_message'] = 'Exception occurred while fetching APEL data for <strong>Year:</strong> %s and <strong>Month:</strong> %s <br/></br/><strong>Details:</strong> %s' %(year, month,str(e))
+            #raise e
             return data
         data['apel'] = apel_data
         data['year'] = year
@@ -367,10 +365,12 @@ class WLCGReporter(Authenticate):
             for cores, si2k in info:
                 total_cores += cores
                 total_si2k += float(si2k)*cores
+                print "======================== Site %s si2k %s cores %s"%(site,si2k,cores)
             gipnorm = float(int((float(total_si2k) / total_cores)*100))/100
             wlcgnorm = float(wlcg_norm[site])
             diff = int((gipnorm - wlcgnorm)/wlcgnorm * 100)
             site_norm[site] = (gipnorm, wlcgnorm, diff, int((4*total_si2k)/1000.))#convert to HEPSPEC,
+            print "======================== actual value %s = %s"%(site, (4*total_si2k)/1000.)
 
         # Remove non-WLCG sites from the GIP data.
         new_subclusters = {}

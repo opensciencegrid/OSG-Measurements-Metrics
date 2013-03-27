@@ -362,7 +362,7 @@ SELECT
      SpaceType regexp :spacetype AND
      SE regexp :facility AND
      Name regexp :spacename AND
-     VO regexp :vo
+     IFNULL(VO, '') regexp :vo
    GROUP BY UniqueID HAVING MAX(Timestamp)
   ) as SE on SE.UniqueID=SER.UniqueID
       </sql>

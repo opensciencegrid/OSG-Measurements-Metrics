@@ -80,6 +80,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 18 2013 Ashu Guru <aguru2@unl.edu>
+- Added the Under Construction and BatchPilot 
+- (https://jira.opensciencegrid.org/browse/GRATIAWEB-28)
+
 * Thu Jan 10 2013 Derek Weitzel <dwetizel@cse.unl.edu> - 1.1-4
 - Fixing initrd dir
 

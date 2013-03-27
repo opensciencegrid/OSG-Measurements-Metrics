@@ -110,6 +110,15 @@
                 <input type="hidden" name="user" value="$filter_dict.user"/> <br/>
                 <input type="hidden" name="exclude-dn" value="$filter_dict['exclude-dn']"/> <br/>
             #end if
+
+            #if $refine_probe
+              <tr>
+                <td><label for="probe">Probe: </label>
+                <td><input type="text" name="probe" value="$filter_dict['probe']"/> <br/>
+              </tr>
+            #end if
+
+
         </table>
         <input type="submit" value="Refine"> <input type="reset">
     </form>

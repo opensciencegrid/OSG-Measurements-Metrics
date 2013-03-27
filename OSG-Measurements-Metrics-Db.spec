@@ -5,7 +5,7 @@
 
 Name:           OSG-Measurements-Metrics-Db
 Version:        1.1
-Release:        1%{?dist}
+Release:        4%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -60,6 +60,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 18 2013 Ashu Guru <aguru2@unl.edu>
+- Added the Under Construction and BatchPilot 
+- (https://jira.opensciencegrid.org/browse/GRATIAWEB-28)
+
 * Thu Jan 10 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 1.1-1
 - Update to 1.1
 

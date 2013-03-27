@@ -27,14 +27,17 @@
 
     <query name="project_job_cnt" base="GratiaGenericQuery.master_summary">
       <inputs>
-          <input name="resource-type" kind="sql"> .* </input>
+          <input name="resource-type" kind="sql"> BatchPilot </input>
           <input name="projectname" kind="sql"> .* </input>
+          <input name="exclude-projectname" kind="sql"> unknown|other </input>
       </inputs>
       <sql>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
-        <filler name="group"> PNC.ReportableProjectName </filler>
+        <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
         <filler name="column"> sum(Njobs) </filler>
-        <filler name="where"> AND PNC.ReportableProjectName regexp :projectname </filler>
+        <filler name="where"> AND PNC.ReportableProjectName regexp :projectname 
+			      AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
+	</filler>
       </sql>
       <results>
         <inputs>
@@ -395,11 +398,11 @@
 
     <query name="monthly_project_hours" base="GratiaGenericQuery.monthly_master_summary">
       <inputs>
-          <input name="resource-type" kind="sql"> .* </input>
+          <input name="resource-type" kind="sql"> BatchPilot </input>
           <input name="exclude-projectname" kind="sql"> unknown|other </input>
       </inputs>
       <sql>
-        <filler name="group"> PNC.ReportableProjectName </filler>
+        <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
         <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
         <filler name="where"> AND WallDuration > 0 AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
@@ -432,11 +435,11 @@
 
     <query name="monthly_project_cpu_hours" base="GratiaGenericQuery.monthly_master_summary">
       <inputs>
-          <input name="resource-type" kind="sql"> .* </input>
+          <input name="resource-type" kind="sql"> BatchPilot </input>
           <input name="exclude-projectname" kind="sql"> unknown|other </input>
       </inputs>
       <sql>
-      <filler name="group"> PNC.ReportableProjectName </filler>
+      <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
         <filler name="column"> sum(CpuUserDuration + CpuSystemDuration)/3600 </filler>
         <filler name="where"> AND WallDuration > 0 AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
@@ -469,11 +472,11 @@
 
     <query name="monthly_project_job_count" base="GratiaGenericQuery.monthly_master_summary">
       <inputs>
-          <input name="resource-type" kind="sql"> .* </input>
+          <input name="resource-type" kind="sql"> BatchPilot </input>
          <input name="exclude-projectname" kind="sql"> unknown|other </input>
       </inputs>
       <sql>
-        <filler name="group"> PNC.ReportableProjectName </filler>
+        <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
         <filler name="column"> sum(Njobs) </filler>
         <filler name="where"> AND WallDuration > 0 AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
@@ -1170,13 +1173,14 @@
 
     <query name="project_site_hours_bar" base="GratiaGenericQuery.master_summary">
       <inputs>
-          <input name="resource-type" kind="sql"> .* </input>
+          <input name="resource-type" kind="sql"> BatchPilot </input>
+          <input name="exclude-projectname" kind="sql"> unknown|other </input>
       </inputs>
         <sql>
             <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
-            <filler name="group"> COALESCE(PNC.ReportableProjectName, "UNKNOWN"), S.SiteName </filler>
+            <filler name="group"> COALESCE(UPPER(PNC.ReportableProjectName), "UNKNOWN"), S.SiteName </filler>
             <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
-            <filler name="where"> AND WallDuration > 0 </filler>
+            <filler name="where"> AND WallDuration > 0 AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
         </sql>
         <results module="graphtool.database.query_handler" function="results_parser">
             <inputs>
@@ -1186,7 +1190,7 @@
                 <input name="pivot_transform">displayNameSite</input>
             </inputs>
         </results>
-        <attribute name="pivot_name">ReportableProjectName</attribute> 
+        <attribute name="pivot_name">UPPER(ReportableProjectName)</attribute> 
         <attribute name="grouping_name">Time</attribute>
         <attribute name="title">Daily Hours By Project and Site</attribute>
         <attribute name="column_names">Wall Time</attribute>
@@ -1218,12 +1222,13 @@
 
     <query name="project_hours_bar" base="GratiaGenericQuery.master_summary">
       <inputs>
-          <input name="resource-type" kind="sql"> .* </input>
+          <input name="resource-type" kind="sql">  BatchPilot </input>
+          <input name="exclude-projectname" kind="sql"> unknown|other </input>
       </inputs>
         <sql>
-            <filler name="group"> COALESCE(PNC.ReportableProjectName, "UNKNOWN") </filler>
+            <filler name="group"> UPPER(COALESCE(PNC.ReportableProjectName, "UNKNOWN")) </filler>
             <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
-            <filler name="where"> AND WallDuration > 0 </filler>
+            <filler name="where"> AND WallDuration > 0 AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
             <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
         </sql>
         <results module="graphtool.database.query_handler" function="results_parser">
@@ -1234,7 +1239,7 @@
                 <input name="pivot_transform">displayName</input>
             </inputs>
         </results>
-        <attribute name="pivot_name">PNC.ReportableProjectName</attribute>
+        <attribute name="pivot_name">UPPER(PNC.ReportableProjectName)</attribute>
         <attribute name="grouping_name">Time</attribute>
         <attribute name="title">Daily Hours By Project </attribute>
         <attribute name="column_names">Wall Time</attribute>

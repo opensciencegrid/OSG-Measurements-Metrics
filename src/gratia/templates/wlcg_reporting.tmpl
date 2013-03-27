@@ -1,8 +1,11 @@
 
 #if $error
 
-  <p>We're sorry, but an error occurred while collecting the data for the page.
+  <p style="background-color: #FEEFB3;padding:20px;">We're sorry, but an error occurred while collecting the data for the page.
      Please try again at a later time.
+  </p>
+  <p>
+        <strong>Message:</strong> $error_message
   </p>
 
 #else
@@ -18,282 +21,171 @@
 	} 
 </style>
 
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
 <script>
-my_data = {
-  apel: [
-  #if len($apel) > 0
-    #for row in $apel[:-1]
-        {Site: '$row.ExecutingSite', VO: '$row.LCGUserVO', Njobs: $row.Njobs, SumCPU: $row.SumCPU, HS06_CPU: $row.HS06_CPU, SumWCT: $row.SumWCT, HS06_WCT: $row.HS06_WCT, Start: "$row.RecordStart", End: "$row.RecordEnd", Norm: $row.HS06Factor},
-    #end for
-        #set row=$apel[-1]
-        {Site: '$row.ExecutingSite', VO: '$row.LCGUserVO', Njobs: $row.Njobs, SumCPU: $row.SumCPU, HS06_CPU: $row.HS06_CPU, SumWCT: $row.SumWCT, HS06_WCT: $row.HS06_WCT, Start: "$row.RecordStart", End: "$row.RecordEnd", Norm: $row.HS06Factor}
-  #end if
-  ],
+      function addComma(yourNumber) 
+      {
+            var n= yourNumber.toString().split(".");
+            n[0] = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return n.join(".");
+      }
 
-  gip: [
-  #if len($subclusters) > 0
-    #set keys = sorted($subclusters.keys(), $getVar('key_sorter', '', False))
-    #for key in keys[:-1]
-        #set val=$subclusters[key]
-        {Site: '$key[0]', Cluster: '$key[1]', Subcluster: '$key[2]', Timestamp: '$val[0]', Processor: '$val[1]', Cores: $int($val[2]), HEPSPEC06: '$val[5]$float($val[3])', Ownership: '$val[4].replace("'", "")'},
-    #end for
-        #set key = keys[-1]
-        #set val=$subclusters[key]
-        {Site: '$key[0]', Cluster: '$key[1]', Subcluster: '$key[2]', Timestamp: '$val[0]', Processor: '$val[1]', Cores: $int($val[2]), HEPSPEC06: '$val[5]$float($val[3])', Ownership: '$val[4].replace("'", "")'}
-  #end if
-  ],
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTables);
+      function drawTables()
+      {
+        apel = [
+          #if len($apel) > 0
+            #for row in $apel
+                {"Site": '$row.ExecutingSite', "VO": '$row.LCGUserVO', "Njobs": $row.Njobs, "SumCPU": $row.SumCPU, "HS06_CPU": $row.HS06_CPU, "SumWCT": $row.SumWCT, "HS06_WCT": $row.HS06_WCT, "Start": "$row.RecordStart", "End": "$row.RecordEnd", "Norm": $row.HS06Factor},
+            #end for
+          #end if
+          ];      
+        apel_display=["Site", "VO", "Njobs", "SumCPU", "SumWCT", "HS06_CPU", "End", "Norm"];
+        apel_col_types={"Site":'string', "VO":'string', "Njobs":'number', "SumCPU":'number', "SumWCT":'number', "HS06_CPU":'number', "End":'string', "Norm":'number'};
+        var apel_col_labels = {"Site":"Site", "VO":"VO", "Njobs":"Number of Jobs", "SumCPU":"CPU Hours", "SumWCT":"Wall Hours", "HS06_CPU":"Normalized CPU Hours", "End":"End Date", "Norm":"HEP-SPEC06 Factor"};
 
-  sitenorm: [
-  #if len($site_norm) > 0
-    #set keys = sorted($site_norm.keys(), $getVar('key_sorter', '', False))
-    #for key in keys[:-1]
-        #set val=$site_norm[key]
-        {Site: '$key', GIPNorm: $val[0], WLCGNorm: $val[1], Diff: $val[2]},
-    #end for
-        #set key = keys[-1]
-        #set val=$site_norm[key]
-        {Site: '$key', GIPNorm: $val[0], WLCGNorm: $val[1], Diff: $val[2]}
-  #end if
-  ],
+        drawTable(apel,apel_col_types, apel_display, apel_col_labels, "wlcg");
 
-  cms_pledge: [
-  #if len($pledge['cms']) > 0
-    #set keys = sorted($pledge['cms'].keys(), $getVar('key_sorter', '', False))
-    #for key in keys[:-1]
-        #set val=$pledge['cms'][key]
-        #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
-        #set delivered=int($val.wlcgNormCPU/float($goal)*100)
-        #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
-        {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, KSI2KAvail: $act_avail[key], OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU},
-    #end for
-        #set key=keys[-1]
-        #set val=$pledge['cms'][key]
-        #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
-        #set delivered=int($val.wlcgNormCPU/float($goal)*100)
-        #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
-        {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, KSI2KAvail: $act_avail[key], OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU}
-  #end if
-  ],
 
-  atlas_pledge: [
-  #if len($pledge['atlas']) > 0
-    #set keys = sorted($pledge['atlas'].keys(), $getVar('key_sorter', '', False))
-    #for key in keys[:-1]
-        #set val=$pledge['atlas'][key]
-        #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
-        #set delivered=int($val.wlcgNormCPU/float($goal)*100)
-        #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
-        {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU},
-    #end for
-        #set key = keys[-1]
-        #set val=$pledge['atlas'][key]
-        #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
-        #set delivered=int($val.wlcgNormCPU/float($goal)*100)
-        #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
-        {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU}
-  #end if
-  ],
+          gip = [
+          #if len($subclusters) > 0
+            #set keys = sorted($subclusters.keys(), $getVar('key_sorter', '', False))
+            #for key in keys
+                #set val=$subclusters[key]
+                {"Site": '$key[0]', "Cluster": '$key[1]', "Subcluster": '$key[2]', "Timestamp": '$val[0]', "Processor": '$val[1]', "Cores": $int($val[2]), "HEPSPEC06": '$val[5]$float($val[3])', "Ownership": '$val[4].replace("'", "")'},
+            #end for
+           #end if
+          ];
+        gip_display=["Site", "Cluster", "Subcluster", "Timestamp", "Processor", "Cores", "HEPSPEC06"];
+        gip_col_types={"Site":"string", "Cluster":"string", "Subcluster":"string", "Timestamp":"string", "Processor":"string", "Cores":"number", "HEPSPEC06":"string", "Ownership":"string"};
+        gip_col_labels={"Site":"Site", "Cluster":"Cluster", "Subcluster":"Subcluster", "Timestamp":"Timestamp", "Processor":"Processor Model", "Cores":"Number of WN Cores", "HEPSPEC06":"HEPSPEC06 Score", "Ownership":"Ownership"};
+        drawTable(gip,gip_col_types, gip_display, gip_col_labels, "gip");
 
-  alice_pledge: [
-  #if $pledge.has_key('alice') and len($pledge['alice']) > 0
-    #set keys = sorted($pledge['alice'].keys(), $getVar('key_sorter', '', False))
-    #for key in keys[:-1]
-        #set val=$pledge['alice'][key]
-        #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
-        #set delivered=int($val.wlcgNormCPU/float($goal)*100)
-        #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
-        {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU},
-    #end for
-        #set key = keys[-1]
-        #set val=$pledge['alice'][key]
-        #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
-        #set delivered=int($val.wlcgNormCPU/float($goal)*100)
-        #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
-        {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU}
-  #end if
-  ],
 
-  summary: [
-  #if len($summary) > 0
-    #set keys = sorted($summary.keys(), $getVar('key_sorter', '', False))
-    #for key in keys[:-1]
-        {Site: '$key', WLCGAccounting: "$summary[$key]['accounting']", Subclusters: $summary[$key]['subclusters']},
-    #end for
-        #set key=keys[-1]
-        {Site: '$key', WLCGAccounting: "$summary[$key]['accounting']", Subclusters: $summary[$key]['subclusters']}
-  #end if
-  ],
 
-};
 
-// Patch for width and/or minWidth Column values bug in non-scrolling DataTables
-(function(){var B=YAHOO.widget.DataTable,A=YAHOO.util.Dom;B.prototype._setColumnWidth=function(I,D,J){I=this.getColumn(I);if(I){J=J||"hidden";if(!B._bStylesheetFallback){var N;if(!B._elStylesheet){N=document.createElement("style");N.type="text/css";B._elStylesheet=document.getElementsByTagName("head").item(0).appendChild(N)}if(B._elStylesheet){N=B._elStylesheet;var M=".yui-dt-col-"+I.getId();var K=B._oStylesheetRules[M];if(!K){if(N.styleSheet&&N.styleSheet.addRule){N.styleSheet.addRule(M,"overflow:"+J);N.styleSheet.addRule(M,"width:"+D);K=N.styleSheet.rules[N.styleSheet.rules.length-1]}else{if(N.sheet&&N.sheet.insertRule){N.sheet.insertRule(M+" {overflow:"+J+";width:"+D+";}",N.sheet.cssRules.length);K=N.sheet.cssRules[N.sheet.cssRules.length-1]}else{B._bStylesheetFallback=true}}B._oStylesheetRules[M]=K}else{K.style.overflow=J;K.style.width=D}return }B._bStylesheetFallback=true}if(B._bStylesheetFallback){if(D=="auto"){D=""}var C=this._elTbody?this._elTbody.rows.length:0;if(!this._aFallbackColResizer[C]){var H,G,F;var L=["var colIdx=oColumn.getKeyIndex();","oColumn.getThEl().firstChild.style.width="];for(H=C-1,G=2;H>=0;--H){L[G++]="this._elTbody.rows[";L[G++]=H;L[G++]="].cells[colIdx].firstChild.style.width=";L[G++]="this._elTbody.rows[";L[G++]=H;L[G++]="].cells[colIdx].style.width="}L[G]="sWidth;";L[G+1]="oColumn.getThEl().firstChild.style.overflow=";for(H=C-1,F=G+2;H>=0;--H){L[F++]="this._elTbody.rows[";L[F++]=H;L[F++]="].cells[colIdx].firstChild.style.overflow=";L[F++]="this._elTbody.rows[";L[F++]=H;L[F++]="].cells[colIdx].style.overflow="}L[F]="sOverflow;";this._aFallbackColResizer[C]=new Function("oColumn","sWidth","sOverflow",L.join(""))}var E=this._aFallbackColResizer[C];if(E){E.call(this,I,D,J);return }}}else{}};B.prototype._syncColWidths=function(){var J=this.get("scrollable");if(this._elTbody.rows.length>0){var M=this._oColumnSet.keys,C=this.getFirstTrEl();if(M&&C&&(C.cells.length===M.length)){var O=false;if(J&&(YAHOO.env.ua.gecko||YAHOO.env.ua.opera)){O=true;if(this.get("width")){this._elTheadContainer.style.width="";this._elTbodyContainer.style.width=""}else{this._elContainer.style.width=""}}var I,L,F=C.cells.length;for(I=0;I<F;I++){L=M[I];if(!L.width){this._setColumnWidth(L,"auto","visible")}}for(I=0;I<F;I++){L=M[I];var H=0;var E="hidden";if(!L.width){var G=L.getThEl();var K=C.cells[I];if(J){var N=(G.offsetWidth>K.offsetWidth)?G.firstChild:K.firstChild;if(G.offsetWidth!==K.offsetWidth||N.offsetWidth<L.minWidth){H=Math.max(0,L.minWidth,N.offsetWidth-(parseInt(A.getStyle(N,"paddingLeft"),10)|0)-(parseInt(A.getStyle(N,"paddingRight"),10)|0))}}else{if(K.offsetWidth<L.minWidth){E=K.offsetWidth?"visible":"hidden";H=Math.max(0,L.minWidth,K.offsetWidth-(parseInt(A.getStyle(K,"paddingLeft"),10)|0)-(parseInt(A.getStyle(K,"paddingRight"),10)|0))}}}else{H=L.width}if(L.hidden){L._nLastWidth=H;this._setColumnWidth(L,"1px","hidden")}else{if(H){this._setColumnWidth(L,H+"px",E)}}}if(O){var D=this.get("width");this._elTheadContainer.style.width=D;this._elTbodyContainer.style.width=D}}}this._syncScrollPadding()}})();
-// Patch for initial hidden Columns bug
-(function(){var A=YAHOO.util,B=YAHOO.env.ua,E=A.Event,C=A.Dom,D=YAHOO.widget.DataTable;D.prototype._initTheadEls=function(){var X,V,T,Z,I,M;if(!this._elThead){Z=this._elThead=document.createElement("thead");I=this._elA11yThead=document.createElement("thead");M=[Z,I];E.addListener(Z,"focus",this._onTheadFocus,this);E.addListener(Z,"keydown",this._onTheadKeydown,this);E.addListener(Z,"mouseover",this._onTableMouseover,this);E.addListener(Z,"mouseout",this._onTableMouseout,this);E.addListener(Z,"mousedown",this._onTableMousedown,this);E.addListener(Z,"mouseup",this._onTableMouseup,this);E.addListener(Z,"click",this._onTheadClick,this);E.addListener(Z.parentNode,"dblclick",this._onTableDblclick,this);this._elTheadContainer.firstChild.appendChild(I);this._elTbodyContainer.firstChild.appendChild(Z)}else{Z=this._elThead;I=this._elA11yThead;M=[Z,I];for(X=0;X<M.length;X++){for(V=M[X].rows.length-1;V>-1;V--){E.purgeElement(M[X].rows[V],true);M[X].removeChild(M[X].rows[V])}}}var N,d=this._oColumnSet;var H=d.tree;var L,P;for(T=0;T<M.length;T++){for(X=0;X<H.length;X++){var U=M[T].appendChild(document.createElement("tr"));P=(T===1)?this._sId+"-hdrow"+X+"-a11y":this._sId+"-hdrow"+X;U.id=P;for(V=0;V<H[X].length;V++){N=H[X][V];L=U.appendChild(document.createElement("th"));if(T===0){N._elTh=L}P=(T===1)?this._sId+"-th"+N.getId()+"-a11y":this._sId+"-th"+N.getId();L.id=P;L.yuiCellIndex=V;this._initThEl(L,N,X,V,(T===1))}if(T===0){if(X===0){C.addClass(U,D.CLASS_FIRST)}if(X===(H.length-1)){C.addClass(U,D.CLASS_LAST)}}}if(T===0){var R=d.headers[0];var J=d.headers[d.headers.length-1];for(X=0;X<R.length;X++){C.addClass(C.get(this._sId+"-th"+R[X]),D.CLASS_FIRST)}for(X=0;X<J.length;X++){C.addClass(C.get(this._sId+"-th"+J[X]),D.CLASS_LAST)}var Q=(A.DD)?true:false;var c=false;if(this._oConfigs.draggableColumns){for(X=0;X<this._oColumnSet.tree[0].length;X++){N=this._oColumnSet.tree[0][X];if(Q){L=N.getThEl();C.addClass(L,D.CLASS_DRAGGABLE);var O=D._initColumnDragTargetEl();N._dd=new YAHOO.widget.ColumnDD(this,N,L,O)}else{c=true}}}for(X=0;X<this._oColumnSet.keys.length;X++){N=this._oColumnSet.keys[X];if(N.resizeable){if(Q){L=N.getThEl();C.addClass(L,D.CLASS_RESIZEABLE);var G=L.firstChild;var F=G.appendChild(document.createElement("div"));F.id=this._sId+"-colresizer"+N.getId();N._elResizer=F;C.addClass(F,D.CLASS_RESIZER);var e=D._initColumnResizerProxyEl();N._ddResizer=new YAHOO.util.ColumnResizer(this,N,L,F.id,e);var W=function(f){E.stopPropagation(f)};E.addListener(F,"click",W)}else{c=true}}}if(c){}}else{}}for(var a=0,Y=this._oColumnSet.keys.length;a<Y;a++){if(this._oColumnSet.keys[a].hidden){var b=this._oColumnSet.keys[a];var S=b.getThEl();b._nLastWidth=S.offsetWidth-(parseInt(C.getStyle(S,"paddingLeft"),10)|0)-(parseInt(C.getStyle(S,"paddingRight"),10)|0);this._setColumnWidth(b.getKeyIndex(),"1px")}}if(B.webkit&&B.webkit<420){var K=this;setTimeout(function(){K._elThead.style.display=""},0);this._elThead.style.display="none"}}})();
 
-YAHOO.util.Event.addListener(window, "load", function() {
-    fcn = new function() {
+          sitenorm = [
+          #if len($site_norm) > 0
+            #set keys = sorted($site_norm.keys(), $getVar('key_sorter', '', False))
+            #for key in keys
+                #set val=$site_norm[key]
+                {Site: '$key', GIPNorm: $val[0], WLCGNorm: $val[1], Diff: $val[2]},
+            #end for
+          #end if
+          ];
+        sitenorm_display=["Site", "GIPNorm", "WLCGNorm", "Diff"];
+        sitenorm_col_types={"Site":"string", "GIPNorm":"number", "WLCGNorm":"number", "Diff":"number"};
+        sitenorm_col_labels={"Site":"Site", "GIPNorm":"HEP-SPEC06 factor Calculated by the GIP", "WLCGNorm":"HEP-SPEC06 factor reported to WLCG", "Diff":"GIP Percent Difference"};
+        drawTable(sitenorm,sitenorm_col_types, sitenorm_display, sitenorm_col_labels, "sitenorm");
 
-        var num_formatter = function(elCell, oRecord, oColumn, oData) {
-            if (oData == null) return;
-            var nStr = String(oData);
-            x = nStr.split('.');
-            x1 = x[0];
-            x2 = x.length > 1 ? '.' + x[1] : '';
-            var rgx = /(\d+)(\d{3})/;
-            while (rgx.test(x1)) {
-                x1 = x1.replace(rgx, '$1' + ',' + '$2');
-            }
-            elCell.innerHTML = x1 + x2;
-        };
-
-        var wlcgColumnDefs = [
-            {key:"Site", sortable:true, resizeable:true},
-            {key:"VO", sortable:true, resizeable:true},
-            {key:"Njobs", label:"Number of Jobs", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"SumCPU", label:"CPU Hours", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"SumWCT", label:"Wall Hours", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"HS06_CPU", label:"Normalized CPU Hours", sortable:true, resizeable:true, formatter:num_formatter},
-            //{key:"HS06_WCT", label:"Normalized Wall Hours", sortable:true, resizeable:true, formatter:num_formatter},
-            //{key:"Start", label:"Start Date", sortable:true, resizeable:true},
-            {key:"End", label:"End Date", sortable:true, resizeable:true},
-            {key:"Norm", label:"HEP-SPEC06 Factor", sortable:true, resizeable:true, formatter:num_formatter}
-        ];
-
-        var gipColumnDefs = [
-            {key:"Site", sortable:true, resizeable:true},
-            {key:"Subcluster", sortable:true, resizeable:true},
-            {key:"Processor", label:"Processor Model", sortable:true, resizeable:true},
-            {key:"HEPSPEC06", label:"HEPSPEC06 Score", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"Cores", label:"Number of WN Cores", sortable:true, resizeable:true, formatter:num_formatter}
-        ];
-
-        var perc_formatter = function(elCell, oRecord, oColumn, oData) { 
-            if (oData == null) return;
-            var a = oData;
-            elCell.innerHTML = String(a) + "%";
-        }; 
  
-        var sitenormColumnDefs = [
-            {key:"Site", sortable:true, resizeable:true},
-            {key:"GIPNorm", label:"HEP-SPEC06 factor Calculated by the GIP", sortable:true, resizeable:true},
-            {key:"WLCGNorm", label:"HEP-SPEC06 factor reported to WLCG", sortable:true, resizeable:true},
-            {key:"Diff", label:"GIP Percent Difference", sortable:true, resizeable:true, formatter:perc_formatter}
-        ];
 
-        var cmsColumnDefs = [
-            {key:"WLCGSite", label:"WLCG Accounting Name", sortable:true, resizeable:true},
-            {key:"Pledge", label:"$pledge_year HEP-SPEC06 Pledge", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"Actual", label:"Measured HEP-SPEC06", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"Goal", label:"Month goal of Norm CPU hours", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"wlcgCPU", label:"Norm CPU hours for all WLCG", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"OwnedWCT", label:"Norm Wall hours for CMS", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"wlcgWCT", label:"Norm Wall hours for all WLCG", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"totalWCT", label:"Norm Wall for all VOs", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"delivered", label:"Percent of WLCG goal achieved", sortable:true, resizeable:true, formatter:perc_formatter},
-            {key:"nonwlcg", label:"Percent of site's time delivered to non-WLCG VOs", sortable:true, resizeable:true, formatter:perc_formatter}
-        ];
 
-        var atlasColumnDefs = [
-            {key:"WLCGSite", label:"WLCG Accounting Name", sortable:true, resizeable:true},
-            {key:"Pledge", label:"$pledge_year HEP-SPEC06 Pledge", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"Actual", label:"Measured HEP-SPEC06", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"Goal", label:"Month goal of CPU hours", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"wlcgCPU", label:"Norm CPU hours for all WLCG", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"OwnedWCT", label:"Norm Wall hours for ATLAS", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"wlcgWCT", label:"Norm Wall hours for all WLCG", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"totalWCT", label:"Norm Wall hours for all VOs", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"delivered", label:"Percent of WLCG goal achieved", sortable:true, resizeable:true, formatter:perc_formatter},
-            {key:"nonwlcg", label:"Percent of site's time delivered to non-WLCG VOs", sortable:true, resizeable:true, formatter:perc_formatter}
-        ];
+          cms = [
+          #if len($pledge['cms']) > 0
+            #set keys = sorted($pledge['cms'].keys(), $getVar('key_sorter', '', False))
+            #for key in keys
+                #set val=$pledge['cms'][key]
+                #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
+                #set delivered=int($val.wlcgNormCPU/float($goal)*100)
+                #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
+                {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, KSI2KAvail: $act_avail[key], OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU},
+            #end for
+          #end if
+          ];
+        cms_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "OwnedWCT", "wlcgWCT", "totalWCT", "delivered", "nonwlcg"];
+        cms_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "delivered":"number", "nonwlcg":"number"};
+        cms_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"$pledge_year HEP-SPEC06 Pledge", "Actual":"Measured HEP-SPEC06", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "OwnedWCT":"Norm Wall hours  for CMS", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "delivered":"Percent of WLCG goal achieved", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
+        drawTable(cms,cms_col_types, cms_display, cms_col_labels, "cms");
 
-        var aliceColumnDefs = [
-            {key:"WLCGSite", label:"WLCG Accounting Name", sortable:true, resizeable:true},
-            {key:"Pledge", label:"$pledge_year HEP-SPEC06 Pledge", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"Actual", label:"Measured HEP-SPEC06", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"Goal", label:"Month goal of CPU hours", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"wlcgCPU", label:"Norm CPU hours for all WLCG", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"OwnedWCT", label:"Norm Wall hours for ALICE", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"wlcgWCT", label:"Norm Wall hours for all WLCG", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"totalWCT", label:"Norm Wall hours for all VOs", sortable:true, resizeable:true, formatter:num_formatter},
-            {key:"delivered", label:"Percent of WLCG goal achieved", sortable:true, resizeable:true, formatter:perc_formatter},
-            {key:"nonwlcg", label:"Percent of site's time delivered to non-WLCG VOs", sortable:true, resizeable:true, formatter:perc_formatter}
-        ];
+ 
 
-        var summaryColumnDefs = [
-            {key:"Site", label:"OSG Site name", sortable:true, resizeable:true},
-            {key:"WLCGAccounting", label:"WLCG Accounting Site", sortable:true, resizeable:true},
-            {key:"Subclusters", label:"Number of GIP Subclusters", sortable:true, resizeable:true}
-        ];
 
-        this.wlcgDataSource = new YAHOO.util.DataSource(my_data.apel);
-        this.wlcgDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
-        this.wlcgDataSource.responseSchema = {
-            fields: ["Site", "VO", "Njobs", "SumCPU", "SumWCT", "HS06_CPU", "End", "Norm"]
-        };
 
-        this.gipDataSource = new YAHOO.util.DataSource(my_data.gip);
-        this.gipDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
-        this.gipDataSource.responseSchema = {
-            fields: ["Site", "Cluster", "Subcluster", "Timestamp", "Processor", "Cores", "HEPSPEC06", "Ownership"]
-        };
 
-        this.sitenormDataSource = new YAHOO.util.DataSource(my_data.sitenorm);
-        this.sitenormDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
-        this.sitenormDataSource.responseSchema = {
-            fields: ["Site", "GIPNorm", "WLCGNorm", "Diff"]
-        };
+          atlas = [
+          #if len($pledge['atlas']) > 0
+            #set keys = sorted($pledge['atlas'].keys(), $getVar('key_sorter', '', False))
+            #for key in keys
+                #set val=$pledge['atlas'][key]
+                #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
+                #set delivered=int($val.wlcgNormCPU/float($goal)*100)
+                #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
+                {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU},
+            #end for
+          #end if
+          ];
+        atlas_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "OwnedWCT", "wlcgWCT", "totalWCT", "delivered", "nonwlcg"];
+        atlas_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "delivered":"number", "nonwlcg":"number"};
+        atlas_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"$pledge_year HEP-SPEC06 Pledge", "Actual":"Measured HEP-SPEC06", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "OwnedWCT":"Norm Wall hours  for ATLAS", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "delivered":"Percent of WLCG goal achieved", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
+        drawTable(atlas,atlas_col_types, atlas_display, atlas_col_labels, "atlas");
 
-        this.atlasDataSource = new YAHOO.util.DataSource(my_data.atlas_pledge);
-        this.atlasDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
-        this.atlasDataSource.responseSchema = {
-            fields: ["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "OwnedWCT", "wlcgWCT", "totalWCT", "delivered", "nonwlcg"]
-        };
 
-        this.cmsDataSource = new YAHOO.util.DataSource(my_data.cms_pledge);
-        this.cmsDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
-        this.cmsDataSource.responseSchema = {
-            fields: ["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "OwnedWCT", "wlcgWCT", "totalWCT", "delivered", "nonwlcg"]
-        };
 
-        this.aliceDataSource = new YAHOO.util.DataSource(my_data.alice_pledge);
-        this.aliceDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
-        this.aliceDataSource.responseSchema = {
-            fields: ["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "OwnedWCT", "wlcgWCT", "totalWCT", "delivered", "nonwlcg"]
-        };
+          alice= [
+          #if $pledge.has_key('alice') and len($pledge['alice']) > 0
+            #set keys = sorted($pledge['alice'].keys(), $getVar('key_sorter', '', False))
+            #for key in keys
+                #set val=$pledge['alice'][key]
+                #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
+                #set delivered=int($val.wlcgNormCPU/float($goal)*100)
+                #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
+                {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU},
+            #end for
+          #end if
+          ];
+        alice_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "OwnedWCT", "wlcgWCT", "totalWCT", "delivered", "nonwlcg"];
+        alice_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "delivered":"number", "nonwlcg":"number"};
+        alice_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"$pledge_year HEP-SPEC06 Pledge", "Actual":"Measured HEP-SPEC06", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "OwnedWCT":"Norm Wall hours  for ALICE", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "delivered":"Percent of WLCG goal achieved", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
+        drawTable(alice,alice_col_types, alice_display, alice_col_labels, "alice");
 
-        this.summaryDataSource = new YAHOO.util.DataSource(my_data.summary);
-        this.summaryDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
-        this.summaryDataSource.responseSchema = {
-            fields: ["Site", "WLCGAccounting", "Subclusters"]
-        };
 
-        this.myDataTable = new YAHOO.widget.DataTable("wlcg",
-                wlcgColumnDefs, this.wlcgDataSource, {sortedBy:{key:"Site"}});
 
-        this.myDataTable = new YAHOO.widget.DataTable("gip",
-                gipColumnDefs, this.gipDataSource, {sortedBy:{key:"Site"}});
+          summary= [
+          #if len($summary) > 0
+            #set keys = sorted($summary.keys(), $getVar('key_sorter', '', False))
+            #for key in keys
+                {Site: '$key', WLCGAccounting: "$summary[$key]['accounting']", Subclusters: $summary[$key]['subclusters']},
+            #end for
+          #end if
+          ];
 
-        this.myDataTable = new YAHOO.widget.DataTable("sitenorm",
-                sitenormColumnDefs, this.sitenormDataSource, {sortedBy:{key:"Site"}});
+        summary_display=["Site", "WLCGAccounting", "Subclusters"];
+        summary_col_types={"Site":"string", "WLCGAccounting":"string", "Subclusters":"number"};
+        summary_col_labels={"Site":"OSG Site name", "WLCGAccounting":"WLCG Accounting Site", "Subclusters":"Number of GIP Subclusters"};
+        drawTable(summary,summary_col_types, summary_display, summary_col_labels, "summary");
 
-        this.myDataTable = new YAHOO.widget.DataTable("cms",
-                cmsColumnDefs, this.cmsDataSource, {sortedBy:{key:"WLCGSite"}});
+      }
 
-        this.myDataTable = new YAHOO.widget.DataTable("atlas",
-                atlasColumnDefs, this.atlasDataSource, {sortedBy:{key:"WLCGSite"}});
 
-        this.myDataTable = new YAHOO.widget.DataTable("alice",
-                aliceColumnDefs, this.aliceDataSource, {sortedBy:{key:"WLCGSite"}});
+      function drawTable(rowHash,columnTypes, showColumns, colLables, inDiv) {
+        var data = new google.visualization.DataTable();
+        for (var i in showColumns) {
+          data.addColumn(columnTypes[showColumns[i]], colLables[showColumns[i]]);
+        }
 
-        this.myDataTable = new YAHOO.widget.DataTable("availability",
-                availabilityColumnDefs, this.availabilityDataSource, {sortedBy:{key:"Site"}});
+        var rowArray =[];
+        for (var i in rowHash) {
+          var eachrow=[];
+          for (var j in showColumns) {
+                if(columnTypes[showColumns[j]] == 'number')
+                {
+                        eachrow.push({v:rowHash[i][showColumns[j]], f:addComma(rowHash[i][showColumns[j]])});
+                }else
+                {
+                        eachrow.push(rowHash[i][showColumns[j]]);
+                }
+          }
+          rowArray.push(eachrow);
+        }
+        data.addRows(rowArray);
+        var table = new google.visualization.Table(document.getElementById(inDiv));
+        table.draw(data);
+      }
 
-        this.myDataTable = new YAHOO.widget.DataTable("summary", summaryColumnDefs,
-                this.summaryDataSource, {sortedBy:{key:"Site"}});
 
-    };
-});
 
 </script>
 
@@ -352,7 +244,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
   <li><strong>$pledge_year HEP-SPEC06 Pledge:</strong> $pledge_year HEP-SPEC06 pledge in the WLCG MoU</li>
   <li><strong>Month goal of CPU hours:</strong> The corresponding number of CPU hours which should be achieved this month (assumes a CPU efficiency of 60% from the pledged amount).</li>
   <li><strong>Normalized CPU hours for all WLCG</strong> The number of normalized CPU hours contributed to all WLCG VOs (atlas, cms, alice, lhcb).</li>
-  <li><strong>Measured HEP-SPEC06</strong>The measured HEP-SPEC06 size from the GIP.</li>
+  <li><strong>Measured HEP-SPEC06</strong> The measured HEP-SPEC06 size from the GIP using (4*&Sigma;si2k*cores)/1000
+
   <li><strong>Owner VO's HEP-SPEC06-Availability</strong> <a href="#availability">Explained below</a>.  For each day of the month, multiply that day's available HEP-SPEC06 times the owner VO's ownership percentage times the RSV-measured availability, then sum them up.</li>
   <li><strong>Normalized wall hours for owner</strong> The number of normalized wall hours contributed to the VO which owns the site.</li>
   <li><strong>Normalized wall hours for all WLCG</strong> The number of normalized wall hours contributed to all WLCG VOs (atlas, cms, alice, lhcb).</li>

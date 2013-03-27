@@ -390,10 +390,11 @@ def critical_tests(globals):
 
 def displayName(*args, **kw):
     dn = args[0]
+    dn=re.sub('/CN=proxy$', '', dn)
     parts = dn.split('/')
     display = dn
     if dn.find('Generic') >= 0 and dn.find('user') >= 0:
-        return dn
+        return dn.upper()
     cns = []
     for part in parts:
         if len(part) == 0:
@@ -402,7 +403,7 @@ def displayName(*args, **kw):
             attr, val = part.split('=', 1)
         except:
             continue
-        if attr == 'CN':
+        if attr == 'CN' and not val.isdigit():
             display = val
             cns.append(val)
     while len(cns) > 1:
@@ -420,14 +421,14 @@ def displayName(*args, **kw):
     proper = ''
     for parts in display.split():
         proper += parts[0].upper() + parts[1:].lower() + ' '
-    return proper[:-1]
+    return proper[:-1].upper()
 
 def displayNameSite(*args, **kw):
     site = args[1]
     dn = displayName(*args, **kw)
     if not dn:
         return
-    return "%s @ %s" % (dn, site)
+    return "%s @ %s" % (dn.upper(), site)
 
 def displayNameExitSite(*args, **kw):
     exitcode = args[1]

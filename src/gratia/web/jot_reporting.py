@@ -58,22 +58,36 @@ class JOTReporter(Authenticate):
             new_assoc[resource].add(service)
         new_assoc.setdefault('GLOW', ['CE'])
 
+
+
+
         federations = self.globals['RSVQueries'].resource_to_federation()[0]
+        print "##################FEDERATIONS#########"
+        print federations
+        print "###########################"
         federations.setdefault('UTA_SWT2', 'US-SWT2')
         federations.setdefault('SWT2_CPB', 'US-SWT2')
         federations.setdefault('AGLT2', 'US-AGLT2')
         resource_to_remove = []
         for res in federations:
             if 'CE' not in new_assoc.get(res, []):
+                print "Removing Resource: %s"%res
                 resource_to_remove.append(res)
-        print "\n\n"
-        print new_assoc
-        print federations
         for res in resource_to_remove:
             if res in federations:
                 del federations[res]
-
+        print "##################FEDERATIONS 2#########"
+        print federations
+        print "###########################"
         norms = self.site_normalization_jot(month, year, federations.keys())
+
+        try:
+               if(norms['error']):
+                  return norms 
+        except:
+                pass
+
+
 
         del info['exclude-vo']
         #resource_reliability = self.globals['RSVSummaryQueries'].\
@@ -93,7 +107,11 @@ class JOTReporter(Authenticate):
         days_in_month =  calendar.monthrange(year, month)[1]
 	atlas_pledge, cms_pledge,atlas_dict, cms_dict, alice_pledge, alice_dict=WLCGWebUtil().wlcg_pledges(month, year)
         #data['mou'] = self.pledges(month, year)
-	#int(days_in_month*.67*24*val)
+	#int(days_in_month*.67*24*val)     
+        print "========== cms_dict ==================================================="
+        print cms_dict
+        print "============================================================="
+
         for key in atlas_pledge:
             data['mou'][key] = days_in_month*.67*24*int(atlas_pledge[key]['pledge'])
         for key in cms_pledge:
@@ -101,7 +119,7 @@ class JOTReporter(Authenticate):
         for key in alice_pledge:
             data['mou'][key] = days_in_month*.67*24*int(alice_pledge[key]['pledge'])
         for resource, fed in federations.items():
-            print "TRACE Resource %s associated with federation %s, resource %s with wall hours %s. Norm factor %s " % (resource, fed, resource, wall_hours.get(resource, 0), norms[resource])
+            #print "TRACE Resource %s associated with federation %s, resource %s with wall hours %s. Norm factor %s " % (resource, fed, resource, wall_hours.get(resource, 0), norms[resource])
             #data['reliability'].setdefault(fed, 0)
             #data['reliability'][fed] +=resource_reliability.get(resource, {}).\
             #    get(datetime.datetime(year, month, 1, 0, 0, 0), (0, ))[0]
@@ -121,7 +139,7 @@ class JOTReporter(Authenticate):
             data['lhc_wall'][fed] += lhc_wall_hours.get(resource, 0)*\
                 norms[resource]
             data['mou'].setdefault(fed, 0)
-	    print "TRACE Resource %s associated with federation %s lhc_cpu (%s * %s ) Cumulative  %s "%(resource, fed, lhc_cpu_hours.get(resource, 0), norms[resource], data['lhc_cpu'][fed], )
+	    #print "TRACE Resource %s associated with federation %s lhc_cpu (%s * %s ) Cumulative  %s "%(resource, fed, lhc_cpu_hours.get(resource, 0), norms[resource], data['lhc_cpu'][fed], )
         data['cms_feds'] = []
         data['atlas_feds'] = []
         data['alice_feds'] = []
@@ -138,6 +156,10 @@ class JOTReporter(Authenticate):
             data['reliability'][fed] = gv_data.get(fed, [0, 0])[0]
         for key in data['atlas_feds']:
 		print "atlas_feds = %s %s "% (key, data['wall'][key])
+        for key in data['cms_feds']:
+		print "cms_feds = %s %s "% (key, data['wall'][key])
+        for key in data['alice_feds']:
+		print "alice_feds = %s %s "% (key, data['wall'][key])
         data['round'] = round
         return data
 
@@ -163,10 +185,24 @@ class JOTReporter(Authenticate):
     def get_apel_data_jot_since201203(self, month, year):
         apel_url = self.metadata.get('apel_url', 'http://gr7x3.fnal.gov:8880/gratia-data/interfaces/apel-lcg/%i-%02i.summary.dat'\
             % (year, month))
-        usock = urllib2.urlopen(apel_url)
-        data = usock.read()
-        usock.close()
+
         apel_data = []
+        try:
+                usock = urllib2.urlopen(apel_url)
+                data = usock.read()
+                usock.close()
+        except (KeyboardInterrupt, SystemExit):
+            raise 
+        except Exception, e:
+            apel_data = dict()
+            apel_data['title'] = "WLCG Reporting Info Error"
+            apel_data['error'] = True
+            apel_data['error_message'] = 'Exception occurred while fetching APEL data for <strong>Year:</strong> %s and <strong>Month:</strong> %s <br/></br/><strong>Details:</strong> %s' %(year, month,str(e))
+            #raise e
+            return apel_data
+
+
+
         datafields = []
         numcells=11
         for i in range(numcells):
@@ -198,10 +234,11 @@ class JOTReporter(Authenticate):
 
 
     def get_apel_data_jot(self, month, year):
-        if(year >=2012 and month >= 3):
+        if(year >= 2013 or year >=2012 and month >= 3):
             return self.get_apel_data_jot_since201203(month, year)
         apel_url = self.metadata.get('apel_url', 'http://gratia-osg-prod-reports.opensciencegrid.org/gratia-data/interfaces/apel-lcg/%i-%02i.HS06_OSG_DATA.xml'\
             % (year, month))
+        print "Trying to get data from: "+apel_url
         xmldoc = urllib2.urlopen(apel_url)
         dom = parse(xmldoc)
         apel_data = []
@@ -229,8 +266,76 @@ class JOTReporter(Authenticate):
                         report_time = val
             apel_data.append(info)
         return apel_data
-
     def get_gridview(self, month, year, federations):
+        url = self.metadata.get('gridview_url', 'http://grid-monitoring.cern.ch/mywlcg/sam-pi/group_availability_in_profile/')
+        params = {\
+            'type': 'MONTHLY',
+            'value_fields': 'availability,reliability,unknown',
+            'start_time': '%i-%i-%iT00:00:00Z' % (year, month, 1),
+            'end_time': '%i-%i-%iT00:00:01Z' % (year, month, 1),
+            'vo_name': 'ops',
+            'profile_name': 'OSG_CRITICAL',
+            'group_type':'Site',
+            'output':'xml',
+            
+        }
+        full_url = url + '?' + urllib.urlencode(params)
+        data = urllib2.urlopen(full_url)
+        dom = parse(data)
+        gridview_data = {}
+        for site_dom in dom.getElementsByTagName('Group'):
+            name=site_dom.getAttribute('name')
+            name = name.upper()
+            if name=="IU_OSG":
+                continue
+            gridview_data.setdefault(name, [0, 0])
+            val = None
+            for value_dom in site_dom.getElementsByTagName('Availability'):
+                try:
+                    val = float(str(value_dom.getAttribute('availability')))
+                except:
+                    continue
+            gridview_data[name][1] = val
+            val = None
+            for value_dom in site_dom.getElementsByTagName('Availability'):
+                try: 
+                    val = float(str(value_dom.getAttribute('unknown')))
+                except:
+                    continue
+            if val != None and gridview_data[name][1] != None and val < \
+                    gridview_data[name][1]:
+                gridview_data[name][1] += val
+            val = None
+            for value_dom in site_dom.getElementsByTagName('Availability'):
+                try:
+                    val = float(str(value_dom.getAttribute('reliability')))
+                except:
+                    continue
+            if val != None:
+                gridview_data[name][0] = val
+        fed_data = {}
+        for resource, fed in federations.items():
+            for gv_resource, data in gridview_data.items():
+              try:
+                if gv_resource == resource.upper():
+                    val = fed_data.setdefault(fed, [0., 0., 0., 0.])
+                    val[2] += 1
+                    val[1] += data[1]
+                    if data[0] != None and data[0] >= 0:
+                        val[0] += data[0]
+                        val[3] += 1
+              except:
+                print "ERROR FED : %s, gv_resource=%s, resource=%s" %(fed, gv_resource, resource)
+        results = {}
+        for fed, data in fed_data.items():
+            if data[3] == 0:
+                data[3] = 1
+            if data[2] == 0:
+                data[2] = 1
+            results[fed] = data[0]/data[3], data[1]/data[2]
+        return results
+
+    def get_gridview_(self, month, year, federations):
         url = self.metadata.get('gridview_url', 'http://gridview.cern.ch' \
             '/GRIDVIEW/pi/xml/sam-xml.php')
         params = {\
@@ -303,6 +408,11 @@ class JOTReporter(Authenticate):
 
     def site_normalization_jot(self, month, year, sites=None):
         apel_data = self.get_apel_data_jot(month, year)
+        try:
+               if(apel_data['error']):
+                  return apel_data 
+        except:
+                pass
         site_normalization = {}
         norm_total = 0
         wall_total = 0

@@ -88,12 +88,13 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
                 to_dict[arg] = from_dict[arg]
 
     def refine(self, data, filter_dict, facility=True, vo=True, dn=True,\
-            hours=True, default_rel_range=14*86400):
+            hours=True, default_rel_range=14*86400, probe=False):
         relTime = data.get('relativetime', False)
         data['supports_hours'] = hours
         data['refine_vo'] = vo
         data['refine_facility'] = facility
         data['refine_dn'] = dn
+        data['refine_probe'] = probe
         if relTime:
             if relTime == 'absolute':
                 data['relTime'] = 'absolute'
@@ -160,7 +161,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
 
         self.copy_if_present(filter_dict, data, 'facility', 'vo', \
             'exclude-facility', 'exclude-vo', 'user', 'user', 'exclude-dn', \
-            'vo_set', 'facility_set')
+            'vo_set', 'facility_set', 'probe')
         if len(filter_dict.get('facility', '')) == 0 and 'facility_set' in \
                 filter_dict:
             try:
@@ -169,7 +170,6 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
             except:
                 raise ValueError("Unknown facility set: %s." % \
                     filter_dict['facility_set'])
-        print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> %s "%filter_dict
         if len(filter_dict.get('vo', '')) == 0 and 'vo_set' in \
                 filter_dict:
             try:
@@ -343,9 +343,9 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         data = dict(kw)
         data['given_kw'] = dict(kw)
         self.user_auth(data)
-        filter_dict = {}
+        filter_dict = {'probe':'.*'}
         # Handle the refine variables
-        self.refine(data, filter_dict)
+        self.refine(data, filter_dict, probe=True)
         token = self.start_image_maps()
         # Generate image maps:
         self.image_map(token, data, 'GratiaStatusQueries',

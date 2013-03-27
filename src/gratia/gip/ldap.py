@@ -203,6 +203,7 @@ def read_ldap(fp, multi=False):
 
 def query_bdii(cp, query="(objectClass=GlueCE)", binding="o=grid"):
     endpoint = cp.get('bdii', 'endpoint')
+    print "endpoint = %s"%endpoint
     r = re.compile('ldap://(.*):([0-9]*)')
     m = r.match(endpoint)
     if not m: 
