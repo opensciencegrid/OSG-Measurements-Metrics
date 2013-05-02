@@ -57,10 +57,17 @@ class Navigation(Authenticate, Template):
 
     def pilotNav(self, data):
         info = {}
-        info['Pilot & Campus Accounting']  = "pilot"
+        info['Pilot Accounting']  = "pilot"
         info['Project Accounting']  = "project"
         info['GlideinWMS Monitoring']  = "factoryfrontend"
-        data['navigation']['Campus & Pilot'] = info
+        data['navigation']['Pilot'] = info
+
+    def campusNav(self, data):
+        info = {}
+        info['Campus Accounting']  = "campus"
+        info['Project Accounting']  = "project"
+        info['GlideinWMS Monitoring']  = "factoryfrontend"
+        data['navigation']['Campus'] = info
 
     def otherNav(self, data):
         info = {}
@@ -106,5 +113,6 @@ class Navigation(Authenticate, Template):
         self.gridNav(data)
         self.otherNav(data)
         self.pilotNav(data)
+        self.campusNav(data)
         return data
 

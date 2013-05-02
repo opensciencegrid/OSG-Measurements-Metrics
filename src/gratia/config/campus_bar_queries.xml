@@ -1,0 +1,1552 @@
+<graphtool-config>
+
+  <import module="gratia.config" data_file="generic_queries.xml" />
+
+  <class type="SqlQueries" name="GratiaBarQueries2">
+
+    <attribute name="display_name"> Bar Graphs 2</attribute>
+    <attribute name="connection_manager"> GratiaConnMan </attribute>
+
+    <query name="vo_hours_bar_smry" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <results>
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+      <attribute name="pivot_name"> VO </attribute>
+      <attribute name="title"> Hours Spent on Jobs By VO </attribute>
+      <attribute name="column_names"> Computation Time </attribute>
+      <attribute name="column_units"> Hours </attribute>
+      <attribute name="graph_type"> GratiaStackedBar </attribute>
+    </query>
+
+    <query name="vo_job_cnt" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Njobs) </filler>
+        <filler name="where"> </filler>
+      </sql>
+      <results>
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+      <attribute name="pivot_name"> VO </attribute>
+      <attribute name="title"> Job Count by VO </attribute>
+      <attribute name="column_names"> Number of Jobs </attribute>
+      <attribute name="column_units"/>
+      <attribute name="graph_type"> GratiaStackedBar </attribute>
+    </query>
+
+    <query name="osg_wall_hours" base="GratiaGenericQuery.master_summary">
+        <inputs>
+            <input name="span" type="eval" kind="sql">7*86400</input>
+            <input name="starttime" type="datetime" kind="sql">time.time()-7*86400*52</input>
+            <input name="endtime" type="datetime" kind="sql">time.time()</input>
+        </inputs>
+        <sql>
+            <filler name="group"> VO.VOName </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 </filler>
+        </sql>
+        <attribute name="title"> Computation Hours Per Week </attribute>
+        <attribute name="pivot_name"> VO </attribute>
+        <attribute name="column_names"> Computation Time </attribute>
+        <attribute name="column_units"> Hours </attribute>
+        <attribute name="graph_type"> GratiaStackedBar </attribute>
+    </query>
+
+    <query name="osg_weekly_cpus" base="GratiaGenericQuery.master_summary">
+        <inputs>
+            <input name="span" type="eval" kind="sql">7*86400</input>
+            <input name="starttime" type="datetime" kind="sql">time.time()-7*86400*52</input>           
+            <input name="endtime" type="datetime" kind="sql">time.time()</input>
+        </inputs>
+        <sql>
+            <filler name="group"> S.SiteName </filler>
+            <filler name="column"> sum(Cores*WallDuration)/:span </filler>
+            <filler name="where"> AND WallDuration > 0 </filler>
+        </sql>
+        <results>
+            <inputs>
+                <input name="pivot_transform">oim_resource_filter</input>
+            </inputs>
+        </results>
+        <attribute name="title"> Average Facility CPUs per Week </attribute>
+        <attribute name="pivot_name"> Facility </attribute>
+        <attribute name="column_names"> Average CPUs Occupied </attribute>
+        <attribute name="column_units"/>
+        <attribute name="graph_type"> GratiaStackedBar </attribute>
+    </query>    
+
+    <query name="jobsize_site_wall_hours" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> S.SiteName, CASE R.Cores WHEN 1 THEN "1 Core" ELSE concat(R.Cores, " Cores") END  </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 AND R.Cores > 1 </filler>
+      </sql>
+      <results>
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+      <attribute name="pivot_name"> Site, VO </attribute>
+      <attribute name="title"> Hours Spent on Jobs By Site and Job Size </attribute>
+      <attribute name="column_names"> Computation Time </attribute>
+      <attribute name="column_units"> Hours </attribute>
+      <attribute name="graph_type"> GratiaStackedBar </attribute>
+    </query>
+
+
+    <query name="vo_site_wall_hours" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> S.SiteName, VO.VOName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <results>
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+      <attribute name="pivot_name"> Site, VO </attribute>
+      <attribute name="title"> Hours Spent on Jobs By Site and VO </attribute>
+      <attribute name="column_names"> Computation Time </attribute>
+      <attribute name="column_units"> Hours </attribute>
+      <attribute name="graph_type"> GratiaStackedBar </attribute>
+    </query>
+
+    <query name="osg_size" base="GratiaGenericQuery.master_summary">
+        <inputs>
+            <input name="span" type="eval" kind="sql">7*86400</input>
+            <input name="starttime" type="datetime" kind="sql">time.time()-7*86400*52</input> 
+            <input name="endtime" type="datetime" kind="sql">time.time()</input>
+            <input name="normalize">True</input>
+            <input name="croptime">True</input>
+        </inputs>
+        <sql>
+            <filler name="group"> S.SiteName </filler>
+            <filler name="column"> sum(Cores*WallDuration)/:span </filler>
+            <filler name="where"> AND WallDuration > 0 </filler>
+        </sql>
+      <results module="gratia.database.metrics" function="osg_size">
+        <inputs>
+          <input name="pivots"> 0 </input>
+          <input name="grouping"> 1 </input>
+          <input name="results"> 2 </input>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+      <attribute name="graph_type"> GratiaSize </attribute>
+      <attribute name="title"> Measure of OSG Size </attribute>
+      <attribute name="pivot_name"> Facility </attribute>
+      <attribute name="column_names"> Average CPUs Occupied </attribute>
+      <attribute name="column_units"/>
+    </query>
+
+    <query name="osg_avail_size" base="GratiaGenericQuery.master_summary">
+        <inputs>
+            <input name="span" type="eval" kind="sql">7*86400</input>
+            <input name="starttime" type="datetime" kind="sql">time.time()-7*86400*52</input>
+            <input name="endtime" type="datetime" kind="sql">time.time()</input>
+            <input name="exclude-DN" kind="sql">Igor Sfiligoi 673872</input>
+            <input name="exclude-facility" kind="sql"> FNAL_FERMIGRID|Generic|Obsolete </input>
+        </inputs>
+        <sql>
+            <filler name="group"> S.SiteName </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 AND CommonName not regexp :exclude-DN </filler>
+        </sql>
+        <results module="gratia.database.metrics" function="site_size_parser">
+            <inputs>
+                <input name="pivot_transform">oim_resource_filter</input>
+                <input name="pivots"> 0 </input>
+                <input name="grouping"> 1 </input>
+                <input name="results"> 2 </input>
+            </inputs>
+        </results>
+        <attribute name="title"> Facility size by week </attribute>
+        <attribute name="pivot_name"> Facility </attribute>
+        <attribute name="column_names"> Size Estimate </attribute>
+        <attribute name="column_units"> cores </attribute>
+        <attribute name="graph_type"> GratiaStackedBar </attribute>
+    </query>
+
+    <query name="osg_avail_size_summary" base="GratiaGenericQuery.master_summary">
+        <inputs>
+            <input name="span" type="eval" kind="sql">4*86400</input>
+            <input name="starttime" type="datetime" kind="sql">time.time()-7*86400*52</input>
+            <input name="endtime" type="datetime" kind="sql">time.time()</input>
+            <input name="exclude-DN" kind="sql">Igor Sfiligoi 673872</input>
+            <input name="exclude-facility" kind="sql"> FNAL_FERMIGRID|Generic|Obsolete </input>
+        </inputs>
+        <sql>
+            <filler name="group"> S.SiteName </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 AND CommonName not regexp :exclude-DN </filler>
+        </sql>
+        <results module="gratia.database.metrics" function="site_size_parser2">
+            <inputs>
+                <input name="pivot_transform">oim_resource_filter</input>
+                <input name="pivots"> 0 </input>
+                <input name="grouping"> 1 </input>
+                <input name="results"> 2 </input>
+            </inputs>
+        </results>
+        <attribute name="title"> OSG Facility Proven Size </attribute>
+        <attribute name="pivot_name"> Facility </attribute>
+        <attribute name="column_names"> Size Estimate </attribute>
+        <attribute name="column_units"> cores </attribute>
+        <attribute name="graph_type"> GratiaPie </attribute>
+    </query>
+
+    <query name="size_by_classification" base="GratiaGenericQuery.master_summary">
+        <inputs>
+            <input name="span" type="eval" kind="sql">4*86400</input>
+            <input name="starttime" type="datetime" kind="sql">time.time()-7*86400*52</input>
+            <input name="endtime" type="datetime" kind="sql">time.time()</input>
+            <input name="exclude-DN" kind="sql">Igor Sfiligoi 673872</input>
+            <input name="exclude-facility" kind="sql"> FNAL_FERMIGRID </input>
+        </inputs>
+        <sql>
+            <filler name="group"> S.SiteName </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 AND CommonName not regexp :exclude-DN </filler>
+        </sql>
+        <results module="gratia.database.metrics" function="size_classifier">
+            <inputs>
+                <input name="pivot_transform">oim_resource_filter</input>
+                <input name="pivots"> 0 </input>
+                <input name="grouping"> 1 </input>
+                <input name="results"> 2 </input>
+            </inputs>
+        </results>
+        <attribute name="title"> OSG Size By Classification </attribute>
+        <attribute name="pivot_name"> Classification </attribute>
+        <attribute name="column_names"> Size Estimate </attribute>
+        <attribute name="column_units"> cores </attribute>
+        <attribute name="graph_type"> GratiaPie </attribute>
+    </query>
+
+    <query name="size_by_resource_classification" base="GratiaGenericQuery.master_summary">
+        <inputs>
+            <input name="span" type="eval" kind="sql">4*86400</input>
+            <input name="starttime" type="datetime" kind="sql">time.time()-7*86400*52</input>
+            <input name="endtime" type="datetime" kind="sql">time.time()</input>
+            <input name="exclude-DN" kind="sql">Igor Sfiligoi 673872</input>
+            <input name="exclude-facility" kind="sql"> FNAL_FERMIGRID </input>
+        </inputs>
+        <sql>
+            <filler name="group"> S.SiteName </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 AND CommonName not regexp :exclude-DN </filler>
+        </sql>
+        <results module="gratia.database.metrics" function="site_resource_classifier">
+            <inputs>
+                <input name="pivot_transform">oim_resource_filter</input>
+                <input name="pivots"> 0 </input>
+                <input name="grouping"> 1 </input>
+                <input name="results"> 2 </input>
+            </inputs>
+        </results>
+        <attribute name="title"> Size by Resource and Classification </attribute>
+        <attribute name="pivot_name"> Classification </attribute>
+        <attribute name="grouping_name"> Facility </attribute>
+        <attribute name="column_names"> Size Estimate </attribute>
+        <attribute name="column_units"> cores </attribute>
+        <attribute name="graph_type"> GratiaHorizontalBar </attribute>
+    </query>
+
+    <query name="osg_site_size" base="GratiaGenericQuery.master_summary">
+        <inputs>
+            <input name="span" type="eval" kind="sql">7*86400</input>
+            <input name="starttime" type="datetime" kind="sql">time.time()-7*86400*52</input>
+            <input name="endtime" type="datetime" kind="sql">time.time()</input>
+            <input name="exclude-user" kind="sql">Igor Sfiligoi 673872</input>
+            <input name="exclude-facility" kind="sql"> FNAL_FERMIGRID </input>
+            <input name="normalize">True</input>
+            <input name="croptime">True</input>
+        </inputs>
+        <sql>
+            <filler name="group"> S.SiteName </filler>
+            <filler name="column"> sum(Cores*WallDuration)/:span </filler>
+            <filler name="where"> AND WallDuration > 0 </filler>
+        </sql>
+      <results module="gratia.database.metrics" function="osg_site_size">
+        <inputs>
+          <input name="pivots"> 0 </input>
+          <input name="grouping"> 1 </input>
+          <input name="results"> 2 </input>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+      <attribute name="graph_type"> GratiaHorizontalBar </attribute>
+      <attribute name="grouping_name">Site</attribute>
+      <attribute name="title"> Measure of Size by Site </attribute>
+      <attribute name="pivot_name"> Site </attribute>
+      <attribute name="column_names"> Size </attribute>
+      <attribute name="column_units"> cores </attribute>
+    </query>
+
+    <query name="facility_hours_bar_smry" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(IF(CommonName regexp 'Thain' AND Cores = 1, 8, Cores)*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">Hours Spent on Jobs By Facility</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="glidein_hours_bar_smry" base="GratiaGenericQuery.master_summary">
+      <inputs>
+        <input name="resource-type" kind="sql">BatchPilot</input>
+        <input name="facility" kind="sql">Nebraska Glide-In</input>
+      </inputs>
+      <sql>
+        <filler name="group"> IF(length(R.HostDescription) > 0, R.HostDescription, "UNKNOWN") </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">Glide-In WMS Hours Spent on Jobs By Facility</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="facility_count_bar_smry" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(Njobs)</filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">Job Count By Facility</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_facility_hours" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">Monthly Wall Hours per Facility</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_facility_job_count" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+      <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(Njobs) </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">Monthly Job Count per Facility</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_vo_hours" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+      <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">Monthly Wall Hours per VO</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_vo_cpu_hours" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+      <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(CpuUserDuration + CpuSystemDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">Monthly CPU Hours per VO</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+   
+    <query name="monthly_vo_job_count" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+      <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Njobs) </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">Monthly Job Count per VO</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="facility_cpu_hours_bar_smry" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(CpuUserDuration + CpuSystemDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">CPU Hours Spent on Jobs By Facility</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="facility_cpu_efficiency" base="GratiaGenericQuery.master_summary">
+      <inputs>
+          <input name="facility" kind="sql">Nebraska</input>
+      </inputs>
+      <sql>
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(CpuUserDuration + CpuSystemDuration)/sum(Cores*WallDuration) </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">CPU Efficiency by VO for $facility</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="vo_efficiency_summary" base="GratiaGenericQuery.simple_master_summary">
+      <inputs>
+          <input name="vo" kind="sql">dzero</input>
+      </inputs>
+      <sql>
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(case when ApplicationExitCode = 0 then CpuUserDuration + CpuSystemDuration else 0 end)/sum(Cores*WallDuration) </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <results>
+        <inputs>
+          <input name="pivot_transform">oim_resource_filter</input>
+        </inputs>
+      </results>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">CPU Efficiency Quality Map by Site for $vo</attribute>
+      <attribute name="graph_type">QualityBarGraph</attribute>
+    </query>
+
+    <query name="vo_wall_efficiency_summary" base="GratiaGenericQuery.master_summary">
+      <inputs>
+          <input name="vo" kind="sql">dzero</input>
+          <input name="min_hours" type="eval" kind="sql">0</input>
+      </inputs>
+      <sql>
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column">
+          sum(case when ApplicationExitCode = 0 then Cores*WallDuration else 0 end)/3600 as Successes,
+          sum(case when ApplicationExitCode != 0 then Cores*WallDuration else 0 end)/3600 as Failures
+        </filler>
+        <filler name="having"> HAVING sum(Cores*WallDuration) > 3600*:min_hours </filler>
+      </sql>
+      <results>
+        <inputs>
+         <input name="pivot_transform">oim_resource_filter</input>
+         <input name="grouping_transform">make_int</input>
+          <input name="results"> 2, 3 </input>
+        </inputs>
+      </results>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">Wall Efficiency Quality Map by Site for $vo</attribute>
+      <attribute name="graph_type">QualityMap</attribute>
+      <attribute name="fixed-height"> False </attribute>
+      <attribute name="column_names"> Successful, Failed</attribute>
+      <attribute name="column_units"> Hours, Hours </attribute>
+    </query>
+
+    <query name="dn_efficiency_summary" base="GratiaGenericQuery.simple_master_summary">
+      <inputs>
+          <input name="vo" kind="sql">cms</input>
+          <input name="fixed-height">False</input>
+          <input name="min_hours" kind="sql" type="eval">0</input>
+      </inputs>
+      <sql>
+        <filler name="group"> COALESCE(R.CommonName, "UNKNOWN") </filler>
+        <filler name="column"> sum(case when ApplicationExitCode = 0 then CpuUserDuration + CpuSystemDuration else 0 end)/sum(Cores*WallDuration) </filler>
+        <filler name="where"> AND WallDuration > 0 AND WallDuration > 3600*:min_hours </filler>
+      </sql>
+        <results>
+            <inputs>
+                <input name="pivot_transform">displayName</input>
+            </inputs>
+        </results>
+      <attribute name="pivot_name">User</attribute>
+      <attribute name="title">CPU Efficiency Quality Map by User for $vo</attribute>
+      <attribute name="graph_type">QualityBarGraph</attribute>
+    </query>
+
+    <query name="dn_wall_summary" base="GratiaGenericQuery.simple_master_summary">
+      <inputs>
+          <input name="vo" kind="sql">dzero</input>
+      </inputs>
+      <sql>
+        <filler name="group"> COALESCE(R.CommonName, "UNKNOWN") </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+        <results>
+            <inputs>
+                <input name="pivot_transform">displayName</input>
+            </inputs>
+        </results>
+      <attribute name="pivot_name">User</attribute>
+      <attribute name="title">User Wall Hours</attribute>
+      <attribute name="graph_type">GratiaHorizontalBar</attribute>
+    </query>
+
+    <query name="dn_wasted_summary" base="GratiaGenericQuery.simple_master_summary">
+      <inputs>
+          <input name="vo" kind="sql">dzero</input>
+      </inputs>
+      <sql>
+        <filler name="group"> COALESCE(R.CommonName, "UNKNOWN") </filler>
+        <filler name="column"> sum(CASE when ApplicationExitCode = 0 THEN Cores*WallDuration-CpuUserDuration-CpuSystemDuration ELSE Cores*WallDuration END)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+        <results>
+            <inputs>
+                <input name="pivot_transform">displayName</input>
+            </inputs>
+        </results>
+      <attribute name="pivot_name">User</attribute>
+      <attribute name="title">User Wasted Hours</attribute>
+      <attribute name="graph_type">GratiaHorizontalBar</attribute>
+    </query>
+
+    <query name="vo_wall_success_rate" base="GratiaGenericQuery.simple_master_summary">
+      <inputs>
+        <input name="fixed-height">False</input>
+      </inputs>
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(CASE when ApplicationExitCode = 0 THEN Cores*WallDuration ELSE 0 END)/sum(Cores*WallDuration) </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <results/>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">VO Wall Success Rate</attribute>
+      <attribute name="graph_type">GratiaHorizontalBar</attribute>
+    </query>
+
+    <query name="vo_cpu_hours" base="GratiaGenericQuery.simple_master_summary">
+      <inputs>
+        <input name="fixed-height">False</input>
+      </inputs>
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(CpuUserDuration+CpuSystemDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <results/>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">VO Wall Success Rate</attribute>
+      <attribute name="graph_type">GratiaHorizontalBar</attribute>
+    </query>
+
+    <query name="vo_wall_hours" base="GratiaGenericQuery.simple_master_summary">
+      <inputs>
+        <input name="fixed-height">False</input>
+      </inputs>
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <results/>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">VO Wall Success Rate</attribute>
+      <attribute name="graph_type">GratiaHorizontalBar</attribute>
+    </query>
+
+    <query name="dn_nonzero_exit" base="GratiaGenericQuery.simple_master_summary">
+      <inputs>
+          <input name="vo" kind="sql">cms</input>
+      </inputs>
+      <sql>
+        <filler name="group"> COALESCE(R.CommonName, "UNKNOWN") </filler>
+        <filler name="column"> cast(sum(Njobs) AS UNSIGNED) </filler>
+        <filler name="where"> AND WallDuration > 0 AND ApplicationExitCode!=0 </filler>
+      </sql>
+        <results>
+            <inputs>
+                <input name="pivot_transform">displayName</input>
+            </inputs>
+        </results>
+      <attribute name="pivot_name">User</attribute>
+      <attribute name="fixed-height">False</attribute>
+      <attribute name="title">User Non-zero exit code count for VO $vo</attribute>
+      <attribute name="graph_type">GratiaHorizontalBar</attribute>
+    </query>
+
+    <query name="dn_zero_exit" base="GratiaGenericQuery.simple_master_summary">
+      <inputs>
+          <input name="vo" kind="sql">cms</input>
+      </inputs>
+      <sql>
+        <filler name="group"> COALESCE(R.CommonName, "UNKNOWN") </filler>
+        <filler name="column"> cast(sum(Njobs) AS UNSIGNED) </filler>
+        <filler name="where"> AND WallDuration > 0 AND ApplicationExitCode=0 </filler>
+      </sql>
+        <results>
+            <inputs>
+                <input name="pivot_transform">displayName</input>
+            </inputs>
+        </results>
+      <attribute name="pivot_name">User</attribute>
+      <attribute name="fixed-height">False</attribute>
+      <attribute name="title">User success count for VO $vo</attribute>
+      <attribute name="graph_type">GratiaHorizontalBar</attribute>
+    </query>
+
+    <query name="vo_cpu_efficiency" base="GratiaGenericQuery.master_summary">
+      <inputs>
+          <input name="vo" kind="sql">cms</input>
+          <input name="min_hours" type="eval" kind="sql">0</input>
+      </inputs>
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(CpuUserDuration + CpuSystemDuration)/sum(Cores*WallDuration) </filler>
+        <filler name="where"> AND WallDuration > 0 AND WallDuration/Njobs > 3600*:min_hours </filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">CPU Efficiency for $vo</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="probe_hours_bar_smry" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> R.ProbeName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">Hours Spent on Jobs By Probe</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="vo_facility_hours_bar_smry" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">$vo CPU Hours By Facility</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="vo_opp_hours_bar" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">$vo CPU Hours By Facility</attribute>
+      <attribute name="graph_type">GratiaOpp</attribute>
+      <results module="gratia.database.query_handler" function="opportunistic_usage_parser">
+        <inputs>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+<!--
+    <query name="facility_quality" base="GratiaGenericQuery.jobs_summary_query">
+        <sql>
+            <filler name="group"> S.SiteName </filler>
+            <filler name="column"> 
+                sum(CASE StatusCode WHEN 0 THEN 1 ELSE 0 END) as Successes,
+                sum(CASE StatusCode WHEN 0 THEN 0 ELSE 1 END) as Failures
+            </filler>
+        </sql>
+        <results>
+            <inputs>
+                <input name="grouping_transform">make_int</input>
+                <input name="results"> 2, 3 </input>
+            </inputs>
+        </results>
+        <attribute name="graph_type"> QualityMap </attribute>
+        <attribute name="fixed-height"> False </attribute>
+        <attribute name="title"> Job Quality by Facility </attribute>
+        <attribute name="column_names"> Successful, Failed</attribute>
+        <attribute name="column_units"> Jobs, Jobs </attribute>
+        <attribute name="pivot_name">Facility</attribute>
+    </query>
+-->
+
+    <query name="vo_opp_hours_bar2" base="GratiaGenericQuery.master_summary">
+      <sql> 
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility</attribute>
+      <attribute name="title">CPU Hours by Usage Type</attribute>
+      <attribute name="graph_type">GratiaOpp</attribute>
+      <results module="gratia.database.query_handler" function="opportunistic_usage_parser2">
+        <inputs>
+          <input name="pivot_transform">oim_resource_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+       
+    <query name="facility_opp_bar" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">CPU Hours by Usage Type</attribute>
+      <attribute name="graph_type">GratiaOpp</attribute>
+      <results module="gratia.database.query_handler" function="opportunistic_usage_parser3">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="uslhc_opportunistic_provided_perc" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">Opportunistic Usage by Resource Provider</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.query_handler" function="uslhc_opportunistic_provided_perc">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="uslhc_opportunistic_provided_perc2" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">Percent Opportunistic Usage Provided by USLHC</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.query_handler" function="uslhc_opportunistic_provided_perc">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+          <input name="show_only_uslhc">True</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="uslhc_opportunistic_provided_sites" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">USLHC-provided Opportunistic Usage by Site</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.query_handler" function="uslhc_opportunistic_provided_sites">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="nonuslhc_opportunistic_provided_sites" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">Non-USLHC-provided Opportunistic Usage by Site</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.query_handler" function="nonuslhc_opportunistic_provided_sites">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="osg_sharing_opp" base="GratiaGenericQuery.master_summary">
+      <inputs>
+          <input name="exclude-facility" kind="sql">None</input>
+      </inputs>
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">Opportunistic Wall Hours</attribute>
+      <attribute name="graph_type">GratiaOpp</attribute>
+      <results module="gratia.database.query_handler" function="opportunistic_usage_parser4">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="osg_sharing_vos" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">Opportunistic Wall Hours by VO</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.query_handler" function="opportunistic_usage_parser5">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="osg_sharing_sites" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">Opportunistic Wall Hours by Site</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.query_handler" function="opportunistic_usage_parser_sites">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="osg_sharing_vos_perc" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">Percent of Total Opportunistic Wall Hours by VO</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.query_handler" function="opportunistic_usage_parser_vos_perc">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="osg_sharing_sites_perc" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">Percent of Total Opportunistic Wall Hours by Site</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.query_handler" function="opportunistic_usage_parser_sites_perc">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="osg_sharing_perc" base="GratiaGenericQuery.master_summary">
+      <sql> 
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">Percent of Opportunistic Wall Hours</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.query_handler" function="opportunistic_usage_parser_perc"> 
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="osg_sharing_perc_vos" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">VO Percent of Opportunistic Wall Hours</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <attribute name="column_names">Owned,Opportunistic</attribute>
+      <results module="gratia.database.query_handler" function="opportunistic_usage_perc_vos"> 
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="osg_sharing_perc_sites" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Usage Type</attribute>
+      <attribute name="title">Site Percent of Opportunistic Wall Hours</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <attribute name="column_names">Owned,Opportunistic</attribute>
+      <results module="gratia.database.query_handler" function="opportunistic_usage_perc_sites"> 
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="failed_dn_hours_bar" base="GratiaGenericQuery.master_summary">
+        <sql>
+            <filler name="group"> COALESCE(R.CommonName, VO.VOName) </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 AND R.ApplicationExitCode != 0 </filler>
+        </sql>
+        <results module="graphtool.database.query_handler" function="results_parser">
+            <inputs>
+                <input name="pivots"> 0 </input>
+                <input name="grouping"> 1 </input>
+                <input name="results"> 2 </input>
+                <input name="pivot_transform">displayName</input>
+            </inputs>
+        </results>
+        <attribute name="pivot_name">User</attribute>
+        <attribute name="grouping_name">Time</attribute>
+        <attribute name="title">Daily Wasted Hours By User</attribute>
+        <attribute name="column_names">Wasted Time</attribute>
+        <attribute name="column_units">Hours</attribute>
+        <attribute name="graph_type">GratiaStackedBar</attribute>
+    </query>
+
+    <query name="failed_dn_site_hours_bar" base="GratiaGenericQuery.master_summary">
+        <sql>   
+            <filler name="group"> COALESCE(R.CommonName, VO.VOName), S.SiteName </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 AND R.ApplicationExitCode != 0 </filler>
+        </sql>
+        <results module="graphtool.database.query_handler" function="results_parser">
+            <inputs>
+                <input name="pivots"> 0,1 </input>
+                <input name="grouping"> 2 </input>
+                <input name="results"> 3 </input>
+                <input name="pivot_transform">displayNameSite</input>
+            </inputs>
+        </results>
+        <attribute name="pivot_name">User</attribute> 
+        <attribute name="grouping_name">Time</attribute>
+        <attribute name="title">Daily Wasted Hours By User and Site</attribute>
+        <attribute name="column_names">Wasted Time</attribute>
+        <attribute name="column_units">Hours</attribute>
+        <attribute name="graph_type">GratiaStackedBar</attribute>
+    </query>
+
+    <query name="dn_site_hours_bar" base="GratiaGenericQuery.master_summary">
+        <sql>
+            <filler name="group"> COALESCE(R.CommonName, VO.VOName), S.SiteName </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 </filler>
+        </sql>
+        <results module="graphtool.database.query_handler" function="results_parser">
+            <inputs>
+                <input name="pivots"> 0,1 </input>
+                <input name="grouping"> 2 </input>
+                <input name="results"> 3 </input>
+                <input name="pivot_transform">displayNameSite</input>
+            </inputs>
+        </results>
+        <attribute name="pivot_name">User</attribute> 
+        <attribute name="grouping_name">Time</attribute>
+        <attribute name="title">Daily Hours By User and Site</attribute>
+        <attribute name="column_names">Wall Time</attribute>
+        <attribute name="column_units">Hours</attribute>
+        <attribute name="graph_type">GratiaStackedBar</attribute>
+    </query>
+
+
+    <query name="glidein_dn_site_hours_bar" base="GratiaGenericQuery.master_summary">
+        <sql>
+            <filler name="group"> R.CommonName, R.HostDescription </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 </filler>
+        </sql>
+        <inputs>
+            <input name="resource-type" > BatchPilot </input>
+	    <input name="exclude-facility" kind="sql"> NONE </input>
+        </inputs>
+        <results module="graphtool.database.query_handler" function="results_parser">
+            <inputs>
+                <input name="pivots"> 0,1 </input>
+                <input name="grouping"> 2 </input>
+                <input name="results"> 3 </input>
+                <input name="pivot_transform">displayNameSite</input>
+            </inputs>
+        </results>
+        <attribute name="pivot_name">User</attribute>
+        <attribute name="grouping_name">Time</attribute>
+        <attribute name="title">Daily Hours By User and Host (Glidein)</attribute>
+        <attribute name="column_names">Wall Time</attribute>
+        <attribute name="column_units">Hours</attribute>
+        <attribute name="graph_type">GratiaStackedBar</attribute>
+    </query>
+
+
+
+    <query name="dn_hours_bar" base="GratiaGenericQuery.master_summary">
+        <sql>
+            <filler name="group"> COALESCE(R.CommonName, VO.VOName) </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 </filler>
+        </sql>
+        <results module="graphtool.database.query_handler" function="results_parser">
+            <inputs>
+                <input name="pivots"> 0 </input>
+                <input name="grouping"> 1 </input>
+                <input name="results"> 2 </input>
+                <input name="pivot_transform">displayName</input>
+            </inputs>
+        </results>
+        <attribute name="pivot_name">User</attribute>
+        <attribute name="grouping_name">Time</attribute>
+        <attribute name="title">Daily Hours By User </attribute>
+        <attribute name="column_names">Wall Time</attribute>
+        <attribute name="column_units">Hours</attribute>
+        <attribute name="graph_type">GratiaStackedBar</attribute>
+    </query>
+
+    <query name="exitcode_bar" base="GratiaGenericQuery.master_summary">
+        <inputs>
+            <!--<input name="includeSuccessful" type="int" kind="sql">1</input>-->
+        </inputs>
+        <sql>
+            <filler name="group"> R.ApplicationExitCode </filler>
+            <filler name="column"> sum(Njobs) </filler>
+            <!--<filler name="where"> AND CASE WHEN :includeSuccessful!=1 THEN R.ApplicationExitCode!=0 ELSE true END </filler>-->
+        </sql>
+        <results module="graphtool.database.query_handler" function="results_parser">
+            <inputs>
+                <input name="pivots"> 0 </input>
+                <input name="grouping"> 1 </input>
+                <input name="results"> 2 </input>
+            </inputs>
+        </results>
+        <attribute name="pivot_name">Exit Code</attribute>
+        <attribute name="grouping_name">Time</attribute>
+        <attribute name="title">Exit Code Count for $vo</attribute>
+        <attribute name="column_names">Exit Code Count</attribute>
+        <attribute name="column_units">Jobs</attribute>
+        <attribute name="graph_type">GratiaStackedBar</attribute>
+    </query>
+
+    <query name="success_count" base="GratiaGenericQuery.master_summary">
+        <sql>
+            <filler name="group"> CASE WHEN R.ApplicationExitCode=0 THEN "Successful" ELSE "Failed" END </filler>
+            <filler name="column"> sum(Njobs) </filler>
+        </sql>
+        <results module="graphtool.database.query_handler" function="results_parser">
+            <inputs>
+                <input name="pivots"> 0 </input>
+                <input name="grouping"> 1 </input>
+                <input name="results"> 2 </input>
+            </inputs>
+        </results>
+        <attribute name="pivot_name">Job Status</attribute>
+        <attribute name="grouping_name">Time</attribute>
+        <attribute name="title">Job Count by Status</attribute>
+        <attribute name="column_names">Job Count</attribute>
+        <attribute name="column_units">Jobs</attribute>
+        <attribute name="graph_type">GratiaStackedBar</attribute>
+    </query>
+
+    <query name="success_wall_hours" base="GratiaGenericQuery.master_summary">
+        <sql>
+            <filler name="group"> CASE WHEN R.ApplicationExitCode=0 THEN "Successful" ELSE "Failed" END </filler>
+            <filler name="column"> sum(WallDuration)/3600 </filler>
+        </sql>
+        <results module="graphtool.database.query_handler" function="results_parser">
+            <inputs>
+                <input name="pivots"> 0 </input>
+                <input name="grouping"> 1 </input>
+                <input name="results"> 2 </input>
+            </inputs>
+        </results>
+        <attribute name="pivot_name">Job Status</attribute>
+        <attribute name="grouping_name">Time</attribute>
+        <attribute name="title">Wall Hours by Status</attribute>
+        <attribute name="column_names">Wall Duration</attribute>
+        <attribute name="column_units">Hours</attribute>
+        <attribute name="graph_type">GratiaStackedBar</attribute>
+    </query>
+
+    <query name="job_avg" base="GratiaGenericQuery.simple_master_summary">
+        <inputs>
+          <input name="min_jobs" kind="sql"> 0 </input>
+          <input name="max_avg" kind="sql"> 10000 </input>
+<!--
+          <input name="min_eff" kind="sql"> 0 </input>
+          <input name="max_eff" kind="sql"> 100 </input>
+-->
+          <input name="fixed-height">False</input>
+        </inputs> 
+        <sql>
+            <filler name="group"> COALESCE(R.CommonName, VO.VOName) </filler>
+            <filler name="column"> sum(Cores*WallDuration)/sum(Njobs)/60 </filler>
+            <!--<filler name="where"> AND 100*(CpuUserDuration + CpuSystemDuration)/(WallDuration) &lt;= :max_eff </filler>-->
+            <filler name="having"> HAVING sum(Njobs) > :min_jobs and sum(Cores*WallDuration)/sum(Njobs)/60 &lt; :max_avg </filler>
+        </sql>
+        <attribute name="pivot_name">User Name</attribute>
+        <results>
+            <inputs>
+                <input name="pivot_transform">displayName</input>
+            </inputs>
+        </results>
+        <attribute name="title">Average Job Runtimes</attribute>
+        <attribute name="column_names">Avg Runtime</attribute>
+        <attribute name="column_units">Mins</attribute>
+        <attribute name="graph_type">GratiaHorizontalBar</attribute>
+    </query>
+
+    <query name="monthly_science" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Science Field</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Wall Time</attribute>
+      <attribute name="column_units">Hours</attribute>
+      <attribute name="title">Monthly Wall Hours per Science Field</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.metrics" function="science_classifier">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_nonhep_science" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Science Field</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Wall Time</attribute>
+      <attribute name="column_units">Hours</attribute>
+      <attribute name="title">Monthly Wall Hours per non-HEP Science Field</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.metrics" function="nonhep_science_classifier">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_non_hep" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Wall Time</attribute>
+      <attribute name="column_units">Hours</attribute>
+      <attribute name="title">Monthly Wall Hours per VO for non-HEP VOs</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.metrics" function="non_HEP_filter">
+        <inputs>
+          <input name="pivot_transform">oim_vo_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_non_physics" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Wall Time</attribute>
+      <attribute name="column_units">Hours</attribute>
+      <attribute name="title">Monthly Wall Hours per VO for non-Physics VOs</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.metrics" function="non_physics_filter">
+        <inputs>
+          <input name="pivot_transform">oim_vo_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="non_hep" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Wall Time</attribute>
+      <attribute name="column_units">Hours</attribute>
+      <attribute name="title">Wall Hours per VO for non-HEP VOs</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.metrics" function="non_HEP_filter">
+        <inputs>
+          <input name="pivot_transform">oim_vo_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="non_physics" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Wall Time</attribute>
+      <attribute name="column_units">Hours</attribute>
+      <attribute name="title">Wall Hours per VO for non-Physics VOs</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.metrics" function="non_physics_filter">
+        <inputs>
+          <input name="pivot_transform">oim_vo_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_science_jobs" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Njobs) </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Science Field</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Job Count</attribute>
+      <attribute name="title">Monthly Job Count per Science Field</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.metrics" function="science_classifier">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_field" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+        <filler name="group"> R.CommonName, VC.VOName, VO.VOName </filler>
+        <filler name="column"> sum(WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Science Field</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Wall Hours</attribute>
+      <attribute name="title">Monthly Wall Hours per Science Field</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="pivots"> 0, 1, 2 </input>
+          <input name="grouping"> 3 </input>
+          <input name="results"> 4 </input>
+          <input name="pivot_transform">science_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_nonhep_field" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+        <filler name="group"> R.CommonName, VC.VOName, VO.VOName </filler>
+        <filler name="column"> sum(WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Science Field</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Wall Hours</attribute>
+      <attribute name="title">Monthly non-HEP Wall Hours per Science Field</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="pivots"> 0, 1, 2 </input>
+          <input name="grouping"> 3 </input>
+          <input name="results"> 4 </input>
+          <input name="pivot_transform">nonhep_science_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_nonphysics_field" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+        <filler name="group"> R.CommonName, VC.VOName, VO.VOName </filler>
+        <filler name="column"> sum(WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Science Field</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Wall Hours</attribute>
+      <attribute name="title">Monthly non-Physics Wall Hours per Science Field</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results>
+        <inputs>
+          <input name="pivots"> 0, 1, 2 </input>
+          <input name="grouping"> 3 </input>
+          <input name="results"> 4 </input>
+          <input name="pivot_transform">nonphysics_science_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="monthly_non_hep_jobs" base="GratiaGenericQuery.monthly_master_summary">
+      <sql>
+        <filler name="group"> VO.VOName </filler>
+        <filler name="column"> sum(Njobs) </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Job Count</attribute>
+      <attribute name="title">Monthly Job Count per VO for non-HEP VOs</attribute>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <results module="gratia.database.metrics" function="non_HEP_filter">
+        <inputs>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query>
+
+    <query name="facility_usage_statistics" base="GratiaGenericQuery.simple_master_summary">
+        <inputs>
+            <input name="fixed-height">False</input>
+        </inputs>
+        <sql>
+            <filler name="group"> S.SiteName </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 </filler>
+        </sql>
+        <results module="gratia.database.metrics" function="usage_statistics">
+            <inputs>
+                <input name="pivot_transform">oim_resource_filter</input>
+            </inputs>
+        </results>
+        <attribute name="title"> OSG Facility Usage Statistics </attribute>
+        <attribute name="pivot_name"> Facility </attribute>
+        <attribute name="column_names"> Average CPUs Occupied </attribute>
+        <attribute name="column_units"/>
+        <attribute name="graph_type"> GratiaHorizontalBar </attribute>
+    </query>
+
+    <query name="unique_user_count">
+        <inputs>
+            <input name="span" type="eval" kind="sql">86400</input>
+            <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-13*86400</input>
+            <input name="endtime" partial="up" type="datetime" kind="sql">time.time()</input>
+            <input name="includeFailed" kind="sql"> true </input>
+            <input name="includeSuccess" kind="sql"> true </input>
+            <input name="facility" kind="sql"> .* </input>
+            <input name="probe" kind="sql"> .* </input>
+            <input name="user" kind="sql"> .* </input>
+            <input name="vo" kind="sql"> .* </input>
+            <input name="role" kind="sql"> .* </input>
+            <input name="exclude-role" kind="sql"> NONE </input>
+            <input name="exclude-vo" kind="sql"> unknown|other </input>
+            <input name="exclude-user" kind="sql"> NONE </input>
+            <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
+        </inputs>
+        <sql>
+          SELECT
+            time, count(*) from (
+            SELECT
+                truncate( unix_timestamp(EndTime) / :span, 0 ) * :span as time,
+                R.CommonName
+            FROM
+                MasterSummaryData R
+            JOIN
+                Probe P on R.ProbeName = P.probename
+            JOIN
+                Site S on S.siteid = P.siteid
+            JOIN
+                VONameCorrection VC ON (VC.corrid=R.VOcorrid)
+            JOIN
+                VO on (VC.void = VO.void)
+            WHERE
+                R.EndTime &gt;= :starttime AND
+                R.EndTime &lt; :endtime AND
+                S.SiteName regexp :facility AND
+                VO.VOName regexp :vo AND
+                VC.VOName regexp :role AND
+                (NOT (VC.VOName regexp :exclude-role)) AND
+                (R.ResourceType = 'Batch' or R.ResourceType = '') AND
+                R.CommonName regexp :user AND
+                (:includeFailed='true' OR ApplicationExitCode=0) AND
+                (:includeSuccess ='true' OR ApplicationExitCode!=0) AND
+                (NOT (S.SiteName regexp :exclude-facility)) AND
+                (NOT (R.CommonName regexp :exclude-user)) AND
+                (NOT (VO.VOName regexp :exclude-vo)) AND
+                R.WallDuration &lt; 1100000000 AND
+                R.ProbeName regexp :probe
+            GROUP BY 
+                time, R.CommonName
+          ) as foo
+          GROUP BY time
+        </sql>
+        <results module="graphtool.database.query_handler" function="simple_results_parser">
+            <inputs>
+                <input name="pivots"> 0 </input>
+                <input name="results"> 1 </input>
+            </inputs>
+        </results>
+        <attribute name="graph_type">GratiaBar</attribute>
+        <attribute name="pivot_name">Time</attribute>
+        <attribute name="title">Unique User Count</attribute>
+        <attribute name="column_names">User Count</attribute>
+        <attribute name="column_units"/>
+    </query>
+
+  </class>
+
+</graphtool-config>

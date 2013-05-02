@@ -61,6 +61,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         self.site_report = self.template('gratia_site_report.tmpl')\
             (self.site_report)    
         self.pilot = self.template('pilot.tmpl')(self.pilot)
+        self.campus = self.template('campus.tmpl')(self.campus)
         self.project = self.template('project.tmpl')(self.project)
         self.factoryfrontend = self.template('factoryfrontend.tmpl')(self.factoryfrontend)
 
@@ -379,9 +380,36 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
 
         self.finish_image_maps(token)
 
-        data['title'] = "OSG Pilot and Campus Accounting"
+        data['title'] = "OSG Pilot Accounting"
         return data
 
+    def campus(self, *args, **kw):
+        data = dict(kw)
+        data['given_kw'] = dict(kw)
+        self.user_auth(data)
+        filter_dict = {}
+
+        # Handle the refine variables
+        self.refine(data, filter_dict)
+        token = self.start_image_maps()
+        # Generate image maps:
+        self.image_map(token, data, 'GratiaStatusQueries',
+            'status_facility', 'site', 'facility')
+        #self.image_map(token, data, 'GratiaStatusQueries',
+        #    'status_facility_pie', 'site', 'facility')
+        #self.image_map(token, data, 'GIPQueries',
+        #    'gip_free_cpu_realtime', 'site', 'facility')
+        #self.image_map(token, data, 'GIPQueries',
+        #    'gip_free_cpus_history', 'site', 'facility')
+        #self.image_map(token, data, 'GratiaStatusQueries',
+        #    'status_facility_waiting', 'site', 'facility')
+        #self.image_map(token, data, 'GratiaStatusQueries',
+        #    'status_facility_waiting_pie', 'site', 'facility')
+
+        self.finish_image_maps(token)
+
+        data['title'] = "OSG Campus Accounting"
+        return data
 
     def byvo(self, *args, **kw):
         data = dict(kw)
