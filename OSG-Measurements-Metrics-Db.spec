@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.1
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
