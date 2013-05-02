@@ -1,12 +1,12 @@
 .gitignore
 MANIFEST.in
-OSG-Measurements-Metrics-Db.spec
-OSG-Measurements-Metrics-Web.spec
 README.md
 SSLConfExample.txt
 access.db
 buildrpms.sh
 changelog.txt
+osg-measurements-metrics-db.spec
+osg-measurements-metrics-web.spec
 setup.sh
 setuptools-0.6c11-py2.4.egg
 config/DBParam.xml.rpmnew

@@ -5,8 +5,8 @@ OSG Measurement and Metrics
 
 First, you must build the source distribution:
 
-    $ python setup/setup_Web.py sdist
     $ python setup/setup_Db.py sdist
+    $ python setup/setup_Web.py sdist
 
 Then copy the source distributions to the rpm SOURCES directory:
 
@@ -15,8 +15,8 @@ Then copy the source distributions to the rpm SOURCES directory:
 Then use the rpmbuild command and the provided spec files to build the
 package.
 
-    $ rpmbuild -ba OSG-Measurements-Metrics-Db.spec
-    $ rpmbuild -ba OSG-Measurements-Metrics-Web.spec
+    $ rpmbuild -ba osg-measurements-metrics-db.spec
+    $ rpmbuild -ba osg-measurements-metrics-web.spec
 
 
 

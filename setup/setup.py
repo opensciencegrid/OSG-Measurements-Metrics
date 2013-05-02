@@ -7,7 +7,7 @@ except:
 
 from setuptools import setup, find_packages
 
-setup(name="OSG-Measurements-Metrics",
+setup(name="osg-measurements-metrics",
       version="0.5",
       author="Brian Bockelman",
       author_email="bbockelm@cse.unl.edu",
