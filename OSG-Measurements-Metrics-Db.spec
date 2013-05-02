@@ -3,9 +3,9 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-Name:           OSG-Measurements-Metrics-Db
+Name:           osg-measurements-metrics-db
 Version:        1.1
-Release:        4%{?dist}
+Release:        13%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System

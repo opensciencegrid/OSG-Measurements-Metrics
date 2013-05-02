@@ -3,9 +3,9 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-Name:           OSG-Measurements-Metrics-Web
+Name:           osg-measurements-metrics-web
 Version:        1.1
-Release:        4%{?dist}
+Release:        13%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -25,7 +25,7 @@ Requires:	/usr/bin/ldapsearch
 Requires:	python-cherrypy >= 3.1.2 
 Requires:	python-ZSI 
 Requires: 	python-setuptools 
-Requires: 	OSG-Measurements-Metrics-Db 
+Requires: 	osg-measurements-metrics-db 
 %if 0%{?el5}
 Requires:	python-json 
 %endif
