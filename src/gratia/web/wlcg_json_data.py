@@ -1,12 +1,13 @@
 import datetime
 import json
 import urllib2
+import simplejson
 
 class WLCGWebUtil:
     def wlcg_pledges(self, month=datetime.datetime.now().month, year=datetime.datetime.now().year):     
             
         thisyear = str(year)
-        debug=0
+        debug=1
 	sites_per_accountname={}
 	fednames_and_accounts={}
 
@@ -21,7 +22,7 @@ class WLCGWebUtil:
         url = 'http://gstat-wlcg.cern.ch/apps/topology/2/json'
         response  = urllib2.urlopen(url)
 	s = response.read()
-	x = json.read(s)
+	x = simplejson.loads(s)
 	#resourcesnestedlist=x['aaData']
 	for obj in x:
 	    if('USA'==obj['Country']):   
@@ -52,7 +53,7 @@ class WLCGWebUtil:
         url = 'http://gstat-wlcg.cern.ch/apps/pledges/resources/'+thisyear+'/2/json'
         response  = urllib2.urlopen(url)
 	s = response.read()
-	x = json.read(s)
+	x = simplejson.loads(s)
 	#resourcesnestedlist=x['aaData']
 	for obj in x:
 	    if('USA'==obj['Country'] and 'HEP-SPEC06' == obj['PledgeUnit']):

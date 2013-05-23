@@ -1493,7 +1493,7 @@
             <input name="vo" kind="sql"> .* </input>
             <input name="role" kind="sql"> .* </input>
             <input name="exclude-role" kind="sql"> NONE </input>
-            <input name="exclude-vo" kind="sql"> unknown|other </input>
+            <input name="exclude-vo" kind="sql"> Unknown|unknown|other </input>
             <input name="exclude-user" kind="sql"> NONE </input>
             <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
         </inputs>
