@@ -27,14 +27,14 @@ class GratiaReporter(Authenticate):
         info = {\
             'starttime': starttime.strftime('%Y-%m-%d %H:%M:%S'),
             'endtime':   endtime.  strftime('%Y-%m-%d %H:%M:%S'),
-            'exclude-vo': 'unknown',
+            'exclude-vo': 'Unknown',
         }
         starttime, endtime, _, _, _ = self._gratia_get_times(oday,
             omonth, oyear, length=7, offset=1)
         info2 = {\
             'starttime': starttime.strftime('%Y-%m-%d %H:%M:%S'),
             'endtime':   endtime.  strftime('%Y-%m-%d %H:%M:%S'),
-            'exclude-vo': 'unknown',
+            'exclude-vo': 'Unknown',
         }
 
         site_report_daily = self.globals['GratiaDataQueries'].\

@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -36,7 +36,7 @@ Requires:	gratia-probe-services
 
 
 %description
-
+GratiaWeb installation package for web
 
 %prep
 %setup -q
@@ -80,6 +80,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue May 28 2013 William B Hurst <wbhurst@cse.unl.edu>
+- added gratia_reporting.py and jot_reporting.py changes
+- exclude-vo = 'Unknown' and kicked up release by one
 
 * Thu May 23 2013 William B Hurst <wbhurst@cse.unl.edu>
 - primarily modified code in response to GRATIA-108
