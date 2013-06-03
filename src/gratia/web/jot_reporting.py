@@ -183,7 +183,7 @@ class JOTReporter(Authenticate):
         return starttime, endtime, month, year
 
     def get_apel_data_jot_since201203(self, month, year):
-        apel_url = self.metadata.get('apel_url', 'http://gr7x3.fnal.gov:8880/gratia-data/interfaces/apel-lcg/%i-%02i.summary.dat'\
+        apel_url = self.metadata.get('apel_url', 'http://gr13x6.fnal.gov:8319/gratia-apel/%i-%02i.summary.dat'\
             % (year, month))
 
         apel_data = []

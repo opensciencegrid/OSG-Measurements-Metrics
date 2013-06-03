@@ -196,7 +196,7 @@ class WLCGReporter(Authenticate):
         return subclusters, time_list
 
     def get_apel_data_since201203(self, month, year):
-        apel_url = self.metadata.get('apel_url', 'http://gr7x3.fnal.gov:8880/gratia-data/interfaces/apel-lcg/%i-%02i.summary.dat'\
+        apel_url = self.metadata.get('apel_url', 'http://gr13x6.fnal.gov:8319/gratia-apel/%i-%02i.summary.dat'\
             % (year, month))
         usock = urllib2.urlopen(apel_url)
         data = usock.read()
