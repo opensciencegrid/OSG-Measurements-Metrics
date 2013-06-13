@@ -48,7 +48,7 @@
         drawTable(apel,apel_col_types, apel_display, apel_col_labels, "wlcg");
 
 
-          gip = [
+     /*     gip = [
           #if len($subclusters) > 0
             #set keys = sorted($subclusters.keys(), $getVar('key_sorter', '', False))
             #for key in keys
@@ -61,12 +61,10 @@
         gip_col_types={"Site":"string", "Cluster":"string", "Subcluster":"string", "Timestamp":"string", "Processor":"string", "Cores":"number", "HEPSPEC06":"string", "Ownership":"string"};
         gip_col_labels={"Site":"Site", "Cluster":"Cluster", "Subcluster":"Subcluster", "Timestamp":"Timestamp", "Processor":"Processor Model", "Cores":"Number of WN Cores", "HEPSPEC06":"HEPSPEC06 Score", "Ownership":"Ownership"};
         drawTable(gip,gip_col_types, gip_display, gip_col_labels, "gip");
+   */
 
 
-
-
-
-          sitenorm = [
+    /*      sitenorm = [
           #if len($site_norm) > 0
             #set keys = sorted($site_norm.keys(), $getVar('key_sorter', '', False))
             #for key in keys
@@ -80,8 +78,7 @@
         sitenorm_col_labels={"Site":"Site", "GIPNorm":"HEP-SPEC06 factor Calculated by the GIP", "WLCGNorm":"HEP-SPEC06 factor reported to WLCG", "Diff":"GIP Percent Difference"};
         drawTable(sitenorm,sitenorm_col_types, sitenorm_display, sitenorm_col_labels, "sitenorm");
 
- 
-
+    */ 
 
           cms = [
           #if len($pledge['cms']) > 0
@@ -95,15 +92,12 @@
             #end for
           #end if
           ];
-        cms_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "OwnedWCT", "wlcgWCT", "totalWCT", "delivered", "nonwlcg"];
-        cms_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "delivered":"number", "nonwlcg":"number"};
-        cms_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"$pledge_year HEP-SPEC06 Pledge", "Actual":"Measured HEP-SPEC06", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "OwnedWCT":"Norm Wall hours  for CMS", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "delivered":"Percent of WLCG goal achieved", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
+        cms_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "delivered", "OwnedWCT", "wlcgWCT", "totalWCT", "nonwlcg"];
+        cms_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "delivered":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "nonwlcg":"number"};
+        cms_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"Installed Capacity Pledge", "Actual":"Installed Capacity Reported", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "delivered":"Percent of WLCG goal achieved", "OwnedWCT":"Norm Wall hours  for CMS", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
         drawTable(cms,cms_col_types, cms_display, cms_col_labels, "cms");
 
  
-
-
-
 
           atlas = [
           #if len($pledge['atlas']) > 0
@@ -117,11 +111,10 @@
             #end for
           #end if
           ];
-        atlas_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "OwnedWCT", "wlcgWCT", "totalWCT", "delivered", "nonwlcg"];
-        atlas_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "delivered":"number", "nonwlcg":"number"};
-        atlas_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"$pledge_year HEP-SPEC06 Pledge", "Actual":"Measured HEP-SPEC06", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "OwnedWCT":"Norm Wall hours  for ATLAS", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "delivered":"Percent of WLCG goal achieved", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
+        atlas_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "delivered", "OwnedWCT", "wlcgWCT", "totalWCT", "nonwlcg"];
+        atlas_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "delivered":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "nonwlcg":"number"};
+        atlas_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"Installed Capacity Pledge", "Actual":"Installed Capacity Reported", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "delivered":"Percent of WLCG goal achieved", "OwnedWCT":"Norm Wall hours  for ATLAS", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
         drawTable(atlas,atlas_col_types, atlas_display, atlas_col_labels, "atlas");
-
 
 
           alice= [
@@ -136,14 +129,13 @@
             #end for
           #end if
           ];
-        alice_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "OwnedWCT", "wlcgWCT", "totalWCT", "delivered", "nonwlcg"];
-        alice_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "delivered":"number", "nonwlcg":"number"};
-        alice_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"$pledge_year HEP-SPEC06 Pledge", "Actual":"Measured HEP-SPEC06", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "OwnedWCT":"Norm Wall hours  for ALICE", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "delivered":"Percent of WLCG goal achieved", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
+        alice_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "delivered", "OwnedWCT", "wlcgWCT", "totalWCT", "nonwlcg"];
+        alice_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "delivered":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "nonwlcg":"number"};
+        alice_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"Installed Capacity Pledge", "Actual":"Installed Capacity Reported", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "delivered":"Percent of WLCG goal achieved", "OwnedWCT":"Norm Wall hours  for ALICE", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
         drawTable(alice,alice_col_types, alice_display, alice_col_labels, "alice");
 
 
-
-          summary= [
+     /*     summary= [
           #if len($summary) > 0
             #set keys = sorted($summary.keys(), $getVar('key_sorter', '', False))
             #for key in keys
@@ -156,6 +148,7 @@
         summary_col_types={"Site":"string", "WLCGAccounting":"string", "Subclusters":"number"};
         summary_col_labels={"Site":"OSG Site name", "WLCGAccounting":"WLCG Accounting Site", "Subclusters":"Number of GIP Subclusters"};
         drawTable(summary,summary_col_types, summary_display, summary_col_labels, "summary");
+     */
 
       }
 
@@ -195,9 +188,11 @@
     <li><a href="#wlcg">Per-site WLCG Accounting Summary</a></li>
     <li><a href="#atlas">USATLAS T2 WLCG Accounting Data</a></li>
     <li><a href="#cms">USCMS T2 WLCG Accounting Data</a></li>
+ <!--   
     <li><a href="#gip">GIP Subcluster Summary</a></li>
     <li><a href="#sitenorm">Site Normalization Factors</a></li>
     <li><a href="#summary">Available Data Summary</a></li>
+    -->
 </ul>
 
 
@@ -238,11 +233,11 @@
 <hr/>
 
 <h1>WLCG Pledge Information</h1>
-<p>Each WLCG site has pledged a certain amount of HEP-SPEC06 for their site; in this section, we compare the amount of pledged HEP-SPEC06 CPU hours to this month's accounting data.  The accounting data is measured in HEP-SPEC06-hours, which is the number of hours recorded by the accounting system multiplied by the site normalization factor (shown above).  We show data using both CPU hours and Wall (elapsed) hours.  Each WLCG site should attempt to hit this month's goal, which is the HEP-SPEC06 pledge amount times the number of hours in the month times a CPU efficiency factor.  The CPU efficiency factor is currently 60%.
+<p>Each WLCG site has pledged a certain amount of HEP-SPEC06 for their site; in this section, we compare the amount of pledged HEP-SPEC06 CPU hours to this month's accounting data.  The accounting data is measured in HEP-SPEC06-hours, which is the number of hours recorded by the accounting system multiplied by the site normalization factor (shown above).  We show data using both CPU hours and Wall (elapsed) hours.  Each WLCG site should attempt to hit this month's goal, which is the HEP-SPEC06 pledge amount times the number of hours in the month times a CPU efficiency factor.  The CPU efficiency factor is currently 70%.
   The table below shows:
 <ul>
   <li><strong>$pledge_year HEP-SPEC06 Pledge:</strong> $pledge_year HEP-SPEC06 pledge in the WLCG MoU</li>
-  <li><strong>Month goal of CPU hours:</strong> The corresponding number of CPU hours which should be achieved this month (assumes a CPU efficiency of 60% from the pledged amount).</li>
+  <li><strong>Month goal of CPU hours:</strong> The corresponding number of CPU hours which should be achieved this month (assumes a CPU efficiency of 70% from the pledged amount).</li>
   <li><strong>Normalized CPU hours for all WLCG</strong> The number of normalized CPU hours contributed to all WLCG VOs (atlas, cms, alice, lhcb).</li>
   <li><strong>Measured HEP-SPEC06</strong> The measured HEP-SPEC06 size from the GIP using (4*&Sigma;si2k*cores)/1000
 
@@ -267,6 +262,8 @@ known as "T2_US_Nebraska" to the WLCG, or AGLT2 is "US-AGLT2".
 
 <br/>
 <hr/>
+
+<!--
 <h1>GIP Subcluster Information</h1>
 
 <p>In order to generate an accurate HEP-SPEC06 factor, the site must 
@@ -289,6 +286,7 @@ known as "T2_US_Nebraska" to the WLCG, or AGLT2 is "US-AGLT2".
 </p>
 <p> The lookup table for CPU normalization <a href="$base_url/cpu_normalization">is posted here</a>.
 </p>
+
 <p>The table below shows the GIP-recorded subcluster information for each site.
 <strong>HEPSPEC Score with prefixed with '*' is calculated based on kSI2K constant</strong> 
 </p>
@@ -316,6 +314,6 @@ known as "T2_US_Nebraska" to the WLCG, or AGLT2 is "US-AGLT2".
    both of these missing.
 </p>
 <div id="summary"></div>
-
+-->
 #end if
 

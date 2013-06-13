@@ -1178,7 +1178,7 @@
       </inputs>
         <sql>
             <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
-            <filler name="group"> COALESCE(UPPER(PNC.ReportableProjectName), "UNKNOWN"), S.SiteName </filler>
+            <filler name="group"> COALESCE(UPPER(PNC.ReportableProjectName), "UNKNOWN"), R.HostDescription </filler>
             <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
             <filler name="where"> AND WallDuration > 0 AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
         </sql>
