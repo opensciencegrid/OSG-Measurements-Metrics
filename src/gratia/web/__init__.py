@@ -10,6 +10,9 @@ import calendar
 import datetime
 import cStringIO
 import time
+# added imports - wbh
+import sets
+import copy
 
 import cherrypy
 from xml.dom.minidom import parse
@@ -87,6 +90,11 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         for arg in args:
             if arg in from_dict and from_dict[arg] != '':
                 to_dict[arg] = from_dict[arg]
+
+    # define 'Not Contains Regex' - wbh
+    def NotContainsRegex(self, str=''):
+        regset = frozenset(['\.','\*','\|','\?','\^','\$','\(','\)','\[','\]'])
+        return 1 in [c not in str for c in regset]
 
     def refine(self, data, filter_dict, facility=True, vo=True, dn=True,\
             hours=True, default_rel_range=14*86400, probe=False):
@@ -171,6 +179,17 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
             except:
                 raise ValueError("Unknown facility set: %s." % \
                     filter_dict['facility_set'])
+
+        # added following 'facility' test section - 2013Jul08 - wbh
+        # change request: GratiaWeb-35
+        if len(filter_dict.get('facility', '')) != 0:
+            testString = "%s" % filter_dict['facility']
+            print "testString: %s" % testString
+            if self.NotContainsRegex(testString):
+                filter_dict['facility'] = '^%s' % testString
+            else:
+                pass
+
         if len(filter_dict.get('vo', '')) == 0 and 'vo_set' in \
                 filter_dict:
             try:
@@ -179,6 +198,17 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
             except:
                 raise ValueError("Unknown VO set: %s." % \
                     filter_dict['vo_set'])
+
+        # added following 'vo' test section - 2013Jul08 - wbh
+        # change request: GratiaWeb-35
+        if len(filter_dict.get('vo', '')) != 0:
+            testString = "%s" % filter_dict['vo']
+            print "testString: %s" % testString
+            if self.NotContainsRegex(testString):
+                filter_dict['vo'] = '^%s' % testString
+            else:
+                pass
+
         data['query_kw'] = dict(filter_dict)
 
         if 'starttime' not in filter_dict:
