@@ -3,9 +3,11 @@ import urllib
 
 from graphtool.base.xml_config import XmlConfig
 from template import Template
+
 from auth import Authenticate
 
 class Navigation(Authenticate, Template):
+#class Navigation(Template):
 
     def parse_dom(self):
         super(Navigation, self).parse_dom()
@@ -49,8 +51,9 @@ class Navigation(Authenticate, Template):
     def gridNav(self, data):
         info = {"Accounting By Site": "bysite",
                 "Accounting By VO":   "byvo",
-                "Monitoring By Site": "monbysite",
-                "Monitoring By VO":   "monbyvo",
+                # GratiaWeb-39 Disable Monitoring Pages - 2013Jul09 wbh
+                #"Monitoring By Site": "monbysite",
+                #"Monitoring By VO":   "monbyvo",
                 "Opportunistic Usage": "vo_opp",
                }
         data['navigation']['Grid-wide'] = info
@@ -59,14 +62,16 @@ class Navigation(Authenticate, Template):
         info = {}
         info['Pilot Accounting']  = "pilot"
         info['Project Accounting']  = "project"
-        info['GlideinWMS Monitoring']  = "factoryfrontend"
+        # GratiaWeb-39 Disable Monitoring Pages - 2013Jul09 wbh
+        #info['GlideinWMS Monitoring']  = "factoryfrontend"
         data['navigation']['Pilot'] = info
 
     def campusNav(self, data):
         info = {}
         info['Campus Accounting']  = "campus"
         info['Project Accounting']  = "project"
-        info['GlideinWMS Monitoring']  = "factoryfrontend"
+        # GratiaWeb-39 Disable Monitoring Pages - 2013Jul09 wbh
+        #info['GlideinWMS Monitoring']  = "factoryfrontend"
         data['navigation']['Campus'] = info
 
     def otherNav(self, data):

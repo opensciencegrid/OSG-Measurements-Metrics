@@ -23,6 +23,7 @@ from graphtool.graphs.basic import BasicStackedBar
 from gratia.database.query_handler import displayName
 from gratia.graphs.gratia_graphs import GratiaBar
 from image_map import ImageMap
+
 from auth import Authenticate
 from navigate import Navigation
 from wlcg_reporting import WLCGReporter
@@ -512,6 +513,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
             'status_vo_waiting_pie', 'site', 'facility')
 
         self.finish_image_maps(token)
+
         if data['is_authenticated']:
             data['title'] = "OSG Monitoring Information By VO for %s" % \
                 data['name']
