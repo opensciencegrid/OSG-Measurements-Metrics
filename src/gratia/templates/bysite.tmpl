@@ -8,12 +8,13 @@
     <h1>OSG Job Accounting Information By Site</h1>
 
 <!-- Unauthenticated user view -->
+<!-- GratiaWeb-38 Disable Authentication Warnings - 2013Jul11 wbhurst
 #if not $is_authenticated
     <p>You are not authenticated!  In order to be able to access a broader set
        of information, <a href="$base_server$base_url">click here</a>.
     </p>
 #end if
-
+-->
 #if $is_authenticated
     <p>Welcome, $name, to the OSG metrics page</p>
     <p>For more options, refer to the menus on the right.</p>

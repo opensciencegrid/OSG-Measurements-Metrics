@@ -8,12 +8,14 @@
     <h1>OSG Storage</h1>
 
 <!-- Unauthenticated user view -->
-#if not $is_authenticated
+<!-- GratiaWeb-38 Disable Authentication Warnings - 2013Jul11 - wbh
+  #if not $is_authenticated
     <p> This is the central page for viewing storage activity on the OSG. </p>
     <p> This page is designed for active users, managers, and site admins
         on the OSG.  To get a broader overview, <a href="$base_url/overview">click here</a>
     </p>
-#end if
+  #end if
+-->
 
 <!-- Common, grid-wide view. -->
 
@@ -57,7 +59,8 @@
 #include $refine
 
 <!-- Note for unauthenticated users -->
-#if not $is_authenticated
+<!-- GratiaWeb-38 Disable Authentication Warnings - 2013Jul11 - wbh
+  #if not $is_authenticated
   <p> If you were authenticated, you would have additional options, including:
   </p>
   <ul>
@@ -65,7 +68,8 @@
     <li>Activity from users in your VO (for VO owners)</li>
     <li>Activity from users at your site (for site admins)</li>
   </ul>
-#end if
+  #end if
+-->
 
 <!-- Authenticated user actions -->
 #if $is_authenticated
