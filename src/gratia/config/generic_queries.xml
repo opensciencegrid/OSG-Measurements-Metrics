@@ -714,7 +714,11 @@
         <input name="facility" kind="sql"> .* </input>
         <input name="protocol" kind="sql"> .* </input>
         <input name="vo" kind="sql"> .* </input>
-        <input name="exclude-vo" kind="sql"> Unknown|unknown|other </input>
+        <!-- GOC ticket 15719: Unable to retrieve transfer data USCMS-FNAL-WC1-SE <Tiradani>
+             2013Jul12 wbhurst: modified the following line:
+             <input name="exclude-vo" kind="sql"> Unknown|unknown|other </input> 
+             -->
+        <input name="exclude-vo" kind="sql"> other </input>
         <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
       </inputs>
       <sql>
