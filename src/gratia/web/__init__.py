@@ -94,8 +94,10 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
 
     # define 'Not Contains Regex' - wbh
     def NotContainsRegex(self, str=''):
-        regset = frozenset(['\.','\*','\|','\?','\^','\$','\(','\)','\[','\]'])
-        return 1 in [c not in str for c in regset]
+        regset = frozenset(['.','*','|','?','^','$','(',')','[',']'])
+        for c in regset:
+            if c in str: return False
+        return True
 
     def refine(self, data, filter_dict, facility=True, vo=True, dn=True,\
             hours=True, default_rel_range=14*86400, probe=False):
@@ -187,7 +189,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
             testString = "%s" % filter_dict['facility']
             print "testString: %s" % testString
             if self.NotContainsRegex(testString):
-                filter_dict['facility'] = '^%s' % testString
+                filter_dict['facility'] = '^%s$' % testString
             else:
                 pass
 
@@ -206,7 +208,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
             testString = "%s" % filter_dict['vo']
             print "testString: %s" % testString
             if self.NotContainsRegex(testString):
-                filter_dict['vo'] = '^%s' % testString
+                filter_dict['facility'] = '^%s$' % testString
             else:
                 pass
 
