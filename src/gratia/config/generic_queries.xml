@@ -662,7 +662,8 @@
         <input name="facility" kind="sql"> .* </input>
         <input name="protocol" kind="sql"> .* </input>
         <input name="vo" kind="sql"> .* </input>
-        <input name="exclude-vo" kind="sql"> Unknown|unknown|other </input>
+        <!-- GOC ticket 15713 (BNL disappears): removed 'Unknown|unknown' from next line -->
+        <input name="exclude-vo" kind="sql"> other </input>
         <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
       </inputs>
       <sql>
@@ -772,7 +773,8 @@
         <input name="endtime" partial="up" type="datetime" kind="sql">time.time()</input>
         <input name="facility" kind="sql"> Unknown </input>
         <input name="vo" kind="sql"> .* </input>
-        <input name="exclude-vo" kind="sql"> Unknown|unknown|other </input>
+        <!-- GOC ticket 15713 (BNL disappears): removed 'Unknown|unknown' from next line -->
+        <input name="exclude-vo" kind="sql"> other </input>
         <input name="user" kind="sql"> .* </input>
         <input name="exclude-dn" kind="sql"> NONE </input>
         <input name="limit" type="int" kind="sql"> 20 </input>
@@ -816,7 +818,8 @@
         <input name="endtime" partial="up" type="datetime" kind="sql">time.time()</input>
         <input name="facility" kind="sql"> Unknown </input>
         <input name="vo" kind="sql"> .* </input>
-        <input name="exclude-vo" kind="sql"> Unknown|unknown|other </input>
+        <!-- GOC ticket 15713 (BNL disappears): removed 'Unknown|unknown' from next line -->
+        <input name="exclude-vo" kind="sql"> other </input>
         <input name="user" kind="sql"> .* </input>
       </inputs>
       <sql>
