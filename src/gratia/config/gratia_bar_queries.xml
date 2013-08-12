@@ -1187,7 +1187,7 @@
                 <input name="pivots"> 0,1 </input>
                 <input name="grouping"> 2 </input>
                 <input name="results"> 3 </input>
-                <input name="pivot_transform">displayNameSite</input>
+                <input name="pivot_transform">displayNameCommaSite</input>
             </inputs>
         </results>
         <attribute name="pivot_name">UPPER(ReportableProjectName)</attribute> 
