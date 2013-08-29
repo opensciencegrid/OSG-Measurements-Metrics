@@ -208,7 +208,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
             testString = "%s" % filter_dict['vo']
             print "testString: %s" % testString
             if self.NotContainsRegex(testString):
-                filter_dict['facility'] = '^%s$' % testString
+                filter_dict['vo_set'] = '^%s$' % testString
             else:
                 pass
 
