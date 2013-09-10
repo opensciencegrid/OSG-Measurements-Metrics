@@ -1171,7 +1171,7 @@
     </query>
 
 
-    <query name="project_site_hours_bar" base="GratiaGenericQuery.master_summary">
+    <query name="project_site_hours_bar" base="GratiaGenericQuery.glidein_master_summary">
       <inputs>
           <input name="resource-type" kind="sql"> BatchPilot </input>
           <input name="exclude-projectname" kind="sql"> unknown|other </input>
