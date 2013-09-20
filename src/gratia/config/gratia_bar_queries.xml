@@ -51,6 +51,34 @@
       <attribute name="graph_type"> GratiaStackedBar </attribute>
     </query>
 
+
+    <query name="project_fos_job_cnt" base="GratiaGenericQuery.master_summary">
+      <inputs>
+          <input name="resource-type" kind="sql"> BatchPilot </input>
+          <input name="projectname" kind="sql"> .* </input>
+          <input name="exclude-projectname" kind="sql"> unknown|other </input>
+      </inputs>
+      <sql>
+        <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
+        <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
+        <filler name="column"> sum(Njobs) </filler>
+        <filler name="where"> AND PNC.ReportableProjectName regexp :projectname 
+			      AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
+	</filler>
+      </sql>
+      <results>
+        <inputs>
+          <input name="pivot_transform">oim_fos_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+      <attribute name="pivot_name">fos</attribute>
+      <attribute name="title"> Job Count by Project - Field of Science</attribute>
+      <attribute name="column_names"> Number of Jobs </attribute>
+      <attribute name="column_units"/>
+      <attribute name="graph_type"> GratiaStackedBar </attribute>
+    </query>
+
     <query name="vo_job_cnt" base="GratiaGenericQuery.master_summary">
       <sql>
         <filler name="group"> VO.VOName </filler>

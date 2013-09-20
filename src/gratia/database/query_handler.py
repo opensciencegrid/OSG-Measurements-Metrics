@@ -6,6 +6,8 @@ import copy
 import urllib2
 import datetime
 import xml.dom.minidom
+from urllib import urlopen
+from lxml import etree
 
 from graphtool.database.query_handler import results_parser, simple_results_parser, pivot_group_parser_plus
 from graphtool.tools.common import convert_to_datetime
@@ -212,6 +214,65 @@ class OimResourceFilter(PeriodicUpdater):
         return pivot
 
 oim_resource_filter = OimResourceFilter()
+
+class OimFosFilter(PeriodicUpdater):
+
+    def __init__(self):
+        self.url = "http://myosg.grid.iu.edu/miscproject/xml?count_sg_1&count_active="\
+            "on&count_enabled=on"
+        super(OimFosFilter, self).__init__(self.url)
+
+    def parse(self, results):
+        dom = xml.dom.minidom.parseString(results)
+        id_to_name = {}
+        id_to_fos = {}
+        fos_to_id = {}
+        name_to_id = {}
+        for p_dom in dom.getElementsByTagName("Project"):
+          try: 
+              p_id = str(p_dom.getElementsByTagName("ID")[0].\
+                              firstChild.data)
+          except:
+              continue
+          print p_id
+          try: 
+              pname = str(p_dom.getElementsByTagName("Name")[0].\
+                              firstChild.data)
+          except:
+              continue
+          print pname
+          id_to_name[p_id] = pname
+          name_to_id[pname] = p_id
+          try: 
+              fosname = str(p_dom.getElementsByTagName("FieldOfScience")[0].\
+                                firstChild.data)
+          except:
+              continue
+          print fosname
+          id_to_fos[p_id] = fosname
+          fos_to_id[fosname] = p_id
+        return id_to_name, name_to_id, id_to_fos, fos_to_id
+
+    def __call__(self, *pivot, **kw):
+        pivot = pivot[0]
+        id_to_name, name_to_id, id_to_fos, fos_to_id = self.results()
+        preference = kw.get('projectname', 'projid')
+        if preference == 'projectname':
+            if pivot in id_to_name:
+                return pivot
+            return name_to_id.get(pivot, pivot)
+        if preference == 'projid':
+            return id_to_name.get(pivot, pivot)
+        if preference == 'fos':
+            if pivot in id_to_name:
+                projid = pivot
+            else:
+                projid = name_to_id.get(pivot, pivot)
+                #print id_to_fos
+            return id_to_fos.get(projid, None)
+        return pivot
+
+oim_fos_filter = OimFosFilter()
 
 class OimScienceFilter(PeriodicUpdater):
 

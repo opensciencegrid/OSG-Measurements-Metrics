@@ -821,6 +821,23 @@ where Timestamp &gt;=:errorstart AND Timestamp &lt; :errorstart + INTERVAL :span
       <attribute name="title">VO Field of Science</attribute>
     </query>
 
+    <query name="field_of_science_list">
+      <sql>
+	SELECT distinct fos.id, 
+	                fos.name 
+	  from oim.field_of_science as fos
+      </sql>
+      <results module="graphtool.database.query_handler" function="simple_results_parser">
+	<inputs>
+          <input name="pivots"> 0 </input>
+          <input name="results"> 1 </input>
+	</inputs>
+      </results>
+      <attribute name="pivot_name">ID</attribute>
+      <attribute name="column_names">Field of Science</attribute>
+      <attribute name="title">Field of Science List</attribute>
+    </query>
+
   </class>
 
 </graphtool-config>
