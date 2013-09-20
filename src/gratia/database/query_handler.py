@@ -224,52 +224,41 @@ class OimFosFilter(PeriodicUpdater):
 
     def parse(self, results):
         dom = xml.dom.minidom.parseString(results)
-        id_to_name = {}
-        id_to_fos = {}
-        fos_to_id = {}
-        name_to_id = {}
+        name_to_fos = {}
+        fos_to_name = {}
         for p_dom in dom.getElementsByTagName("Project"):
           try: 
-              p_id = str(p_dom.getElementsByTagName("ID")[0].\
+              pname_s = str(p_dom.getElementsByTagName("Name")[0].\
                               firstChild.data)
           except:
               continue
-          print p_id
-          try: 
-              pname = str(p_dom.getElementsByTagName("Name")[0].\
-                              firstChild.data)
-          except:
-              continue
-          print pname
-          id_to_name[p_id] = pname
-          name_to_id[pname] = p_id
+          pname = pname_s.upper()
+          print "pname: %s" % pname
           try: 
               fosname = str(p_dom.getElementsByTagName("FieldOfScience")[0].\
                                 firstChild.data)
           except:
               continue
-          print fosname
-          id_to_fos[p_id] = fosname
-          fos_to_id[fosname] = p_id
-        return id_to_name, name_to_id, id_to_fos, fos_to_id
+          print "fosname: %s" % fosname
+          name_to_fos[pname] = fosname
+          fos_to_name[fosname] = pname
+        return name_to_fos, fos_to_name
 
     def __call__(self, *pivot, **kw):
         pivot = pivot[0]
-        id_to_name, name_to_id, id_to_fos, fos_to_id = self.results()
-        preference = kw.get('projectname', 'projid')
+        name_to_fos, fos_to_name = self.results()
+        preference = kw.get('projectname', 'fieldofscience')
         if preference == 'projectname':
-            if pivot in id_to_name:
-                return pivot
-            return name_to_id.get(pivot, pivot)
-        if preference == 'projid':
-            return id_to_name.get(pivot, pivot)
-        if preference == 'fos':
-            if pivot in id_to_name:
-                projid = pivot
+            if pivot in fos_to_name:
+                return fos_to_name.get(pivot, pivot)
+        if preference == 'fieldofscience':
+            if pivot in name_to_fos:
+                projectname = pivot
             else:
-                projid = name_to_id.get(pivot, pivot)
-                #print id_to_fos
-            return id_to_fos.get(projid, None)
+                print "--------------------------------"
+                print "projectname is UNCLASSIFIED"
+                print "--------------------------------"
+            return name_to_fos.get(projectname, None)
         return pivot
 
 oim_fos_filter = OimFosFilter()

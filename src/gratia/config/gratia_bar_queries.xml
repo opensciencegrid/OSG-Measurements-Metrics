@@ -51,7 +51,6 @@
       <attribute name="graph_type"> GratiaStackedBar </attribute>
     </query>
 
-
     <query name="project_fos_job_cnt" base="GratiaGenericQuery.master_summary">
       <inputs>
           <input name="resource-type" kind="sql"> BatchPilot </input>
@@ -68,12 +67,15 @@
       </sql>
       <results>
         <inputs>
-          <input name="pivot_transform">oim_fos_filter</input>
-          <input name="grouping_transform">make_int</input>
+          <input name="pivot_transform"> oim_fos_filter </input>
+          <input name="grouping_transform"> make_int </input>
+          <input name="pivots"> 0 </input>
+          <input name="grouping"> 1 </input>
+          <input name="results"> 2 </input>
         </inputs>
       </results>
-      <attribute name="pivot_name">fos</attribute>
-      <attribute name="title"> Job Count by Project - Field of Science</attribute>
+      <attribute name="pivot_name"> fieldofscience </attribute>
+      <attribute name="title"> Job Count by Project - Field of Science </attribute>
       <attribute name="column_names"> Number of Jobs </attribute>
       <attribute name="column_units"/>
       <attribute name="graph_type"> GratiaStackedBar </attribute>
