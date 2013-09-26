@@ -6,8 +6,11 @@ import copy
 import urllib2
 import datetime
 import xml.dom.minidom
-from urllib import urlopen
-from lxml import etree
+from collections import defaultdict
+from collections import namedtuple
+from collections import Set
+from operator import itemgetter
+from itertools import groupby
 
 from graphtool.database.query_handler import results_parser, simple_results_parser, pivot_group_parser_plus
 from graphtool.tools.common import convert_to_datetime
@@ -216,6 +219,7 @@ class OimResourceFilter(PeriodicUpdater):
 oim_resource_filter = OimResourceFilter()
 
 class OimFosFilter(PeriodicUpdater):
+    """ Adds a 'Field Of Science' value to query results """
 
     def __init__(self):
         self.url = "http://myosg.grid.iu.edu/miscproject/xml?count_sg_1&count_active="\
@@ -225,41 +229,40 @@ class OimFosFilter(PeriodicUpdater):
     def parse(self, results):
         dom = xml.dom.minidom.parseString(results)
         name_to_fos = {}
-        fos_to_name = {}
         for p_dom in dom.getElementsByTagName("Project"):
           try: 
               pname_s = str(p_dom.getElementsByTagName("Name")[0].\
                               firstChild.data)
+              fos_dom_list = p_dom.getElementsByName("FieldOfScience")
           except:
               continue
           pname = pname_s.upper()
-          print "pname: %s" % pname
-          try: 
-              fosname = str(p_dom.getElementsByTagName("FieldOfScience")[0].\
-                                firstChild.data)
-          except:
-              continue
-          print "fosname: %s" % fosname
-          name_to_fos[pname] = fosname
-          fos_to_name[fosname] = pname
-        return name_to_fos, fos_to_name
+          print "OimFosFilter: pname: %s" % pname
+          fos_list = []
+          for fos_dom in fos_dom_list:
+              try: 
+                  fos = str(fos_dom.firstChild.data)
+                  fos_list.append(fos)
+              except:
+                  continue
+          print "OimFosFilter: fos_list: %s" % fos_list
+          name_to_fos[pname] = fos_list
+        return name_to_fos
 
     def __call__(self, *pivot, **kw):
-        pivot = pivot[0]
-        name_to_fos, fos_to_name = self.results()
-        preference = kw.get('projectname', 'fieldofscience')
-        if preference == 'projectname':
-            if pivot in fos_to_name:
-                return fos_to_name.get(pivot, pivot)
-        if preference == 'fieldofscience':
-            if pivot in name_to_fos:
-                projectname = pivot
+        name_to_fos = self.results()
+        thisrow = pivot
+        l_row = list(thisrow)
+        projectname = kw.get('ReportableProjectName', None)
+        if projectname is not None:
+            if name_to_fos.has_key(projectname):
+                l_row.append(name_to_fos[projectname])
+                thisrow = tuple(l_row)
             else:
-                print "--------------------------------"
-                print "projectname is UNCLASSIFIED"
-                print "--------------------------------"
-            return name_to_fos.get(projectname, None)
-        return pivot
+                print "OimFosFilter: name_to_fos.has_keys(): '%s' NOT FOUND" % projectname
+        else:
+            print "OimFosFilter: kw: ReportableProjectName: '%s' NOT FOUND" % projectname
+        return thisrow
 
 oim_fos_filter = OimFosFilter()
 
@@ -269,6 +272,7 @@ class OimScienceFilter(PeriodicUpdater):
         self.url = 'http://myosg.grid.iu.edu/vosummary/xml?datasource=summary' \
             '&summary_attrs_showfield_of_science=on&all_vos=on&' \
             'show_disabled=on&active_value=1'
+
         super(OimScienceFilter, self).__init__(self.url)
 
     def parse(self, results):
@@ -284,7 +288,7 @@ class OimScienceFilter(PeriodicUpdater):
             for field_dom in field_dom_list:
                 try:
                     field = str(field_dom.firstChild.data)
-                    field_set = vo_to_fields.setdefault(vo_name, sets.Set())
+                    field_set = vo_to_fields.setdefault(vo_name, collections.Set())
                     field_set.add(field)
                 except:
                     continue
