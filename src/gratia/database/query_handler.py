@@ -229,40 +229,49 @@ class OimFosFilter(PeriodicUpdater):
     def parse(self, results):
         dom = xml.dom.minidom.parseString(results)
         name_to_fos = {}
+        fos_to_name = {}
         for p_dom in dom.getElementsByTagName("Project"):
           try: 
               pname_s = str(p_dom.getElementsByTagName("Name")[0].\
                               firstChild.data)
-              fos_dom_list = p_dom.getElementsByName("FieldOfScience")
+              if not re.match("^OSG-", pname_s):
+                  pname_u = pname_s.strip()
+                  pname = pname_u.upper()
+                  print "OimFosFilter: pname: %s" % pname
           except:
               continue
-          pname = pname_s.upper()
-          print "OimFosFilter: pname: %s" % pname
-          fos_list = []
-          for fos_dom in fos_dom_list:
-              try: 
-                  fos = str(fos_dom.firstChild.data)
-                  fos_list.append(fos)
-              except:
-                  continue
-          print "OimFosFilter: fos_list: %s" % fos_list
-          name_to_fos[pname] = fos_list
-        return name_to_fos
+          try: 
+              fos = str(p_dom.getElementsByTagName("FieldOfScience")[0].\
+                              firstChild.data)
+              print "OimFosFilter: fos: %s" % fos
+          except:
+              continue
+          name_to_fos[pname] = fos
+          fos_to_name[fos] = pname
+        return name_to_fos, fos_to_name
 
     def __call__(self, *pivot, **kw):
-        name_to_fos = self.results()
-        thisrow = pivot
-        l_row = list(thisrow)
-        projectname = kw.get('ReportableProjectName', None)
-        if projectname is not None:
-            if name_to_fos.has_key(projectname):
-                l_row.append(name_to_fos[projectname])
-                thisrow = tuple(l_row)
+        name_to_fos, fos_to_name = self.results()
+        firstRow = pivot
+        l_row = list(firstRow)
+        fos = "UNCLASSIFIED"
+        for arg in firstRow:
+            proj_name = arg
+            print "proj_name: ", proj_name
+        pos = l_row.index(proj_name)
+        #print "index pos: ", pos
+        if proj_name is not None:
+            if name_to_fos.has_key(proj_name):
+                fos = name_to_fos.get(proj_name,"UNCLASSIFIED")
+                print "fos: ", fos
             else:
-                print "OimFosFilter: name_to_fos.has_keys(): '%s' NOT FOUND" % projectname
+                print "OimFosFilter: name_to_fos.has_keys(): '%s' NOT FOUND" % proj_name
         else:
-            print "OimFosFilter: kw: ReportableProjectName: '%s' NOT FOUND" % projectname
-        return thisrow
+            print "OimFosFilter: proj_name: '%s' NOT FOUND" % proj_name
+        l_row.remove(proj_name)
+        l_row.insert(pos,fos)
+        returnRow = tuple(l_row)
+        return returnRow
 
 oim_fos_filter = OimFosFilter()
 

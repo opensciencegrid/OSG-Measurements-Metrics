@@ -72,10 +72,10 @@
         </inputs>
       </results>
       <attribute name="title"> Job Count by Project - Field of Science </attribute>
-      <attribute name="pivot_name"> fieldofscience </attribute>
-      <attribute name="grouping_name"> fieldofscience </attribute>
+      <attribute name="pivot_name"> FieldOfScience </attribute>
+      <attribute name="grouping_name"> Time </attribute>
       <attribute name="column_names"> Number of Jobs </attribute>
-      <attribute name="column_units"> Count </attribute>
+      <attribute name="column_units"/>
       <attribute name="graph_type"> GratiaStackedBar </attribute>
     </query>
 
