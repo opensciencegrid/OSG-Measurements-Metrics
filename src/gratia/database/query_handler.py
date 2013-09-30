@@ -6,11 +6,11 @@ import copy
 import urllib2
 import datetime
 import xml.dom.minidom
-from collections import defaultdict
-from collections import namedtuple
-from collections import Set
-from operator import itemgetter
-from itertools import groupby
+#from collections import defaultdict
+#from collections import namedtuple
+#from collections import Set
+#from operator import itemgetter
+#from itertools import groupby
 
 from graphtool.database.query_handler import results_parser, simple_results_parser, pivot_group_parser_plus
 from graphtool.tools.common import convert_to_datetime
@@ -255,9 +255,8 @@ class OimFosFilter(PeriodicUpdater):
         firstRow = pivot
         l_row = list(firstRow)
         fos = "UNCLASSIFIED"
-        for arg in firstRow:
-            proj_name = arg
-            print "proj_name: ", proj_name
+        proj_name = firstRow[0]
+        print "proj_name: ", proj_name
         pos = l_row.index(proj_name)
         #print "index pos: ", pos
         if proj_name is not None:

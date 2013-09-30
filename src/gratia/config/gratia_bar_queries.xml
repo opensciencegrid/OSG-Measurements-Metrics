@@ -53,30 +53,30 @@
 
     <query name="project_fos_job_cnt" base="GratiaGenericQuery.master_summary">
       <inputs>
-          <input name="resource-type" kind="sql"> BatchPilot </input>
-          <input name="projectname" kind="sql"> .* </input>
-          <input name="exclude-projectname" kind="sql"> unknown|other </input>
+        <input name="resource-type" kind="sql"> BatchPilot </input>
+        <input name="projectname" kind="sql"> .* </input>
+        <input name="exclude-projectname" kind="sql"> unknown|other </input>
       </inputs>
       <sql>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
         <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
         <filler name="column"> sum(Njobs) </filler>
         <filler name="where"> AND PNC.ReportableProjectName regexp :projectname 
-			      AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
+	                      AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
 	</filler>
       </sql>
-      <results>
-        <inputs>
-          <input name="pivot_transform"> oim_fos_filter </input>
-          <input name="grouping_transform"> make_int </input>
-        </inputs>
-      </results>
-      <attribute name="title"> Job Count by Project - Field of Science </attribute>
-      <attribute name="pivot_name"> FieldOfScience </attribute>
-      <attribute name="grouping_name"> Time </attribute>
-      <attribute name="column_names"> Number of Jobs </attribute>
+      <attribute name="title">Job Count by Field of Science</attribute>
+      <attribute name="pivot_name">FieldOfScience</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Number of Jobs</attribute>
       <attribute name="column_units"/>
       <attribute name="graph_type"> GratiaStackedBar </attribute>
+      <results>
+        <inputs>
+          <input name="pivot_transform">oim_fos_filter</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
     </query>
 
     <query name="vo_job_cnt" base="GratiaGenericQuery.master_summary">
@@ -445,6 +445,33 @@
       </results>
     </query>
 
+    <!-- New Query for FieldOfScience
+      <query name="monthly_fos_hours" base="GratiaGenericQuery.monthly_master_summary">
+      <inputs>
+        <input name="resource-type" kind="sql"> BatchPilot </input>
+        <input name="exclude-projectname" kind="sql"> unknown|other </input>
+      </inputs>
+      <sql>
+        <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
+        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
+        <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
+      </sql>
+      <attribute name="title">Monthly Wall Hours per Field Of Science</attribute>
+      <attribute name="pivot_name">FieldOfScience</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Number of Jobs</attribute>
+      <attribute name="column_units"/>
+      <attribute name="graph_type"> GratiaStackedBar </attribute>
+      <results>
+        <inputs>
+	  <input name="pivot_transform"> oim_fos_filter </input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query> 
+    -->
+
     <query name="monthly_vo_hours" base="GratiaGenericQuery.monthly_master_summary">
       <sql>
       <filler name="group"> VO.VOName </filler>
@@ -482,6 +509,33 @@
       </results>
     </query>
 
+    <!-- New Query for FieldOfScience
+    <query name="monthly_fos_cpu_hours" base="GratiaGenericQuery.monthly_master_summary">
+      <inputs>
+          <input name="resource-type" kind="sql"> BatchPilot </input>
+          <input name="exclude-projectname" kind="sql"> unknown|other </input>
+      </inputs>
+      <sql>
+      <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
+        <filler name="column"> sum(CpuUserDuration + CpuSystemDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
+        <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
+      </sql>
+      <attribute name="title">Monthly CPU Hour by Field of Science</attribute>
+      <attribute name="pivot_name">FieldOfScience</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">CPU Hours</attribute>
+      <attribute name="column_units"/>
+      <attribute name="graph_type"> GratiaStackedBar </attribute>
+      <results>
+        <inputs>
+	  <input name="pivot_transform"> oim_fos_filter </input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query> 
+    -->
+
     <query name="monthly_vo_cpu_hours" base="GratiaGenericQuery.monthly_master_summary">
       <sql>
       <filler name="group"> VO.VOName </filler>
@@ -518,7 +572,33 @@
         </inputs>
       </results>
     </query>
-
+  
+    <!--  New Query for FieldOfScience
+    <query name="monthly_fos_job_count" base="GratiaGenericQuery.monthly_master_summary">
+      <inputs>
+        <input name="resource-type" kind="sql"> BatchPilot </input>
+        <input name="exclude-projectname" kind="sql"> unknown|other </input>
+      </inputs>
+      <sql>
+        <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
+        <filler name="column"> sum(Njobs) </filler>
+        <filler name="where"> AND WallDuration > 0 AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
+        <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
+      </sql>
+      <attribute name="title">Monthly Job Count by Field of Science</attribute>
+      <attribute name="pivot_name">FieldOfScience</attribute>
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="column_names">Number of Jobs</attribute>
+      <attribute name="column_units"/>
+      <attribute name="graph_type"> GratiaStackedBar </attribute>
+      <results>
+        <inputs>
+	  <input name="pivot_transform"> oim_fos_filter </input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+    </query> 
+    -->
    
     <query name="monthly_vo_job_count" base="GratiaGenericQuery.monthly_master_summary">
       <sql>
@@ -766,10 +846,6 @@
       <attribute name="graph_type">GratiaHorizontalBar</attribute>
     </query>
 
-
-
-
-
     <query name="dn_zero_exit" base="GratiaGenericQuery.simple_master_summary">
       <inputs>
           <input name="vo" kind="sql">cms</input>
@@ -860,7 +936,7 @@
       </results>
     </query>
 
-<!--
+    <!--
     <query name="facility_quality" base="GratiaGenericQuery.jobs_summary_query">
         <sql>
             <filler name="group"> S.SiteName </filler>
@@ -882,7 +958,7 @@
         <attribute name="column_units"> Jobs, Jobs </attribute>
         <attribute name="pivot_name">Facility</attribute>
     </query>
--->
+    -->
 
     <query name="vo_opp_hours_bar2" base="GratiaGenericQuery.master_summary">
       <sql> 
@@ -1226,6 +1302,36 @@
         <attribute name="graph_type">GratiaStackedBar</attribute>
     </query>
 
+    <!--  New Query for FieldOfScience
+    <query name="fos_site_hours_bar" base="GratiaGenericQuery.glidein_master_summary">
+      <inputs>
+          <input name="resource-type" kind="sql"> BatchPilot </input>
+          <input name="exclude-projectname" kind="sql"> unknown|other </input>
+      </inputs>
+        <sql>
+            <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
+            <filler name="group"> COALESCE(UPPER(PNC.ReportableProjectName), "UNKNOWN"), R.HostDescription </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
+        </sql>
+        <attribute name="pivot_name">UPPER(ReportableProjectName)</attribute> 
+        <attribute name="grouping_name">Time</attribute>
+        <attribute name="title">Daily Hours By Field Of Science and Site</attribute>
+        <attribute name="column_names">Wall Time</attribute>
+        <attribute name="column_units">Hours</attribute>
+        <attribute name="graph_type">GratiaStackedBar</attribute>
+        <results module="graphtool.database.query_handler" function="results_parser">
+            <inputs>
+                <input name="pivots"> 0,1 </input>
+                <input name="grouping"> 2 </input>
+                <input name="results"> 3 </input>
+		<input name="pivot_transform"> oim_fos_filter </input>
+                <input name="pivot_transform">displayNameCommaSite</input>
+            </inputs>
+        </results>
+    </query> 
+    -->
+
     <query name="dn_site_hours_bar" base="GratiaGenericQuery.master_summary">
         <sql>
             <filler name="group"> COALESCE(R.CommonName, VO.VOName), S.SiteName </filler>
@@ -1274,6 +1380,36 @@
         <attribute name="column_units">Hours</attribute>
         <attribute name="graph_type">GratiaStackedBar</attribute>
     </query>
+
+    <!--  New Query for FieldOfScience
+    <query name="project_fos_hours_bar" base="GratiaGenericQuery.master_summary">
+      <inputs>
+          <input name="resource-type" kind="sql">  BatchPilot </input>
+          <input name="exclude-projectname" kind="sql"> unknown|other </input>
+      </inputs>
+        <sql>
+            <filler name="group"> UPPER(COALESCE(PNC.ReportableProjectName, "UNKNOWN")) </filler>
+            <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+            <filler name="where"> AND WallDuration > 0 AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
+            <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
+        </sql>
+        <results module="graphtool.database.query_handler" function="results_parser">
+            <inputs>
+                <input name="pivots"> 0 </input>
+                <input name="grouping"> 1 </input>
+                <input name="results"> 2 </input>
+		<input name="pivot_transform"> oim_fos_filter </input>
+                <input name="pivot_transform">displayName</input>
+            </inputs>
+        </results>
+        <attribute name="pivot_name">UPPER(PNC.ReportableProjectName)</attribute>
+        <attribute name="grouping_name">Time</attribute>
+        <attribute name="title">Daily Hours By Field of Science</attribute>
+        <attribute name="column_names">Wall Time</attribute>
+        <attribute name="column_units">Hours</attribute>
+        <attribute name="graph_type">GratiaStackedBar</attribute>
+    </query> 
+    -->
 
     <query name="dn_hours_bar" base="GratiaGenericQuery.master_summary">
         <sql>
