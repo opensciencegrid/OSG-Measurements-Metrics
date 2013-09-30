@@ -257,19 +257,15 @@ class OimFosFilter(PeriodicUpdater):
         fos = "UNCLASSIFIED"
         proj_name = firstRow[0]
         print "proj_name: ", proj_name
-        pos = l_row.index(proj_name)
-        #print "index pos: ", pos
         if proj_name is not None:
             if name_to_fos.has_key(proj_name):
                 fos = name_to_fos.get(proj_name,"UNCLASSIFIED")
                 print "fos: ", fos
             else:
-                print "OimFosFilter: name_to_fos.has_keys(): '%s' NOT FOUND" % proj_name
+                print "OimFosFilter: name_to_fos.has_keys(): '%s' NOT FOUND -> merged UNCLASSIFIED" % proj_name
         else:
             print "OimFosFilter: proj_name: '%s' NOT FOUND" % proj_name
-        l_row.remove(proj_name)
-        l_row.insert(pos,fos)
-        returnRow = tuple(l_row)
+        returnRow = '%s' % fos
         return returnRow
 
 oim_fos_filter = OimFosFilter()
