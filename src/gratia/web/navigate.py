@@ -76,9 +76,9 @@ class Navigation(Authenticate, Template):
 
     def fosNav(self, data):
         info = {}
-        info['Field of Science Accounting']  = "fos"
+        info['Field of Science']  = "fos"
         info['Project Accounting']  = "project"
-        data['navigation']['fos'] = info
+        data['navigation']['FieldOfScience'] = info
 
     def otherNav(self, data):
         info = {}
