@@ -67,6 +67,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         self.pilot = self.template('pilot.tmpl')(self.pilot)
         self.campus = self.template('campus.tmpl')(self.campus)
         self.project = self.template('project.tmpl')(self.project)
+        self.fos = self.template('fos.tmpl')(self.fos)
         self.factoryfrontend = self.template('factoryfrontend.tmpl')(self.factoryfrontend)
 
         configfile=''
@@ -442,6 +443,24 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         self.finish_image_maps(token)
 
         data['title'] = "OSG Campus Accounting"
+        return data
+
+    def fos(self, *args, **kw):
+        data = dict(kw)
+        data['given_kw'] = dict(kw)
+        self.user_auth(data)
+        filter_dict = {}
+
+        # Handle the refine variables
+        self.refine(data, filter_dict)
+        token = self.start_image_maps()
+        # Generate image maps:
+        self.image_map(token, data, 'GratiaStatusQueries',
+            'status_facility', 'site', 'facility')
+
+        self.finish_image_maps(token)
+
+        data['title'] = "OSG Field of Science Accounting"
         return data
 
     def byvo(self, *args, **kw):

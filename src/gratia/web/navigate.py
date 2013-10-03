@@ -74,6 +74,12 @@ class Navigation(Authenticate, Template):
         #info['GlideinWMS Monitoring']  = "factoryfrontend"
         data['navigation']['Campus'] = info
 
+    def fosNav(self, data):
+        info = {}
+        info['Field of Science Accounting']  = "fos"
+        info['Project Accounting']  = "project"
+        data['navigation']['fos'] = info
+
     def otherNav(self, data):
         info = {}
         data['navigation']['Other'] = info
@@ -119,5 +125,6 @@ class Navigation(Authenticate, Template):
         self.otherNav(data)
         self.pilotNav(data)
         self.campusNav(data)
+        self.fosNav(data)
         return data
 
