@@ -6,11 +6,6 @@ import copy
 import urllib2
 import datetime
 import xml.dom.minidom
-#from collections import defaultdict
-#from collections import namedtuple
-#from collections import Set
-#from operator import itemgetter
-#from itertools import groupby
 
 from graphtool.database.query_handler import results_parser, simple_results_parser, pivot_group_parser_plus
 from graphtool.tools.common import convert_to_datetime
