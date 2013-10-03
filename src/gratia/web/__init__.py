@@ -460,7 +460,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
 
         self.finish_image_maps(token)
 
-        data['title'] = "OSG FieldOfScience Accounting"
+        data['title'] = "OSG Field-Of-Science Accounting"
         return data
 
     def byvo(self, *args, **kw):
