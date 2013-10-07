@@ -480,7 +480,7 @@ def displayNameSite(*args, **kw):
     site = args[1]
     dn = displayName(*args, **kw)
     if not dn:
-        return
+        return 0
     return "%s @ %s" % (dn.upper(), site)
 
 '''wbh: GratiaWeb Request-56: change @ to , for csv transfer files '''
@@ -490,6 +490,26 @@ def displayNameCommaSite(*args, **kw):
     if not dn:
         return
     return "%s , %s" % (dn.upper(), site)
+
+'''wbh: GratiaWeb Request-40: Field of Science '''
+def displayFosCommaSite(*args, **kw):
+    firstRow = args
+    l_row = list(firstRow)
+    cnt = 0
+    #for item in l_row:
+    #   cnt = cnt + 1
+    #   print "l_row[",cnt, }: ", item
+    site = l_row[1]
+    proj = l_row[0]
+    print "proj: ", proj, "     site:  ", site
+    fos = None
+    fos = oim_fos_filter(*args, **kw)
+    #dn = displayName(*args, **kw)
+    if fos is None:
+        fos = "UNCLASSIFIED"
+        print "proj: ", proj, " is not FOUND --> merging into UNCLASSIFIED"
+        return
+    return "%s, %s" % (fos, site)
 
 def displayNameExitSite(*args, **kw):
     exitcode = args[1]
