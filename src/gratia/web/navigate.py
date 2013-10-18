@@ -58,27 +58,35 @@ class Navigation(Authenticate, Template):
                }
         data['navigation']['Grid-wide'] = info
 
-    def pilotNav(self, data):
-        info = {}
-        info['Pilot Accounting']  = "pilot"
-        info['Project Accounting']  = "project"
-        # GratiaWeb-39 Disable Monitoring Pages - 2013Jul09 wbh
-        #info['GlideinWMS Monitoring']  = "factoryfrontend"
-        data['navigation']['Pilot'] = info
-
-    def campusNav(self, data):
+    def payloadNav(self, data):
         info = {}
         info['Campus Accounting']  = "campus"
-        info['Project Accounting']  = "project"
-        # GratiaWeb-39 Disable Monitoring Pages - 2013Jul09 wbh
-        #info['GlideinWMS Monitoring']  = "factoryfrontend"
-        data['navigation']['Campus'] = info
-
-    def fosNav(self, data):
-        info = {}
         info['Field of Science']  = "fos"
+        info['Pilot Accounting']  = "pilot"
         info['Project Accounting']  = "project"
-        data['navigation']['Field-Of-Science'] = info
+        data['navigation']['Payload'] = info
+
+    #def pilotNav(self, data):
+        #info = {}
+        #info['Pilot Accounting']  = "pilot"
+        #info['Project Accounting']  = "project"
+        ## GratiaWeb-39 Disable Monitoring Pages - 2013Jul09 wbh
+        ##info['GlideinWMS Monitoring']  = "factoryfrontend"
+        #data['navigation']['Pilot'] = info
+
+    #def campusNav(self, data):
+        #info = {}
+        #info['Campus Accounting']  = "campus"
+        ##info['Project Accounting']  = "project"
+        ## GratiaWeb-39 Disable Monitoring Pages - 2013Jul09 wbh
+        ##info['GlideinWMS Monitoring']  = "factoryfrontend"
+        #data['navigation']['Campus'] = info
+
+    #def fosNav(self, data):
+        #info = {}
+        #info['Field of Science']  = "fos"
+        ##info['Project Accounting']  = "project"
+        #data['navigation']['Field-Of-Science'] = info
 
     def otherNav(self, data):
         info = {}
@@ -123,8 +131,9 @@ class Navigation(Authenticate, Template):
         self.navFromRoles(data)
         self.gridNav(data)
         self.otherNav(data)
-        self.pilotNav(data)
-        self.campusNav(data)
-        self.fosNav(data)
+        self.payloadNav(data)
+        #self.pilotNav(data)
+        #self.campusNav(data)
+        #self.fosNav(data)
         return data
 
