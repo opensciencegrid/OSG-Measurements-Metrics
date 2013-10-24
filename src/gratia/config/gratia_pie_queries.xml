@@ -58,7 +58,7 @@
       <attribute name="title"> Wall Hours by VO </attribute>
     </query>
 
-    <query name="osg_fos_hours" base="GratiaGenericQuery.simple_master_summary">
+    <query name="osg_fos_hours" base="GratiaGenericQuery.simple_glidein_master_summary">
         <inputs>
           <input name="resource-type" kind="sql"> BatchPilot </input>
           <input kind="sql" type="float" name="min_hours"> 10 </input>
