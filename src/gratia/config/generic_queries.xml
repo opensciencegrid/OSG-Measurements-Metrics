@@ -368,20 +368,20 @@
                 VO on (VC.void = VO.void)
             <slot name="join"/> 
             WHERE
-                R.EndTime &gt;= :starttime AND
-                R.EndTime &lt; :endtime AND
-                S.SiteName regexp :facility AND
-                VO.VOName regexp :vo AND
-                VC.VOName regexp :role AND
-                (NOT (VC.VOName regexp :exclude-role)) AND
-                (R.ResourceType regexp :resource-type or R.ResourceType = '') AND
-                (:includeFailed='true' OR ApplicationExitCode=0) AND
-                (:includeSuccess ='true' OR ApplicationExitCode!=0) AND
-                (NOT (S.SiteName regexp :exclude-facility)) AND
-                (NOT (R.CommonName regexp :exclude-user)) AND
-                (NOT (VO.VOName regexp :exclude-vo)) AND
-                R.WallDuration &lt; 1100000000 AND
-                R.ProbeName regexp :probe
+                R.EndTime &gt;= :starttime
+                AND R.EndTime &lt; :endtime
+                AND S.SiteName regexp :facility
+                AND VO.VOName regexp :vo
+                AND VC.VOName regexp :role
+                AND (NOT (VC.VOName regexp :exclude-role))
+                AND (R.ResourceType regexp :resource-type or R.ResourceType = '')
+                AND (:includeFailed='true' OR ApplicationExitCode=0)
+                AND (:includeSuccess ='true' OR ApplicationExitCode!=0)
+                AND (NOT (S.SiteName regexp :exclude-facility))
+                AND (NOT (R.CommonName regexp :exclude-user))
+                AND (NOT (VO.VOName regexp :exclude-vo))
+                AND R.WallDuration &lt; 1100000000
+                AND R.ProbeName regexp :probe
                 <slot name="where"/>
             GROUP BY 
                 <slot name="group"/>,
