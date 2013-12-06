@@ -753,6 +753,8 @@ where Timestamp &gt;=:errorstart AND Timestamp &lt; :errorstart + INTERVAL :span
         FROM oim.vo_resource_ownership o
         JOIN oim.vo v on v.id = o.vo_id
         JOIN oim.resource OIMR on OIMR.id = o.resource_id
+	group by OIMR.name, v.name
+	order by OIMR.name, v.name
       </sql>
       <results module="graphtool.database.query_handler" function="complex_pivot_parser">
         <inputs>
