@@ -785,6 +785,35 @@ where Timestamp &gt;=:errorstart AND Timestamp &lt; :errorstart + INTERVAL :span
       </results>
     </query>
 
+    <!-- test query for Resource Group Relationships - wbh -2013Dec06 -->
+    <query name="rsg-rs-vo-wlcg">
+      <sql>
+	SELECT OIMRG.name as Resource_Group,         
+	       OIMR.name as Resource,
+               OIMRW.accounting_name as WLCG_Name,
+               V.name as VO
+          FROM oim.resource OIMR      
+            JOIN oim.resource_group OIMRG ON OIMRG.id = OIMR.resource_group_id      
+            JOIN oim.resource_wlcg OIMRW ON OIMRW.resource_id= OIMR.id      
+            JOIN oim.vo_resource_ownership VRO on VRO.resource_id = OIMR.id     
+            JOIN oim.vo V on V.id = VRO.vo_id   
+          WHERE OIMRW.accounting_name is not null    
+          GROUP BY OIMRG.name, OIMR.name    
+          ORDER by OIMRG.name;
+      </sql>
+      <results module="graphtool.database.query_handler" function="complex_pivot_parser">
+        <inputs>
+          <input name="pivots"> 0 </input>
+          <input name="results"> 1,2,3 </input>
+        </inputs>
+      </results>
+      <attribute name="pivot_name"> Resource_Group </attribute>
+      <attribute name="column_names"> Resource, WLCG_Name, VO</attribute>
+      <attribute name="column_units">,,</attribute>
+      <attribute name="graph_type"/>
+      <attribute name="title"> Resource Group Relationships </attribute>
+    </query>
+
     <query name="resources">
       <sql>
         SELECT r.name, r.fqdn FROM oim.resource r GROUP BY r.name

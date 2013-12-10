@@ -69,8 +69,6 @@ class WLCGReporter(Authenticate):
 	    hepspecCpuDict[cpuname]=hepspec
 	    normconstCpuDict[cpuname]=normconstant
         return hepspecCpuDict,normconstCpuDict
- 
-
 
     def make_pledge_format(self, year, month):
 	atlas_pledge, cms_pledge,atlas_dict, cms_dict, alice_pledge, alice_dict=WLCGWebUtil().wlcg_pledges(month, year)
@@ -133,7 +131,6 @@ class WLCGReporter(Authenticate):
             pledge_info[vo] = refined_vo_info
         return pledge_info
 
-
     def site_normalization(self):
         data = {}
         apel_data, reporting_time = self.get_apel_data()
@@ -195,7 +192,7 @@ class WLCGReporter(Authenticate):
             status_subcluster_times()
         return subclusters, time_list
 
-    def get_apel_data_since201203(self, month, year):
+    def get_apel_data(self, year=datetime.datetime.now().year, month=datetime.datetime.now().month):
         apel_url = self.metadata.get('apel_url', 'http://gr13x6.fnal.gov:8319/gratia-apel/%i-%02i.summary.dat'\
             % (year, month))
         usock = urllib2.urlopen(apel_url)
@@ -235,41 +232,6 @@ class WLCGReporter(Authenticate):
                 continue
             info['month']=month
             info['year']=year
-            apel_data.append(info)
-        return apel_data, report_time
-
-    def get_apel_data(self, year=datetime.datetime.now().year, month=datetime.datetime.now().month):
-        year = int(year)
-        month = int(month)
-        if(year > 2012) or (year == 2012 and month >= 3):
-            return self.get_apel_data_since201203(month, year)
-        apel_url = self.metadata.get('apel_url', 'http://gratia-osg-prod-reports.opensciencegrid.org/gratia-data/interfaces/apel-lcg/%i-%02i.HS06_OSG_DATA.xml'\
-            % (year, month))
-        xmldoc = urllib2.urlopen(apel_url)
-        dom = parse(xmldoc)
-        apel_data = []
-        report_time = None
-        for rowDom in dom.getElementsByTagName('row'):
-            info = {}
-            for field in rowDom.getElementsByTagName('field'):
-                name = str(field.getAttribute('name'))
-                if len(name) == 0:
-                    continue
-                val = str(field.firstChild.data)
-                info[name] = val
-                if name == 'MeasurementDate' and report_time == None:
-                    report_time = val
-            if len(info) == 0:
-                for child in rowDom.childNodes:
-                    name = str(child.nodeName)
-                    if not name or len(name) == 0:
-                        continue
-                    if child.nodeType == child.TEXT_NODE:
-                        continue
-                    val = str(child.firstChild.data)
-                    info[name] = val
-                    if name == 'MeasurementDate' and report_time == None:
-                        report_time = val
             apel_data.append(info)
         return apel_data, report_time
 
@@ -322,7 +284,6 @@ class WLCGReporter(Authenticate):
                 wlcg_sites.append(row['ExecutingSite'])
                 wlcg_norm[row['ExecutingSite']] = row['HS06Factor']
 
-
         # replace with hepspec numbers from  non-WLCG sites from CPUInfo.
         new_subclusters = {}
 	hepspecCpuDict,normconstCpuDict = self.getcpuinfodictionary()
@@ -342,7 +303,6 @@ class WLCGReporter(Authenticate):
             new_subclusters[key] = valcopy
             #print key, val, '----------'
         data['subclusters'] = new_subclusters
-
 
         # Determine site normalization:
         site_norm = {}
@@ -379,7 +339,6 @@ class WLCGReporter(Authenticate):
                 new_subclusters[key] = val
                 #print key, val
         data['subclusters'] = new_subclusters
-
 
         # Add in the pledge data
         data['pledge'] = self.t2_pledges(apel_data, year, month)
