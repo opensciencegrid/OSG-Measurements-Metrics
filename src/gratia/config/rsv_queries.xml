@@ -58,25 +58,20 @@ GROUP BY OIMR.name, OIMC.name
         <!--<input name="excludefacility" kind="sql">USCMS-FNAL-WC1-CE2|USCMS-FNAL-WC1-CE3|USCMS-FNAL-WC1-CE4|UCSDT2-B</input>-->
       </inputs>
       <sql>
-select
-  OIMR.fqdn as fqdn,
-  from_unixtime(truncate(RSVM.timestamp/:span, 0)*:span) as time,
-  SUM(CASE OIMMS.description WHEN "OK" THEN 1 ELSE 0 END),
-  SUM(CASE OIMMS.description WHEN "OK" THEN 0 WHEN "UNKNOWN" THEN 0 ELSE 1 END)
-from
-  rsvprocess.metricdata RSVM
-join
-  oim.resource OIMR on RSVM.resource_id=OIMR.id
-join
-  oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
-join
-  oim.metric OIMM on OIMM.id = RSVM.metric_id
-where
-     RSVM.timestamp &gt;= :starttime AND RSVM.timestamp &lt; :endtime AND
-     OIMR.fqdn regexp :facility AND
-     OIMM.name regexp :metric
-group by
-  fqdn, time
+	select
+	  OIMR.fqdn as fqdn,
+	  from_unixtime(truncate(RSVM.timestamp/:span, 0)*:span) as time,
+	  SUM(CASE OIMMS.description WHEN "OK" THEN 1 ELSE 0 END),
+	  SUM(CASE OIMMS.description WHEN "OK" THEN 0 WHEN "UNKNOWN" THEN 0 ELSE 1 END)
+	from   rsvprocess.metricdata RSVM
+	  join oim.resource OIMR on RSVM.resource_id=OIMR.id
+	  join oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
+	  join oim.metric OIMM on OIMM.id = RSVM.metric_id
+	where RSVM.timestamp &gt;= :starttime 
+	  AND RSVM.timestamp &lt; :endtime
+	  AND OIMR.fqdn regexp :facility
+	  AND OIMM.name regexp :metric
+	group by fqdn, time
       </sql>
       <results module="graphtool.database.query_handler" function="results_parser">
         <inputs>
@@ -103,25 +98,23 @@ group by
         <input name="limit" type="int" kind="sql">30</input>
       </inputs>
       <sql>
-SELECT
-  OIMR.fqdn as fqdn,
-  OIMM.name as metric_name,
-  OIMMS.description as metric_status,
-  from_unixtime(RSVM.timestamp) as timestamp,
-  RSVMD.detail as details
-FROM
-  rsvprocess.metricdata as RSVM
-JOIN oim.resource OIMR on RSVM.resource_id=OIMR.id
-JOIN oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
-JOIN oim.metric OIMM on OIMM.id = RSVM.metric_id
-JOIN rsvprocess.metricdetail RSVMD on RSVM.id = RSVMD.id
-WHERE
-     RSVM.timestamp &gt;= :starttime AND RSVM.timestamp &lt; :endtime AND
-     OIMR.fqdn regexp :facility AND
-     OIMM.name regexp :metric AND
-     OIMMS.description regexp :status
-ORDER BY RSVM.timestamp desc
-LIMIT :limit
+	SELECT OIMR.fqdn as fqdn,
+	       OIMM.name as metric_name,
+	       OIMMS.description as metric_status,
+	       from_unixtime(RSVM.timestamp) as timestamp,
+	       RSVMD.detail as details
+	  FROM rsvprocess.metricdata as RSVM
+	    JOIN oim.resource OIMR on RSVM.resource_id=OIMR.id
+	    JOIN oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
+	    JOIN oim.metric OIMM on OIMM.id = RSVM.metric_id
+	    JOIN rsvprocess.metricdetail RSVMD on RSVM.id = RSVMD.id
+	  WHERE RSVM.timestamp &gt;= :starttime 
+	    AND RSVM.timestamp &lt; :endtime
+	    AND OIMR.fqdn regexp :facility
+	    AND OIMM.name regexp :metric
+	    AND OIMMS.description regexp :status
+	  ORDER BY RSVM.timestamp desc
+	  LIMIT :limit
       </sql>
       <results module="graphtool.database.query_handler" function="complex_pivot_parser">
         <inputs>
@@ -147,25 +140,19 @@ LIMIT :limit
         <!--<input name="excludefacility" kind="sql">USCMS-FNAL-WC1-CE2|USCMS-FNAL-WC1-CE3|USCMS-FNAL-WC1-CE4|UCSDT2-B</input>-->
       </inputs>
       <sql>
-select
-  OIMR.fqdn as fqdn,
-  from_unixtime(truncate(RSVM.timestamp/:span, 0)*:span) as time,
-  SUM(CASE OIMMS.description WHEN "OK" THEN 1 ELSE 0 END),
-  SUM(CASE OIMMS.description WHEN "OK" THEN 0 WHEN "UNKNOWN" THEN 0 ELSE 1 END)
-from
-  rsvprocess.metricdata RSVM
-join
-  oim.resource OIMR on RSVM.resource_id=OIMR.id
-join
-  oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
-join
-  oim.metric OIMM on OIMM.id = RSVM.metric_id
-where
-     RSVM.timestamp &gt;= :starttime AND RSVM.timestamp &lt; :endtime AND
-     OIMR.fqdn regexp :facility AND
-     OIMM.name regexp :metric
-group by
-  fqdn, time
+	select OIMR.fqdn as fqdn,
+	       from_unixtime(truncate(RSVM.timestamp/:span, 0)*:span) as time,
+	       SUM(CASE OIMMS.description WHEN "OK" THEN 1 ELSE 0 END),
+	       SUM(CASE OIMMS.description WHEN "OK" THEN 0 WHEN "UNKNOWN" THEN 0 ELSE 1 END)
+	from rsvprocess.metricdata RSVM
+	  join oim.resource OIMR on RSVM.resource_id=OIMR.id
+	  join oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
+	  join oim.metric OIMM on OIMM.id = RSVM.metric_id
+	where RSVM.timestamp &gt;= :starttime 
+	  AND RSVM.timestamp &lt; :endtime
+	  and OIMR.fqdn regexp :facility
+	  and OIMM.name regexp :metric
+	group by fqdn, time
       </sql>
       <results module="gratia.database.query_handler" function="rsv_parser">
         <inputs>
@@ -192,25 +179,19 @@ group by
         <input name="fixed-height">False</input>
       </inputs>
       <sql>
-select
-  OIMR.fqdn as fqdn,
-  from_unixtime(truncate(RSVM.timestamp/7200, 0)*7200) as time,
-  SUM(CASE OIMMS.description WHEN "OK" THEN 1 ELSE 0 END),
-  SUM(CASE OIMMS.description WHEN "OK" THEN 0 WHEN "UNKNOWN" THEN 0 ELSE 1 END)
-from
-  rsvprocess.metricdata RSVM
-join
-  oim.resource OIMR on RSVM.resource_id=OIMR.id
-join
-  oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
-join
-  oim.metric OIMM on OIMM.id = RSVM.metric_id
-where
-     RSVM.timestamp &gt;= :starttime AND RSVM.timestamp &lt; :endtime AND
-     OIMR.fqdn regexp :facility AND
-     OIMM.name regexp :metric
-group by
-  fqdn, time
+	select OIMR.fqdn as fqdn,
+	       from_unixtime(truncate(RSVM.timestamp/7200, 0)*7200) as time,
+	       SUM(CASE OIMMS.description WHEN "OK" THEN 1 ELSE 0 END),
+	       SUM(CASE OIMMS.description WHEN "OK" THEN 0 WHEN "UNKNOWN" THEN 0 ELSE 1 END)
+	from rsvprocess.metricdata RSVM
+	  join oim.resource OIMR on RSVM.resource_id=OIMR.id
+	  join oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
+	  join oim.metric OIMM on OIMM.id = RSVM.metric_id
+	where RSVM.timestamp &gt;= :starttime 
+	  AND RSVM.timestamp &lt; :endtime
+	  AND OIMR.fqdn regexp :facility
+	  AND OIMM.name regexp :metric
+	group by fqdn, time
       </sql>
       <results module="gratia.database.query_handler" function="rsv_daily_parser">
         <inputs>
@@ -236,30 +217,58 @@ group by
         <input name="fixed-height">False</input>
       </inputs>
       <sql>
-select
-  OIMR.fqdn as fqdn,
-  from_unixtime(truncate(RSVM.timestamp/7200, 0)*7200) as time,
-  SUM(CASE OIMMS.description WHEN "OK" THEN 1 ELSE 0 END),
-  SUM(CASE OIMMS.description WHEN "OK" THEN 0 WHEN "UNKNOWN" THEN 0 ELSE 1 END)
-from
-  rsvprocess.metricdata RSVM
-join
-  oim.resource OIMR on RSVM.resource_id=OIMR.id
-join
-  oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
-join
-  oim.metric OIMM on OIMM.id = RSVM.metric_id
-where
-     RSVM.timestamp &gt;= :starttime AND RSVM.timestamp &lt; :endtime AND
-     OIMR.fqdn regexp :facility AND
-     OIMM.name regexp :metric
-group by
-  fqdn, time
+	select OIMR.fqdn as fqdn,
+	       from_unixtime(truncate(RSVM.timestamp/7200, 0)*7200) as time,
+	       SUM(CASE OIMMS.description WHEN "OK" THEN 1 ELSE 0 END),
+	       SUM(CASE OIMMS.description WHEN "OK" THEN 0 WHEN "UNKNOWN" THEN 0 ELSE 1 END)
+	from rsvprocess.metricdata RSVM
+	  join oim.resource OIMR on RSVM.resource_id=OIMR.id
+	  join oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
+	  join oim.metric OIMM on OIMM.id = RSVM.metric_id
+	where RSVM.timestamp &gt;= :starttime
+	  AND RSVM.timestamp &lt; :endtime
+	  AND OIMR.fqdn regexp :facility
+	  AND OIMM.name regexp :metric
+	group by fqdn, time
       </sql>
       <results module="gratia.database.query_handler" function="rsv_total_parser"/>
       <attribute name="graph_type"/>
       <attribute name="pivot_name">Site</attribute>
       <attribute name="title">RSV Site Total Availability</attribute>
+    </query>
+
+    <query name="active_ce_svc_fed_rsg_rs_vo">
+        <sql>
+	  SELECT OIMRG.name as resource_group,
+	         OIMR.name as resource,
+	         OIMRW.accounting_name as federation,
+	         V.name as VO
+	  FROM oim.resource_service OIMRS
+	    JOIN oim.service OIMS ON OIMS.id = OIMRS.service_id
+	    JOIN oim.resource OIMR ON OIMRS.resource_id = OIMR.id
+	    JOIN oim.resource_group OIMRG ON OIMRG.id = OIMR.resource_group_id
+	    JOIN oim.resource_wlcg OIMRW on OIMRW.resource_id = OIMR.id
+	    JOIN oim.vo_resource_ownership VRO on VRO.resource_id = OIMR.id
+	    JOIN oim.vo V on V.id = VRO.vo_id
+	  WHERE OIMRW.accounting_name is not null
+	    and OIMRW.interop_monitoring = 1
+	    and OIMRG.osg_grid_type_id=1
+	    and OIMS.name = 'CE'
+	    and (OIMR.active=1 and OIMR.disable=0)
+	  GROUP by OIMRW.accounting_name, OIMRG.name, OIMR.name
+	  ORDER BY OIMRW.accounting_name, OIMRG.name, OIMR.name;
+	</sql>
+	<results module="graphtool.database.query_handler" function="complex_pivot_parser">
+          <inputs>
+            <input name="pivots"> 2 </input>
+            <input name="results"> 0,1,3 </input>
+          </inputs>
+	</results>
+	<attribute name="pivot_name"> Federation </attribute>
+	<attribute name="column_names"> Resource_Group, Resource, VO</attribute>
+	<attribute name="column_units">,,</attribute>
+	<attribute name="graph_type"/>
+	<attribute name="title">CE Service Federation Resource Relationships </attribute>
     </query>
 
     <query name="service_to_resource">
@@ -422,7 +431,6 @@ group by
             <input name="version" kind="sql">^OSG..\..\..</input>
         </inputs>
         <sql>
-
         SELECT
             version, time, COUNT(*) as deploy_count
         FROM
@@ -443,7 +451,6 @@ group by
             GROUP BY time, fqdn, version
             ) as foo
         GROUP BY time, version
-
         </sql>
         <results module="graphtool.database.query_handler" function="results_parser">
           <inputs>
@@ -602,25 +609,19 @@ group by
         <!--<input name="excludefacility" kind="sql">USCMS-FNAL-WC1-CE2|USCMS-FNAL-WC1-CE3|USCMS-FNAL-WC1-CE4|UCSDT2-B</input>-->
       </inputs>
       <sql>
-SELECT
-  OIMM.name as name,
-  from_unixtime(truncate(RSVM.timestamp/:span, 0)*:span) as time,
-  SUM(CASE OIMMS.description WHEN "OK" THEN 1 ELSE 0 END),
-  SUM(CASE OIMMS.description WHEN "OK" THEN 0 WHEN "UNKNOWN" THEN :countunknown ELSE 1 END)
-from
-  rsvprocess.metricdata RSVM
-join
-  oim.resource OIMR on RSVM.resource_id=OIMR.id
-join
-  oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
-join
-  oim.metric OIMM on OIMM.id = RSVM.metric_id
-where
-     RSVM.timestamp &gt;= :starttime AND RSVM.timestamp &lt; :endtime AND
-     OIMR.fqdn regexp :facility AND
-     OIMM.name regexp :metric
-group by
-  name, time
+	SELECT OIMM.name as name,
+	       from_unixtime(truncate(RSVM.timestamp/:span, 0)*:span) as time,
+	       SUM(CASE OIMMS.description WHEN "OK" THEN 1 ELSE 0 END),
+	       SUM(CASE OIMMS.description WHEN "OK" THEN 0 WHEN "UNKNOWN" THEN :countunknown ELSE 1 END)
+	from rsvprocess.metricdata RSVM
+	  join oim.resource OIMR on RSVM.resource_id=OIMR.id
+	  join oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
+	  join oim.metric OIMM on OIMM.id = RSVM.metric_id
+	where RSVM.timestamp &gt;= :starttime 
+	  AND RSVM.timestamp &lt; :endtime
+	  AND OIMR.fqdn regexp :facility
+	  AND OIMM.name regexp :metric
+	group by name, time
       </sql>
       <results module="graphtool.database.query_handler" function="results_parser">
         <inputs>
@@ -646,19 +647,15 @@ group by
         <!--<input name="excludefacility" kind="sql">USCMS-FNAL-WC1-CE2|USCMS-FNAL-WC1-CE3|USCMS-FNAL-WC1-CE4|UCSDT2-B</input>-->
       </inputs>
       <sql>
-select
-  OIMR.fqdn as fqdn,
-  from_unixtime(truncate(RSVM.timestamp/:span, 0)*:span) as time,
-  COUNT(*)
-from
-  rsvprocess.metricdata RSVM
-join
-  oim.resource OIMR on RSVM.resource_id=OIMR.id
-where
-     RSVM.timestamp &gt;= :starttime AND RSVM.timestamp &lt; :endtime AND
-     OIMR.fqdn regexp :facility
-group by
-  fqdn, time
+	select OIMR.fqdn as fqdn,
+	       from_unixtime(truncate(RSVM.timestamp/:span, 0)*:span) as time,
+	       COUNT(*)
+	from rsvprocess.metricdata RSVM
+	  join oim.resource OIMR on RSVM.resource_id=OIMR.id
+	where RSVM.timestamp &gt;= :starttime 
+	  AND RSVM.timestamp &lt; :endtime
+	  AND OIMR.fqdn regexp :facility
+	group by fqdn, time
       </sql>
       <results module="graphtool.database.query_handler" function="results_parser">
         <inputs>
@@ -683,18 +680,15 @@ group by
         <!--<input name="excludefacility" kind="sql">USCMS-FNAL-WC1-CE2|USCMS-FNAL-WC1-CE3|USCMS-FNAL-WC1-CE4|UCSDT2-B</input>-->
       </inputs>
       <sql>
-select
-  OIMMS.description,
-  COUNT(*)
-from
-  rsvprocess.metricdata RSVM
-join oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
-join oim.resource OIMR on RSVM.resource_id=OIMR.id
-where
-     RSVM.timestamp &gt;= :starttime AND RSVM.timestamp &lt; :endtime AND
-     OIMR.fqdn regexp :facility
-group by
-  OIMMS.description
+	select OIMMS.description,
+	       COUNT(*)
+	from rsvprocess.metricdata RSVM
+	  join oim.metric_status OIMMS on RSVM.metric_status_id = OIMMS.id
+	  join oim.resource OIMR on RSVM.resource_id=OIMR.id
+	where RSVM.timestamp &gt;= :starttime 
+	  AND RSVM.timestamp &lt; :endtime
+	  AND OIMR.fqdn regexp :facility
+	group by OIMMS.description
       </sql>
       <results module="graphtool.database.query_handler" function="simple_results_parser">
         <inputs>
@@ -716,13 +710,13 @@ group by
             <input name="facility" kind="sql">Nebraska</input>
         </inputs>
         <sql>
-select
-    SummaryData,
-    GatheredAt,
-    DetailsData,
-    MetricType
-from MetricRecord
-where Timestamp &gt;=:errorstart AND Timestamp &lt; :errorstart + INTERVAL :span seconds
+	  select SummaryData,
+	         GatheredAt,
+	         DetailsData,
+	         MetricType
+	    from MetricRecord
+	      where Timestamp &gt;=:errorstart 
+	        AND Timestamp &lt; :errorstart + INTERVAL :span seconds
         </sql>
         <results module="gratia.database.query_handler" function="fake_parser"/>
         <attribute name="graph_type"/>
