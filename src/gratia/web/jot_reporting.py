@@ -227,40 +227,6 @@ class JOTReporter(Authenticate):
             apel_data.append(info)
         return apel_data
 
-    #def get_apel_data_jot(self, month, year):
-    #    if(year >= 2013 or year >=2012 and month >= 3):
-    #        return self.get_apel_data_jot_since201203(month, year)
-    #    apel_url = self.metadata.get('apel_url', 'http://gratia-osg-prod-reports.opensciencegrid.org/gratia-data/interfaces/apel-lcg/%i-%02i.HS06_OSG_DATA.xml'\
-    #        % (year, month))
-    #    print "Trying to get data from: "+apel_url
-    #    xmldoc = urllib2.urlopen(apel_url)
-    #    dom = parse(xmldoc)
-    #    apel_data = []
-    #    report_time = None
-    #    for rowDom in dom.getElementsByTagName('row'):
-    #        info = {}
-    #        for field in rowDom.getElementsByTagName('field'):
-    #            name = str(field.getAttribute('name'))
-    #            if len(name) == 0:
-    #                continue
-    #            val = str(field.firstChild.data)
-    #            info[name] = val
-    #            if name == 'MeasurementDate' and report_time == None:
-    #                report_time = val
-    #        if len(info) == 0:
-    #            for child in rowDom.childNodes:
-    #                name = str(child.nodeName)
-    #                if not name or len(name) == 0:
-    #                    continue
-    #                if child.nodeType == child.TEXT_NODE:
-    #                    continue
-    #                val = str(child.firstChild.data)
-    #                info[name] = val
-    #                if name == 'MeasurementDate' and report_time == None:
-    #                    report_time = val
-    #        apel_data.append(info)
-    #    return apel_data
-
     def get_gridview(self, month, year, federations):
         url = self.metadata.get('gridview_url', 'http://grid-monitoring.cern.ch/mywlcg/sam-pi/group_availability_in_profile/')
         params = {\

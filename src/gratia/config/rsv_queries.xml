@@ -264,7 +264,7 @@ GROUP BY OIMR.name, OIMC.name
             <input name="results"> 0,1,3 </input>
           </inputs>
 	</results>
-	<attribute name="pivot_name"> Federation </attribute>
+	<attribute name="pivot_name"> FederationAccountingName </attribute>
 	<attribute name="column_names"> Resource_Group, Resource, VO</attribute>
 	<attribute name="column_units">,,</attribute>
 	<attribute name="graph_type"/>
