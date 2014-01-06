@@ -424,7 +424,7 @@
     </query>
 
 
-    <query name="monthly_project_hours" base="GratiaGenericQuery.monthly_master_summary">
+    <query name="monthly_project_hours" base="GratiaGenericQuery.glidein_monthly_master_summary">
       <inputs>
           <input name="resource-type" kind="sql"> BatchPilot </input>
           <input name="projectname" kind="sql"> .* </input>
