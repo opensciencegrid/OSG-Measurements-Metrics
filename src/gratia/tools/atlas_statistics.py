@@ -5,10 +5,26 @@ import time
 import urllib
 import urllib2
 import datetime
+import os.path
+import string
+from gratia.web.gratia_urls import GratiaURLS
 
 from xml.dom.minidom import parse
 
-dashboard_url = 'http://dashb-atlas-data.cern.ch/dashboard/request.py/site'
+
+print "===================================="
+srchUrl = 'DashboardUrl'
+modName = 'atlas_statistics'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    dashboard_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, dashboard_url)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+print "===================================="
+#dashboard_url = 'http://dashb-atlas-data.cern.ch/dashboard/request.py/site'
 #dashboard_t0_url ='http://dashb-atlas-data-tier0.cern.ch/dashboard/request.py'\
 #    '/site'
 dashboard_t0_url = dashboard_url

@@ -3,6 +3,9 @@ import sys
 import urllib
 import urllib2
 import datetime
+import os.path
+import string
+from gratia.web.gratia_urls import GratiaURLS
 
 from xml.dom.minidom import parse
 
@@ -12,7 +15,17 @@ error = "CRITICAL"
 unknown = "UNKNOWN"
 expired = "EXPIRED"
 
-last_status_url = "http://t2.unl.edu/gratia/xml/wlcg_last_status"
+srchUrl = 'LastStatusUrl'
+modName = 'rsv_nagios'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    last_status_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, last_status_url)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#last_status_url = "http://t2.unl.edu/gratia/xml/wlcg_last_status"
 
 def simple_results_parser(dom):
     data = {}

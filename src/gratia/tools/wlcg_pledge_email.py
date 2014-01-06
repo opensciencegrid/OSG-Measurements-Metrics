@@ -10,6 +10,9 @@ import urllib
 import urllib2
 import optparse
 import ConfigParser
+import os.path
+import string
+from gratia.web.gratia_urls import GratiaURLS
 
 from email.MIMEText import MIMEText
 from email.MIMEImage import MIMEImage
@@ -60,7 +63,18 @@ def loadConfig():
         cp.readfp(fp)
     if not cp.has_section("info"):
         cp.add_section("info")
-        cp.set("info", "url", "http://t2.unl.edu/gratia/pledge_table")
+        srchUrl = 'PledgeTableUrl'
+        modName = 'loadconfig'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            PledgeTableUrl = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, PledgeTableUrl)
+        except:
+            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            pass
+        #cp.set("info", "url", "http://t2.unl.edu/gratia/pledge_table")
+        cp.set("info", "url", PledgeTableUrl)
     cp.set("info", "dev", str(options.dev))
     if options.lastmonth:
         cp.set("info", "lastmonth", "True")

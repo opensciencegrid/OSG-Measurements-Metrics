@@ -4,12 +4,25 @@ import time
 import urllib
 import urllib2
 import datetime
+import os.path
+import string
+from gratia.web.gratia_urls import GratiaURLS
 
 from xml.dom.minidom import parse
 
 dashboard_defaults = {'timeRange': 'individual'}
-service_url = 'http://dashb-cms-sam.cern.ch/dashboard/request.py/' \
-    'historicalserviceavailability.png'
+srchUrl = 'DashboardAnalyzerUrl'
+modName = 'dashboard_analyzer'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    service_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, service_url)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#service_url = 'http://dashb-cms-sam.cern.ch/dashboard/request.py/' \
+#    'historicalserviceavailability.png'
 
 def download_data(site, service, start, end):
     params = dict(dashboard_defaults)

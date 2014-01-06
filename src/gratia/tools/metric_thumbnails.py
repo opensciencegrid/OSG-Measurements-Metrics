@@ -4,17 +4,70 @@ import time
 import urllib
 import urllib2
 import datetime
+import os.path
+import string
+from gratia.web.gratia_urls import GratiaURLS
 
 from xml.dom.minidom import parse
 
 from atlas_statistics import dostats as do_atlas_stats
 
-vo_hours = 'http://t2.unl.edu/gratia/xml/osg_vo_hours'
-vo_count = 'http://t2.unl.edu/gratia/xml/osg_vo_count'
+srchUrl = 'VoHoursUrl'
+modName = 'metric_thumbnails'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    vo_hours = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, vo_hours)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#vo_hours = 'http://t2.unl.edu/gratia/xml/osg_vo_hours'
+srchUrl = 'VoCountUrl'
+modName = 'gridscan_download'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    vo_count = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, vo_count)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#vo_count = 'http://t2.unl.edu/gratia/xml/osg_vo_count'
 
-cms_transfers = 'http://t2.unl.edu/phedex/xml/quantity_cumulative'
-datasvc_cms_transfers_prod = 'http://cmsweb.cern.ch/phedex/datasvc/json/prod/transferhistory'
-datasvc_cms_transfers_debug = 'http://cmsweb.cern.ch/phedex/datasvc/json/debug/transferhistory'
+srchUrl = 'CmsTransfersUrl'
+modName = 'gridscan_download'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    cms_transfers = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, cms_transfers)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#cms_transfers = 'http://t2.unl.edu/phedex/xml/quantity_cumulative'
+srchUrl = 'CmsTransfersProdUrl'
+modName = 'gridscan_download'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    datasvc_cms_transfers_prod = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, datasvc_cms_transfers_prod)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#datasvc_cms_transfers_prod = 'http://cmsweb.cern.ch/phedex/datasvc/json/prod/transferhistory'
+srchUrl = 'CmsTransfersDebugUrl'
+modName = 'gridscan_download'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    datasvc_cms_transfers_debug = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, datasvc_cms_transfers_debug)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#datasvc_cms_transfers_debug = 'http://cmsweb.cern.ch/phedex/datasvc/json/debug/transferhistory'
 
 CMS_owned = ['USCMS-FNAL', 'GLOW', 'Purdue', 'CIT_CMS_T2', 'Nebraska', 'MIT_CMS', 'UCSDT2', 'UFlorida']
 ATLAS_owned = ['BNL_ATLAS_1', 'MWT2_UC', 'AGLT2', 'WT2', 'MWT2_IU', 'BU_ATLAS_Tier2', 'UTA_SWT2', 'OU_OCHEP_SWT2', 'SWT2_CPB', 'IU_OSG', 'UC_ATLAS_MWT2', 'OU_OSCER_ATLAS', 'UTA_DPCC']

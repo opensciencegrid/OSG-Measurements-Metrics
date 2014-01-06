@@ -9,8 +9,21 @@ from xml.dom.minidom import parse
 
 from ZSI.client import Binding
 from ZSI import TC
+import os.path
+import string
+from gratia.web.gratia_urls import GratiaURLS
 
-gums_template_url = "http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template"
+srchUrl = 'GumsTemplateUrl'
+modName = 'voms_init'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    gums_template_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, gums_template_url)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#gums_template_url = "http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template"
 
 class HTTPSConnection2(HTTPSConnection):
 

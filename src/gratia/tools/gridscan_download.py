@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 import sys, urllib, urllib2, datetime, time, os
+import os.path
+import string
+from gratia.web.gratia_urls import GratiaURLS
 
 try:
     from pysqlite2 import dbapi2 as sqlite
@@ -65,7 +68,17 @@ def test_time_list(conn, site):
     time_tuples = [time.strptime(i[0], '%Y-%m-%d %H:%M:%S') for i in rows]
     return [datetime.datetime(*i[:6]) for i in time_tuples]
  
-gridscan_url = "http://scan.grid.iu.edu/cgi-bin/get_grid_sv?"
+srchUrl = 'GridScanUrl'
+modName = 'gridscan_download'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    gridscan_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, gridscan_url)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#gridscan_url = "http://scan.grid.iu.edu/cgi-bin/get_grid_sv?"
 
 def site_listing():
     query = urllib.urlencode({"get":"set1"})

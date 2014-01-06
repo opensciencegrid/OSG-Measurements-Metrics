@@ -13,6 +13,9 @@ import time
 # added imports - wbh
 import sets
 import copy
+import string
+import os.path
+from gratia.web.gratia_urls import GratiaURLS
 
 import cherrypy
 from xml.dom.minidom import parse
@@ -766,7 +769,18 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         return info
 
     def gip_validation(self, site):
-        doc = urllib2.urlopen('http://gip-validate.grid.iu.edu/production')
+        srchUrl = 'InitGipValidUrl'
+        modName = 'gip_validation'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            GipValidUrl = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, GipValidUrl)
+        except:
+            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            pass
+        #doc = urllib2.urlopen('http://gip-validate.grid.iu.edu/production')
+        doc = urllib2.urlopen(GipValidUrl)
         row_re = re.compile("<td valign='middle'>(.*)</td>")
         row_re2 = re.compile(site)
         info_re = re.compile("<td height='30' bgcolor='(.*?)'><a href='(.*?)'>")
@@ -800,8 +814,9 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
                         result = "Unknown"
                 if fac not in my_facs:
                     my_facs.append(fac)
-                    info.append((result, "http://gip-validate.grid.iu.edu/production/" + link,
-                        fac))
+                    #info.append((result, "http://gip-validate.grid.iu.edu/production/" + link,
+                    #    fac))
+                    info.append((result, GipValidUrl + link, fac))
         return info
 
     def vo_owner(self, *args, **kw):
@@ -1062,8 +1077,19 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
 
     def d0(self, weekly=False):
         cherrypy.response.headers['Content-Type'] = 'image/png'
-        url = self.metadata.get('d0_csv', 'http://physics.lunet.edu/~snow/' \
-            'd0osgprod.csv')
+        srchUrl = 'InitD0Url'
+        modName = 'd0'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            D0Url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, D0Url)
+        except:
+            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            pass
+        #url = self.metadata.get('d0_csv', 'http://physics.lunet.edu/~snow/' \
+        #    'd0osgprod.csv')
+        url = self.metadata.get('d0_csv', D0Url)
         url_fp = urllib2.urlopen(url)
         metadata = {'croptime':True, 'span':86400, 'pivot_name': 'OSG Site', \
             'grouping_name': 'Date', 'column_names': 'Merged Events', \
@@ -1098,8 +1124,19 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
 
     def d0_basic(self, weekly=False):
         cherrypy.response.headers['Content-Type'] = 'image/png'
-        url = self.metadata.get('d0_csv', 'http://physics.lunet.edu/~snow/' \
-            'd0osgprod.csv')
+        srchUrl = 'InitD0Url'
+        modName = 'd0'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            D0Url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, D0Url)
+        except:
+            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            pass
+        #url = self.metadata.get('d0_csv', 'http://physics.lunet.edu/~snow/' \
+        #    'd0osgprod.csv')
+        url = self.metadata.get('d0_csv', D0Url)
         url_fp = urllib2.urlopen(url)
         metadata = {'croptime':False, 'span':86400, 'pivot_name': 'Date', \
             'column_names': 'Merged Events', \

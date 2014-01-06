@@ -7,6 +7,9 @@ import urllib2
 import datetime
 import calendar
 import json
+import string
+import os.path
+from gratia.web.gratia_urls import GratiaURLS
 
 from xml.dom.minidom import parse
 
@@ -178,8 +181,18 @@ class JOTReporter(Authenticate):
         return starttime, endtime, month, year
 
     def get_apel_data_jot(self, month, year):
-        apel_url = self.metadata.get('apel_url', 'http://gr13x6.fnal.gov:8319/gratia-apel/%i-%02i.summary.dat'\
-            % (year, month))
+        #apel_url = self.metadata.get('apel_url', 'http://gr13x6.fnal.gov:8319/gratia-apel/%i-%02i.summary.dat'\
+        #    % (year, month))
+        srchUrl = 'ApelUrl'
+        modName = 'get_apel_data_jot'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            apel_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, apel_url)
+        except:
+            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            pass
         apel_data = []
         try:
             usock = urllib2.urlopen(apel_url)
@@ -228,7 +241,18 @@ class JOTReporter(Authenticate):
         return apel_data
 
     def get_gridview(self, month, year, federations):
-        url = self.metadata.get('gridview_url', 'http://grid-monitoring.cern.ch/mywlcg/sam-pi/group_availability_in_profile/')
+        #url = self.metadata.get('gridview_url', 'http://grid-monitoring.cern.ch/mywlcg/sam-pi/group_availability_in_profile/')
+        srchUrl = 'GridviewBaseUrl'
+        modName = 'get_gridview'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            gridview_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, gridview_url)
+        except:
+            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            pass
+        url = self.metadata.get('gridview_url', gridview_url)
         params = {\
             'type': 'MONTHLY',
             'value_fields': 'availability,reliability,unknown',
@@ -296,76 +320,79 @@ class JOTReporter(Authenticate):
             results[fed] = data[0]/data[3], data[1]/data[2]
         return results
 
-    def get_gridview_(self, month, year, federations):
-        url = self.metadata.get('gridview_url', 'http://gridview.cern.ch' \
-            '/GRIDVIEW/pi/xml/sam-xml.php')
-        params = {\
-            'summary_period': 'monthly',
-            'value_fields': 'availability,reliability,unknown',
-            'start_time': '%i-%i-%iT00:00:00Z' % (year, month, 1),
-            'end_time': '%i-%i-%iT00:00:01Z' % (year, month, 1),
-            'VO_name[]': 'ops',
-            'Region_name': 'OpenScienceGrid',
-        }
-        full_url = url + '?' + urllib.urlencode(params)
-        print "FEDERATION ----- %s",(full_url)
-        data = urllib2.urlopen(full_url)
-        dom = parse(data)
-        gridview_data = {}
-        for site_dom in dom.getElementsByTagName('Site'):
-            name=site_dom.getAttribute('name')
-            name = name.upper()
-            if name=="IU_OSG":
-                continue
-            gridview_data.setdefault(name, [0, 0])
-            val = None
-            for value_dom in site_dom.getElementsByTagName('availability'):
-                try:
-                    val = float(str(value_dom.firstChild.data))
-                except:
-                    continue
-            gridview_data[name][1] = val
-            val = None
-            for value_dom in site_dom.getElementsByTagName('unknown'):
-                try: 
-                    val = float(str(value_dom.firstChild.data))
-                except:
-                    continue
-            if val != None and gridview_data[name][1] != None and val < \
-                    gridview_data[name][1]:
-                gridview_data[name][1] += val
-            val = None
-            for value_dom in site_dom.getElementsByTagName('reliability'):
-                try:
-                    val = float(str(value_dom.firstChild.data))
-                except:
-                    continue
-            if val != None:
-                gridview_data[name][0] = val
-
-        fed_data = {}
-        for resource, fed in federations.items():
-            print "FED = %s "%(fed)
-            for gv_resource, data in gridview_data.items():
-              print "FED : %s, gv_resource=%s, resource=%s" %(fed, gv_resource, resource)
-              try:
-                if gv_resource == resource.upper():
-                    val = fed_data.setdefault(fed, [0., 0., 0., 0.])
-                    val[2] += 1
-                    val[1] += data[1]
-                    if data[0] != None and data[0] >= 0:
-                        val[0] += data[0]
-                        val[3] += 1
-              except:
-                print "ERROR FED : %s, gv_resource=%s, resource=%s" %(fed, gv_resource, resource)
-        results = {}
-        for fed, data in fed_data.items():
-            if data[3] == 0:
-                data[3] = 1
-            if data[2] == 0:
-                data[2] = 1
-            results[fed] = data[0]/data[3], data[1]/data[2]
-        return results
+    #############################################################################################
+    # wbh - duplicate get_gridview
+    #############################################################################################
+    #def get_gridview_(self, month, year, federations):
+    #    url = self.metadata.get('gridview_url', 'http://gridview.cern.ch' \
+    #        '/GRIDVIEW/pi/xml/sam-xml.php')
+    #    params = {\
+    #        'summary_period': 'monthly',
+    #        'value_fields': 'availability,reliability,unknown',
+    #        'start_time': '%i-%i-%iT00:00:00Z' % (year, month, 1),
+    #        'end_time': '%i-%i-%iT00:00:01Z' % (year, month, 1),
+    #        'VO_name[]': 'ops',
+    #        'Region_name': 'OpenScienceGrid',
+    #    }
+    #    full_url = url + '?' + urllib.urlencode(params)
+    #    print "FEDERATION ----- %s",(full_url)
+    #    data = urllib2.urlopen(full_url)
+    #    dom = parse(data)
+    #    gridview_data = {}
+    #    for site_dom in dom.getElementsByTagName('Site'):
+    #        name=site_dom.getAttribute('name')
+    #        name = name.upper()
+    #        if name=="IU_OSG":
+    #            continue
+    #        gridview_data.setdefault(name, [0, 0])
+    #        val = None
+    #        for value_dom in site_dom.getElementsByTagName('availability'):
+    #            try:
+    #                val = float(str(value_dom.firstChild.data))
+    #            except:
+    #                continue
+    #        gridview_data[name][1] = val
+    #        val = None
+    #        for value_dom in site_dom.getElementsByTagName('unknown'):
+    #            try: 
+    #                val = float(str(value_dom.firstChild.data))
+    #            except:
+    #                continue
+    #        if val != None and gridview_data[name][1] != None and val < \
+    #                gridview_data[name][1]:
+    #            gridview_data[name][1] += val
+    #        val = None
+    #        for value_dom in site_dom.getElementsByTagName('reliability'):
+    #            try:
+    #                val = float(str(value_dom.firstChild.data))
+    #            except:
+    #                continue
+    #        if val != None:
+    #            gridview_data[name][0] = val
+    #
+    #    fed_data = {}
+    #    for resource, fed in federations.items():
+    #        print "FED = %s "%(fed)
+    #        for gv_resource, data in gridview_data.items():
+    #          print "FED : %s, gv_resource=%s, resource=%s" %(fed, gv_resource, resource)
+    #          try:
+    #            if gv_resource == resource.upper():
+    #                val = fed_data.setdefault(fed, [0., 0., 0., 0.])
+    #                val[2] += 1
+    #                val[1] += data[1]
+    #                if data[0] != None and data[0] >= 0:
+    #                    val[0] += data[0]
+    #                    val[3] += 1
+    #          except:
+    #            print "ERROR FED : %s, gv_resource=%s, resource=%s" %(fed, gv_resource, resource)
+    #    results = {}
+    #    for fed, data in fed_data.items():
+    #        if data[3] == 0:
+    #            data[3] = 1
+    #        if data[2] == 0:
+    #            data[2] = 1
+    #        results[fed] = data[0]/data[3], data[1]/data[2]
+    #    return results
 
     def site_normalization_jot(self, month, year, sites=None):
         apel_data = self.get_apel_data_jot(month, year)

@@ -5,10 +5,24 @@ import urllib
 import urllib2
 import calendar
 import datetime
+import os.path
+import string
+from gratia.web.gratia_urls import GratiaURLS
 
 from xml.dom.minidom import parse
 
-url = 'http://t2.unl.edu/gratia/xml/rsv_sam_reliability'
+
+srchUrl = 'RsvSamReliabilityUrl'
+modName = 'fnal_ce_rsv'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, url)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#url = 'http://t2.unl.edu/gratia/xml/rsv_sam_reliability'
 
 def next_month(cur_date):
     month = cur_date.month

@@ -5,14 +5,37 @@ import sys
 import urllib
 import urllib2
 import datetime
+import os.path
+import string
+from gratia.web.gratia_urls import GratiaURLS
 
 from xml.dom.minidom import parse
 
 from graphtool.tools.common import convert_to_datetime, expand_string
 from graphtool.graphs.common_graphs import ScatterPlot
 
-gip_url = 'http://t2.unl.edu/gratia/xml/gip_facility'
-gratia_url = 'http://t2.unl.edu/gratia/xml/facility_hours_bar_smry'
+srchUrl = 'GipUrl'
+modName = 'gip_vs_gratia'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    gip_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, gip_url)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#gip_url = 'http://t2.unl.edu/gratia/xml/gip_facility'
+srchUrl = 'FacilityWorkUrl'
+modName = 'gip_vs_gratia'
+print "%s: srchUrl: %s" % (modName, srchUrl)
+try:
+    gratia_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: retUrl: %s" % (modName, gratia_url)
+except:
+    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    pass
+#gratia_url = 'http://t2.unl.edu/gratia/xml/facility_hours_bar_smry'
 
 def results_parser(dom):
     data = {}

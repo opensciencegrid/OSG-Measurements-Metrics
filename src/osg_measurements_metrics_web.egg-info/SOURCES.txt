@@ -177,6 +177,7 @@ src/gratia/voms/__init__.py
 src/gratia/web/__init__.py
 src/gratia/web/auth.py
 src/gratia/web/gratia_reporting.py
+src/gratia/web/gratia_urls.py
 src/gratia/web/image_map.py
 src/gratia/web/jot_reporting.py
 src/gratia/web/navigate.py

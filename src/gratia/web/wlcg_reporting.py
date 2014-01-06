@@ -8,9 +8,11 @@ import urllib2
 import calendar
 import datetime
 import json
+import os.path
+import string
 from xml.dom.minidom import parse
-from ConfigParser import ConfigParser
-
+#from ConfigParser import ConfigParser
+import ConfigParser
 import cherrypy 
 from pkg_resources import resource_stream
 
@@ -18,6 +20,7 @@ from graphtool.base.xml_config import XmlConfig
 from auth import Authenticate
 from gratia.gip.cpu_normalizations import get_cpu_normalizations
 from wlcg_json_data import WLCGWebUtil
+from gratia.web.gratia_urls import GratiaURLS
 
 def gratia_interval(year, month):
     info = {}
@@ -57,7 +60,16 @@ class WLCGReporter(Authenticate):
 	    return rc
 
     def getcpuinfodictionary(self):
-	urlcpuinfo='http://myosg.grid.iu.edu/misccpuinfo/xml?count_sg_1&count_active=on&count_enabled=on&datasource=cpuinfo'
+        srchUrl = 'CpuInfoUrl'
+        modName = 'getcpuinfodictionary'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            urlcpuinfo = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, urlcpuinfo)
+        except:
+            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            pass
 	xmldoc = urllib2.urlopen(urlcpuinfo)
 	dom = parse(xmldoc)
 	hepspecCpuDict = {}
@@ -193,8 +205,16 @@ class WLCGReporter(Authenticate):
         return subclusters, time_list
 
     def get_apel_data(self, year=datetime.datetime.now().year, month=datetime.datetime.now().month):
-        apel_url = self.metadata.get('apel_url', 'http://gr13x6.fnal.gov:8319/gratia-apel/%i-%02i.summary.dat'\
-            % (year, month))
+        srchUrl = 'ApelUrl'
+        modName = 'get_apel_data'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            apel_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, apel_url)
+        except:
+            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            pass
         usock = urllib2.urlopen(apel_url)
         data = usock.read()
         usock.close()

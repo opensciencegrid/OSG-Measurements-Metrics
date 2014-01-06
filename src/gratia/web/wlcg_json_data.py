@@ -2,6 +2,9 @@ import datetime
 import json
 import urllib2
 import simplejson
+import string
+import os.path
+from gratia.web.gratia_urls import GratiaURLS
 
 class WLCGWebUtil:
     def wlcg_pledges(self, month=datetime.datetime.now().month, year=datetime.datetime.now().year):     
@@ -19,7 +22,17 @@ class WLCGWebUtil:
         atlas_pledge = {}
         alice_pledge = {}
 
-        url = 'http://gstat-wlcg.cern.ch/apps/topology/2/json'
+        #url = 'http://gstat-wlcg.cern.ch/apps/topology/2/json'
+        srchUrl = 'TopologyUrl'
+        modName = 'wlcg_pledges'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, url)
+        except:
+            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            pass
         response  = urllib2.urlopen(url)
 	s = response.read()
 	x = simplejson.loads(s)
@@ -50,7 +63,17 @@ class WLCGWebUtil:
 	        for key in alice_fed:
 			print "\n ALICE FederationAccountingName- %s "%(key)	
 
-        url = 'http://gstat-wlcg.cern.ch/apps/pledges/resources/'+thisyear+'/2/json'
+        #url = 'http://gstat-wlcg.cern.ch/apps/pledges/resources/'+thisyear+'/2/json'
+        srchUrl = 'PledgeUrl'
+        modName = 'wlcg_pledges'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
+            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, url)
+        except:
+            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            pass
         response  = urllib2.urlopen(url)
 	s = response.read()
 	x = simplejson.loads(s)
