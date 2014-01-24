@@ -37,118 +37,28 @@
         apel = [
           #if len($apel) > 0
             #for row in $apel
-                {"Site": '$row.ExecutingSite', "VO": '$row.LCGUserVO', "Njobs": $row.Njobs, "SumCPU": $row.SumCPU, "HS06_CPU": $row.HS06_CPU, "SumWCT": $row.SumWCT, "HS06_WCT": $row.HS06_WCT, "Start": "$row.RecordStart", "End": "$row.RecordEnd", "Norm": $row.HS06Factor},
+                {"FederationName": '$row.FederationName', "ResourceGroup": '$row.ResourceGroup', "VO": '$row.LCGUserVO', "Njobs": $row.Njobs, "SumCPU": $row.SumCPU, "Norm_CPU": $row.Norm_CPU, "SumWCT": $row.SumWCT, "Norm_WCT": $row.Norm_WCT, "Start": "$row.RecordStart", "End": "$row.RecordEnd", "Norm": $row.NormFactor},
             #end for
           #end if
           ];      
-        apel_display=["Site", "VO", "Njobs", "SumCPU", "SumWCT", "HS06_CPU", "End", "Norm"];
-        apel_col_types={"Site":'string', "VO":'string', "Njobs":'number', "SumCPU":'number', "SumWCT":'number', "HS06_CPU":'number', "End":'string', "Norm":'number'};
-        var apel_col_labels = {"Site":"Site", "VO":"VO", "Njobs":"Number of Jobs", "SumCPU":"CPU Hours", "SumWCT":"Wall Hours", "HS06_CPU":"Normalized CPU Hours", "End":"End Date", "Norm":"HEP-SPEC06 Factor"};
+        apel_display=["FederationName", "ResourceGroup", "Norm", "VO", "Njobs", "SumCPU", "SumWCT", "Norm_CPU", "End"];
+        apel_col_types={"FederationName": 'string', "ResourceGroup":'string', "Norm":'number', "VO":'string', "Njobs":'number', "SumCPU":'number', "SumWCT":'number', "Norm_CPU":'number', "End":'string'};
+        var apel_col_labels = {"FederationName": "Federation\nName", "ResourceGroup":"Resource\nGroup", "Norm":"NF", "VO":"VO", "Njobs":"Jobs", "SumCPU":"CPU\nHours", "SumWCT":"Wall\nHours", "Norm_CPU":"Norm\nCPU\nHours", "End":"Last\nReported"};
 
         drawTable(apel,apel_col_types, apel_display, apel_col_labels, "wlcg");
 
-
-     /*     gip = [
-          #if len($subclusters) > 0
-            #set keys = sorted($subclusters.keys(), $getVar('key_sorter', '', False))
-            #for key in keys
-                #set val=$subclusters[key]
-                {"Site": '$key[0]', "Cluster": '$key[1]', "Subcluster": '$key[2]', "Timestamp": '$val[0]', "Processor": '$val[1]', "Cores": $int($val[2]), "HEPSPEC06": '$val[5]$float($val[3])', "Ownership": '$val[4].replace("'", "")'},
-            #end for
-           #end if
-          ];
-        gip_display=["Site", "Cluster", "Subcluster", "Timestamp", "Processor", "Cores", "HEPSPEC06"];
-        gip_col_types={"Site":"string", "Cluster":"string", "Subcluster":"string", "Timestamp":"string", "Processor":"string", "Cores":"number", "HEPSPEC06":"string", "Ownership":"string"};
-        gip_col_labels={"Site":"Site", "Cluster":"Cluster", "Subcluster":"Subcluster", "Timestamp":"Timestamp", "Processor":"Processor Model", "Cores":"Number of WN Cores", "HEPSPEC06":"HEPSPEC06 Score", "Ownership":"Ownership"};
-        drawTable(gip,gip_col_types, gip_display, gip_col_labels, "gip");
-   */
-
-
-    /*      sitenorm = [
-          #if len($site_norm) > 0
-            #set keys = sorted($site_norm.keys(), $getVar('key_sorter', '', False))
-            #for key in keys
-                #set val=$site_norm[key]
-                {Site: '$key', GIPNorm: $val[0], WLCGNorm: $val[1], Diff: $val[2]},
+        fedRpt = [
+          #if len($fedRpt) > 0
+            #for row in $fedRpt
+                {"FederationName": '$row.FederationName', "ResourceGroup": '$row.ResourceGroup', "ResourcesReporting": '$row.ResourcesReporting'},
             #end for
           #end if
-          ];
-        sitenorm_display=["Site", "GIPNorm", "WLCGNorm", "Diff"];
-        sitenorm_col_types={"Site":"string", "GIPNorm":"number", "WLCGNorm":"number", "Diff":"number"};
-        sitenorm_col_labels={"Site":"Site", "GIPNorm":"HEP-SPEC06 factor Calculated by the GIP", "WLCGNorm":"HEP-SPEC06 factor reported to WLCG", "Diff":"GIP Percent Difference"};
-        drawTable(sitenorm,sitenorm_col_types, sitenorm_display, sitenorm_col_labels, "sitenorm");
+          ];      
+        fedRpt_display=["FederationName", "ResourceGroup", "ResourcesReporting"];
+        fedRpt_col_types={"FederationName": 'string', "ResourceGroup":'string', "ResourcesReporting":'string'};
+        var fedRpt_col_labels = {"FederationName": "Federation\nName", "ResourceGroup":"Resource Group", "ResourcesReporting":"Resources Reporting"};
 
-    */ 
-
-          cms = [
-          #if len($pledge['cms']) > 0
-            #set keys = sorted($pledge['cms'].keys(), $getVar('key_sorter', '', False))
-            #for key in keys
-                #set val=$pledge['cms'][key]
-                #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
-                #set delivered=int($val.wlcgNormCPU/float($goal)*100)
-                #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
-                {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, KSI2KAvail: $act_avail[key], OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU},
-            #end for
-          #end if
-          ];
-        cms_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "delivered", "OwnedWCT", "wlcgWCT", "totalWCT", "nonwlcg"];
-        cms_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "delivered":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "nonwlcg":"number"};
-        cms_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"Installed Capacity Pledge", "Actual":"Installed Capacity Reported", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "delivered":"Percent of WLCG goal achieved", "OwnedWCT":"Norm Wall hours  for CMS", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
-        drawTable(cms,cms_col_types, cms_display, cms_col_labels, "cms");
-
- 
-
-          atlas = [
-          #if len($pledge['atlas']) > 0
-            #set keys = sorted($pledge['atlas'].keys(), $getVar('key_sorter', '', False))
-            #for key in keys
-                #set val=$pledge['atlas'][key]
-                #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
-                #set delivered=int($val.wlcgNormCPU/float($goal)*100)
-                #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
-                {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU},
-            #end for
-          #end if
-          ];
-        atlas_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "delivered", "OwnedWCT", "wlcgWCT", "totalWCT", "nonwlcg"];
-        atlas_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "delivered":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "nonwlcg":"number"};
-        atlas_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"Installed Capacity Pledge", "Actual":"Installed Capacity Reported", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "delivered":"Percent of WLCG goal achieved", "OwnedWCT":"Norm Wall hours  for ATLAS", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
-        drawTable(atlas,atlas_col_types, atlas_display, atlas_col_labels, "atlas");
-
-
-          alice= [
-          #if $pledge.has_key('alice') and len($pledge['alice']) > 0
-            #set keys = sorted($pledge['alice'].keys(), $getVar('key_sorter', '', False))
-            #for key in keys
-                #set val=$pledge['alice'][key]
-                #set goal=int(float($val.pledge)*$val.efficiency*$val.days_in_month*24)
-                #set delivered=int($val.wlcgNormCPU/float($goal)*100)
-                #set nonwlcg=int(($val.totalNormWCT-$val.wlcgNormWCT)/float($val.totalNormWCT)*100)
-                {WLCGSite: '$key', Pledge: $val.pledge, Actual: $val.actual, Goal: $goal, OwnedWCT: $val.voNormWCT, wlcgWCT: $val.wlcgNormWCT, totalWCT: $val.totalNormWCT, delivered: $delivered, nonwlcg: $nonwlcg, wlcgCPU: $val.wlcgNormCPU},
-            #end for
-          #end if
-          ];
-        alice_display=["WLCGSite", "Pledge", "Actual", "Goal", "wlcgCPU", "delivered", "OwnedWCT", "wlcgWCT", "totalWCT", "nonwlcg"];
-        alice_col_types={"WLCGSite":"string", "Pledge":"number", "Actual":"number", "Goal":"number", "wlcgCPU":"number", "delivered":"number", "OwnedWCT":"number", "wlcgWCT":"number", "totalWCT":"number", "nonwlcg":"number"};
-        alice_col_labels={"WLCGSite":"WLCG Accounting Name", "Pledge":"Installed Capacity Pledge", "Actual":"Installed Capacity Reported", "Goal":"Month goal of Norm CPU hours", "wlcgCPU":"Norm CPU hours for all WLCG", "delivered":"Percent of WLCG goal achieved", "OwnedWCT":"Norm Wall hours  for ALICE", "wlcgWCT":"Norm Wall hours for all WLCG", "totalWCT":"Norm Wall for all VOs", "nonwlcg":"Percent of site's time delivered to non-WLCG VOs"};
-        drawTable(alice,alice_col_types, alice_display, alice_col_labels, "alice");
-
-
-     /*     summary= [
-          #if len($summary) > 0
-            #set keys = sorted($summary.keys(), $getVar('key_sorter', '', False))
-            #for key in keys
-                {Site: '$key', WLCGAccounting: "$summary[$key]['accounting']", Subclusters: $summary[$key]['subclusters']},
-            #end for
-          #end if
-          ];
-
-        summary_display=["Site", "WLCGAccounting", "Subclusters"];
-        summary_col_types={"Site":"string", "WLCGAccounting":"string", "Subclusters":"number"};
-        summary_col_labels={"Site":"OSG Site name", "WLCGAccounting":"WLCG Accounting Site", "Subclusters":"Number of GIP Subclusters"};
-        drawTable(summary,summary_col_types, summary_display, summary_col_labels, "summary");
-     */
+        drawTable(fedRpt, fedRpt_col_types, fedRpt_display, fedRpt_col_labels, "fedRpt");
 
       }
 
@@ -179,7 +89,6 @@
       }
 
 
-
 </script>
 
 <h3>Page Contents:</h3>
@@ -188,11 +97,6 @@
     <li><a href="#wlcg">Per-site WLCG Accounting Summary</a></li>
     <li><a href="#atlas">USATLAS T2 WLCG Accounting Data</a></li>
     <li><a href="#cms">USCMS T2 WLCG Accounting Data</a></li>
- <!--   
-    <li><a href="#gip">GIP Subcluster Summary</a></li>
-    <li><a href="#sitenorm">Site Normalization Factors</a></li>
-    <li><a href="#summary">Available Data Summary</a></li>
-    -->
 </ul>
 
 
@@ -232,88 +136,12 @@
 <br/>
 <hr/>
 
-<h1>WLCG Pledge Information</h1>
-<p>Each WLCG site has pledged a certain amount of HEP-SPEC06 for their site; in this section, we compare the amount of pledged HEP-SPEC06 CPU hours to this month's accounting data.  The accounting data is measured in HEP-SPEC06-hours, which is the number of hours recorded by the accounting system multiplied by the site normalization factor (shown above).  We show data using both CPU hours and Wall (elapsed) hours.  Each WLCG site should attempt to hit this month's goal, which is the HEP-SPEC06 pledge amount times the number of hours in the month times a CPU efficiency factor.  The CPU efficiency factor is currently 70%.
-  The table below shows:
-<ul>
-  <li><strong>$pledge_year HEP-SPEC06 Pledge:</strong> $pledge_year HEP-SPEC06 pledge in the WLCG MoU</li>
-  <li><strong>Month goal of CPU hours:</strong> The corresponding number of CPU hours which should be achieved this month (assumes a CPU efficiency of 70% from the pledged amount).</li>
-  <li><strong>Normalized CPU hours for all WLCG</strong> The number of normalized CPU hours contributed to all WLCG VOs (atlas, cms, alice, lhcb).</li>
-  <li><strong>Measured HEP-SPEC06</strong> The measured HEP-SPEC06 size from the GIP using (4*&Sigma;si2k*cores)/1000
+<h2>Resources Reporting for Each Resource Group</h2>
+<div id="fedRpt"></div>
 
-  <li><strong>Owner VO's HEP-SPEC06-Availability</strong> <a href="#availability">Explained below</a>.  For each day of the month, multiply that day's available HEP-SPEC06 times the owner VO's ownership percentage times the RSV-measured availability, then sum them up.</li>
-  <li><strong>Normalized wall hours for owner</strong> The number of normalized wall hours contributed to the VO which owns the site.</li>
-  <li><strong>Normalized wall hours for all WLCG</strong> The number of normalized wall hours contributed to all WLCG VOs (atlas, cms, alice, lhcb).</li>
-  <li><strong>Normalized wall hours for all VOs</strong> The number of normalized wall hours contributed to all VOs.</li>
-  <li><strong>Percent of WLCG goal</strong> The percentage of the entire months's goal delivered.  This is computed by (<strong>Normalized CPU hours for WLCG</strong>)/(<strong>monthly goal</strong>). </li>
-  <li><strong>Percent of site's time delivered to non-WLCG VOs</strong> The percentage of the normalized wall hours delivered to non-WLCG VOs out of the site's total for this month</li>
-</ul>
-Please note that the mapping from OSG site to WLCG site is not one-to-one.
-Sometimes, several OSG sites put together compose a single WLCG site.  Further,
- the WLCG names are not the same as the OSG name.  For example, Nebraska is 
-known as "T2_US_Nebraska" to the WLCG, or AGLT2 is "US-AGLT2".
-</p>
-<h2>ATLAS Sites</h2>
-<div id="atlas"></div>
-<h2>CMS Sites</h2>
-<div id="cms"></div>
-<h2>ALICE Sites</h2>
-<div id="alice"></div>
 
 <br/>
 <hr/>
 
-<!--
-<h1>GIP Subcluster Information</h1>
-
-<p>In order to generate an accurate HEP-SPEC06 factor, the site must 
-   advertise the make-up of each cluster using the GIP.  Each cluster is 
-   divided into heterogeneous (in terms of CPU model) subclusters.  When the
-   GIP configuration is run, the site admin specifies, for each subcluster:
-   <ul>
-      <li>Subcluster name (must be unique)</li>
-      <li>CPU Processor model</li>
-      <li>Number of cores per subcluster</li>
-      <li>(Optional override using alter-attributes.conf) The HEPSPEC06 score per
-          core.
-      </li>
-   </ul>
-   The HEP-SPEC06 factor is the average HEPSPEC06 score, weighted by number of
-   cores, then divided by 1000.
-</p>
-<p> The process of changing the HEPSPEC06 score per core through the 
-    alter-attributes.conf is <a href="https://twiki.grid.iu.edu/twiki/bin/view/InformationServices/GipSi2k">documented here</a>
-</p>
-<p> The lookup table for CPU normalization <a href="$base_url/cpu_normalization">is posted here</a>.
-</p>
-
-<p>The table below shows the GIP-recorded subcluster information for each site.
-<strong>HEPSPEC Score with prefixed with '*' is calculated based on kSI2K constant</strong> 
-</p>
-#if $gip_report_time
-<p>This data was reported at $gip_report_time.</p>
-#end if
-<div id="gip"></div>
-
-<br/>
-<hr/>
-<h1>Site HEP-SPEC06 Calculation</h1>
-<p>The table below shows the calculated HEP-SPEC06 factor (using the above
-   table), the HEP-SPEC06 factor reported to the WLCG, and the percent
-   difference.  Nominally, all WLCG sites should focus on switching to the 
-   GIP-based HEP-SPEC06 factor from the manually-update one.
-</p>
-<div id="sitenorm"></div>
-
-<br/>
-<hr/>
-<h1>Data Summary</h1>
-<p>Finally, the following table shows the data available for each site.  Ideally,
-   each site should have an accompanying WLCG Accounting name and more than one
-   GIP subcluster; any incorrect data in the above tables is usually due to one or
-   both of these missing.
-</p>
-<div id="summary"></div>
--->
 #end if
 
