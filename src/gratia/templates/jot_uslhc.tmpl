@@ -1,4 +1,4 @@
-#import locale
+
 #if $error
 
   <p style="background-color: #FEEFB3;padding:20px;">We're sorry, but an error occurred while collecting the data for the page.
@@ -10,87 +10,94 @@
 
 #else
 
-<style type="text/css">
-.yui-skin-sam .yui-dt td {
-            margin:0;padding:0;
-            border:none;
-            border-right:1px solid #CBCBCB; /* inner column border */
-            text-align:right;
-        }
-</style>
-<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+<h1>WLCG Reporting (Overview) for $month_name, $year</h1>
 
+<style type="text/css">
+.yui-skin-sam .yui-dt td { 
+	    margin:0;padding:0; 
+	    border:none; 
+	    border-right:1px solid #CBCBCB; /* inner column border */ 
+	    text-align:right; 
+	} 
+</style>
+
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
 <script>
-        function addComma(yourNumber) {
+      function addComma(yourNumber) 
+      {
             var n= yourNumber.toString().split(".");
             n[0] = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             return n.join(".");
-        }
+      }
 
       google.load('visualization', '1', {packages:['table']});
       google.setOnLoadCallback(drawTables);
       function drawTables()
       {
-  var cmsValues = 
-        [
-                  #if len($cms_feds) > 0
-                    #set keys = sorted($cms_feds)
-                    #for key in $keys
-                        ['$key', {v: $round(100*$reliability[$key])}, {v: $round(100*$availability[$key])}, {v: $round($wall[$key]), f:addComma($round($wall[$key]))},{v: $round(100*$lhc_cpu[$key]/$float($lhc_wall[$key]+1e-6))}, {v: $round($cpu[$key]), f:addComma($round($cpu[$key]))}, {v: $mou[$key], f:addComma($mou[$key])}, {v: $round($lhc_cpu[$key]), f:addComma($round($lhc_cpu[$key]))}],
-                    #end for
-                  #end if
-        ];
+        apel = [
+          #if len($apel) > 0
+            #for row in $apel
+                {"FederationName": '$row.FederationName', "ResourceGroup": '$row.ResourceGroup', "VO": '$row.LCGUserVO', "Njobs": $row.Njobs, "SumCPU": $row.SumCPU, "Norm_CPU": $row.Norm_CPU, "SumWCT": $row.SumWCT, "Norm_WCT": $row.Norm_WCT, "Start": "$row.RecordStart", "End": "$row.RecordEnd", "Norm": $row.NormFactor, "NormPledge": $row.NormPledge, "PctPledge": $row.PctPledge},
+            #end for
+          #end if
+          ];      
+        apel_display=["FederationName", "ResourceGroup", "VO", "Njobs", "SumWCT", "SumCPU", "Norm_CPU", "NormPledge", "PctPledge" ];
+        apel_col_types={"FederationName": 'string', "ResourceGroup":'string', "Norm":'number', "VO":'string', "Njobs":'number', "SumCPU":'number', "SumWCT":'number', "Norm_CPU":'number', "End":'string', "NormPledge": 'number', "PctPledge": 'number'};
+        var apel_col_labels = {"FederationName": "Federation \nName", "ResourceGroup":"Resource \nGroup", "Norm":"NF", "VO":"VO", "Njobs":"Jobs", "SumCPU":"CPU \nHours", "SumWCT":"Wall \nHours", "Norm_CPU":"Norm \nCPU \nHours", "End":"Last \nReported", "NormPledge": "Pledged \nNormalized \nCPU \nHours", "PctPledge": "Percent \nof \nPledge"};
 
-  var atlasValues = 
-        [
-                  #if len($atlas_feds) > 0
-                    #set keys = sorted($atlas_feds)
-                    #for key in $keys
-                        ['$key', {v: $round(100*$reliability[$key])}, {v: $round(100*$availability[$key])}, {v: $round($wall[$key]), f:addComma($round($wall[$key]))},{v: $round(100*$lhc_cpu[$key]/$float($lhc_wall[$key]+1e-6))}, {v: $round($cpu[$key]), f:addComma($round($cpu[$key]))}, {v: $mou[$key], f:addComma($mou[$key])}, {v: $round($lhc_cpu[$key]), f:addComma($round($lhc_cpu[$key]))}],
-                    #end for
-                  #end if
-        ];
+        drawTable(apel,apel_col_types, apel_display, apel_col_labels, "wlcg");
 
-  var aliceValues = 
-        [
-                  #if len($alice_feds) > 0
-                    #set keys = sorted($alice_feds)
-                    #for key in $keys
-                        ['$key', {v: $round(100*$reliability[$key])}, {v: $round(100*$availability[$key])}, {v: $round($wall[$key]), f:addComma($round($wall[$key]))},{v: $round(100*$lhc_cpu[$key]/$float($lhc_wall[$key]+1e-6))}, {v: $round($cpu[$key]), f:addComma($round($cpu[$key]))}, {v: $mou[$key], f:addComma($mou[$key])}, {v: $round($lhc_cpu[$key]), f:addComma($round($lhc_cpu[$key]))}],
-                    #end for
-                  #end if
-        ];
-        drawTable(cmsValues,'cms') ;
-        drawTable(atlasValues,'atlas') ;
-        drawTable(aliceValues,'alice') ;
+        fedRpt = [
+          #if len($fedRpt) > 0
+            #for row in $fedRpt
+                {"FederationName": '$row.FederationName', "ResourceGroup": '$row.ResourceGroup', "ResourcesReporting": '$row.ResourcesReporting', "NormCapacity": $row.NormCapacity, "NormPledge": $row.NormPledge},
+            #end for
+          #end if
+          ];      
+        fedRpt_display=["FederationName", "ResourceGroup", "ResourcesReporting", "NormCapacity", "NormPledge" ];
+        fedRpt_col_types={"FederationName":'string', "ResourceGroup":'string', "ResourcesReporting":'string', "NormCapacity":'number', "NormPledge":'number'};
+        var fedRpt_col_labels = {"FederationName": "Federation Name", "ResourceGroup":"Resource Group", "ResourcesReporting":"Resources Reporting", "NormCapacity": "Normalized \nInstalled \nCapacity", "NormPledge": "Normalized \nCapacity \nPledged"};
+
+        drawTable(fedRpt, fedRpt_col_types, fedRpt_display, fedRpt_col_labels, "fedRpt");
+
       }
 
-      function drawTable(rowArray, divid) {
+
+      function drawTable(rowHash,columnTypes, showColumns, colLables, inDiv) {
         var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Federation');
-        data.addColumn('number', 'Reliability');
-        data.addColumn('number', 'Availability');
-        data.addColumn('number', 'CPU Wallclock hours for Owner VO');
-        data.addColumn('number', 'CPU efficiency for Owner VO');
-        data.addColumn('number', 'CPU hours for Owner VO');
-        data.addColumn('number', 'MoU Pledge');
-        data.addColumn('number', 'Wallclock hours delivered to all OSG VOs');
+        for (var i in showColumns) {
+          data.addColumn(columnTypes[showColumns[i]], colLables[showColumns[i]]);
+        }
+
+        var rowArray =[];
+        for (var i in rowHash) {
+          var eachrow=[];
+          for (var j in showColumns) {
+                if(columnTypes[showColumns[j]] == 'number')
+                {
+                        eachrow.push({v:rowHash[i][showColumns[j]], f:addComma(rowHash[i][showColumns[j]])});
+                }else
+                {
+                        eachrow.push(rowHash[i][showColumns[j]]);
+                }
+          }
+          rowArray.push(eachrow);
+        }
         data.addRows(rowArray);
-        var table = new google.visualization.Table(document.getElementById(divid));
+        var table = new google.visualization.Table(document.getElementById(inDiv));
         table.draw(data);
       }
 
-</script>
-<div id='table_div'></div>
 
-<h2>$month_name $year Overview:</h2>
-<p>This report shows USLHC Tier 2 reliability and usage during $month_name $year as measured by OSG tools.</p>
+</script>
+
 <div>
 <form action="$base_url/jot_reporting" method="get">
-<p>Select a different month's data:</p>
+<p>Select a different month's data - :</p>
 <p><label for="year">Year:</label>
 <select name="year">
-    #for i in range(2007, $year+1+int($month==12))
+    #import datetime
+    #for i in range(2007, datetime.datetime.now().year+1)
         #if $i == $year
             <option selected value="$i">$i</option>
         #else
@@ -112,17 +119,20 @@
 </p>
 </form>
 </div>
-<h5>ATLAS</h5>
-<div id="atlas"></div>
 <br/>
-<h5>CMS</h5>
-<div id="cms"></div>
+
+<p>This data was reported at $report_time</p>
+<p>(Note: Click on the column headers to sort the table by that column.)</p>
+<div id="wlcg"></div> 
 <br/>
-<h5>ALICE</h5>
-<div id="alice"></div>
-<ul>
-<li>MOU Pledge is in units of "CPU Hours for the month, assuming Efficiency of 60%."</li>
-<li>Reliability/Availability cells colored to match WLCG: green indicate a score between 90% and 100%; yellow indicate a score between 60% and 90%; orange indicate a score between 30% and 60%; red indicate a score between 0% and 30%</li>
-</ul>
+<hr/>
+
+<h2>Federation Installed Capacity</h2>
+<div id="fedRpt"></div>
+
+
+<br/>
+<hr/>
+
 #end if
 

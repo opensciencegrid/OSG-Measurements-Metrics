@@ -185,6 +185,7 @@ src/gratia/web/subcluster_report.py
 src/gratia/web/template.py
 src/gratia/web/thumbnails.py
 src/gratia/web/vo_installed_capacity.py
+src/gratia/web/wlcg_json_cap.py
 src/gratia/web/wlcg_json_data.py
 src/gratia/web/wlcg_reporting.py
 src/osg_measurements_metrics_db.egg-info/PKG-INFO

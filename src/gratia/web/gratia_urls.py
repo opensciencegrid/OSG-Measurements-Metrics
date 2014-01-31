@@ -17,6 +17,7 @@ class GratiaURLS:
                 "OimUrl": "http://myosg.grid.iu.edu/misccpuinfo/xml?datasource=cpuinfo&count_sg_1=on",
                 "TopologyUrl": "http://gstat-wlcg.cern.ch/apps/topology/2/json",
                 "PledgeUrl": "http://gstat-wlcg.cern.ch/apps/pledges/resources/{year}/2/json",
+                "FedCapacityUrl": "http://gstat-wlcg.cern.ch/apps/capacities/federations/ALL/{year}/{month}/2/json",
                 "PledgeTableUrl": "http://gratiaweb.grid.iu.edu/gratia/pledge_table",
                 "GridviewBaseUrl": "http://grid-monitoring.cern.ch/mywlcg/sam-pi/group_availability_in_profile/",
                 "GridResServUrl": "http://myosg.grid.iu.edu/miscmetric/xml?datasource=metric&metric_attrs_showservices=on",
