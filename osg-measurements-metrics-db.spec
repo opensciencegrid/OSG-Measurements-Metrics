@@ -62,8 +62,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 
 * Tue Feb 12 2014 William B Hurst <wbhurst@cse.unl.edu>
-- Changes more amenable to python2.4 and revised WLCG
-- Reporting (Overview).
+- Continued changes to improve WLCG Reporting pages.
+- Removed old unused code and moved urls into a class.
 
 * Mon Jan 31 2014 William B Hurst <wbhurst@cse.unl.edu>
 - Major changes to 'WLCG Reporting (Detailed)' and 
