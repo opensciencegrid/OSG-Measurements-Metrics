@@ -18,24 +18,23 @@ srchUrl = 'AvailSummaryUrl'
 modName = 'avail_vs_work'
 print "%s: srchUrl: %s" % (modName, srchUrl)
 try:
-    avail_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    avail_url  = GratiaURLS().GetUrl(srchUrl)
+    print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     print "%s: retUrl: %s" % (modName, avail_url)
 except:
-    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     pass
-#avail_url = 'http://t2.unl.edu/gratia/xml/avail_summary_daily'
+
 srchUrl = 'FacilityWorkUrl'
 modName = 'avail_vs_work'
 print "%s: srchUrl: %s" % (modName, srchUrl)
 try:
-    work_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    work_url  = GratiaURLS().GetUrl(srchUrl)
+    print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     print "%s: retUrl: %s" % (modName, work_url)
 except:
-    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     pass
-#work_url = 'http://t2.unl.edu/gratia/xml/facility_hours_bar_smry'
 
 def results_parser(dom):
     data = {}

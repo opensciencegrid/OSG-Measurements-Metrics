@@ -37,31 +37,17 @@
         apel = [
           #if len($apel) > 0
             #for row in $apel
-                {"FederationName": '$row.FederationName', "ResourceGroup": '$row.ResourceGroup', "VO": '$row.LCGUserVO', "Njobs": $row.Njobs, "SumCPU": $row.SumCPU, "Norm_CPU": $row.Norm_CPU, "SumWCT": $row.SumWCT, "Norm_WCT": $row.Norm_WCT, "Start": "$row.RecordStart", "End": "$row.RecordEnd", "Norm": $row.NormFactor, "NormPledge": $row.NormPledge, "PctPledge": $row.PctPledge},
+                {"FederationName": '$row.FederationName', "Njobs": $row.Njobs, "SumCPU": $row.SumCPU, "Norm_CPU": $row.Norm_CPU, "SumWCT": $row.SumWCT, "Norm_WCT": $row.Norm_WCT },
             #end for
           #end if
           ];      
-        apel_display=["FederationName", "ResourceGroup", "VO", "Njobs", "SumWCT", "SumCPU", "Norm_CPU", "NormPledge", "PctPledge" ];
-        apel_col_types={"FederationName": 'string', "ResourceGroup":'string', "Norm":'number', "VO":'string', "Njobs":'number', "SumCPU":'number', "SumWCT":'number', "Norm_CPU":'number', "End":'string', "NormPledge": 'number', "PctPledge": 'number'};
-        var apel_col_labels = {"FederationName": "Federation \nName", "ResourceGroup":"Resource \nGroup", "Norm":"NF", "VO":"VO", "Njobs":"Jobs", "SumCPU":"CPU \nHours", "SumWCT":"Wall \nHours", "Norm_CPU":"Norm \nCPU \nHours", "End":"Last \nReported", "NormPledge": "Pledged \nNormalized \nCPU \nHours", "PctPledge": "Percent \nof \nPledge"};
+        apel_display=["FederationName", "Njobs", "SumCPU", "SumWCT", "Norm_CPU", "Norm_WCT" ];
+        apel_col_types={"FederationName": 'string', "Njobs":'number', "SumCPU":'number', "SumWCT":'number', "Norm_CPU":'number', "End":'string', "Norm_WCT":'number' };
+        var apel_col_labels = {"FederationName": "Federation \nAccounting \nName", "Njobs":"Jobs", "SumCPU":"CPU \nHours", "SumWCT":"Wall \nHours", "Norm_CPU":"Normalized \nCPU \nHours", "Norm_WCT":"Normalized \nWall Clock \nHours" };
 
         drawTable(apel,apel_col_types, apel_display, apel_col_labels, "wlcg");
 
-        fedRpt = [
-          #if len($fedRpt) > 0
-            #for row in $fedRpt
-                {"FederationName": '$row.FederationName', "ResourceGroup": '$row.ResourceGroup', "ResourcesReporting": '$row.ResourcesReporting', "NormCapacity": $row.NormCapacity, "NormPledge": $row.NormPledge},
-            #end for
-          #end if
-          ];      
-        fedRpt_display=["FederationName", "ResourceGroup", "ResourcesReporting", "NormCapacity", "NormPledge" ];
-        fedRpt_col_types={"FederationName":'string', "ResourceGroup":'string', "ResourcesReporting":'string', "NormCapacity":'number', "NormPledge":'number'};
-        var fedRpt_col_labels = {"FederationName": "Federation Name", "ResourceGroup":"Resource Group", "ResourcesReporting":"Resources Reporting", "NormCapacity": "Normalized \nInstalled \nCapacity", "NormPledge": "Normalized \nCapacity \nPledged"};
-
-        drawTable(fedRpt, fedRpt_col_types, fedRpt_display, fedRpt_col_labels, "fedRpt");
-
       }
-
 
       function drawTable(rowHash,columnTypes, showColumns, colLables, inDiv) {
         var data = new google.visualization.DataTable();
@@ -87,7 +73,6 @@
         var table = new google.visualization.Table(document.getElementById(inDiv));
         table.draw(data);
       }
-
 
 </script>
 
@@ -126,9 +111,6 @@
 <div id="wlcg"></div> 
 <br/>
 <hr/>
-
-<h2>Federation Installed Capacity</h2>
-<div id="fedRpt"></div>
 
 
 <br/>

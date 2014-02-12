@@ -16,13 +16,11 @@ modName = 'dashboard_analyzer'
 print "%s: srchUrl: %s" % (modName, srchUrl)
 try:
     service_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     print "%s: retUrl: %s" % (modName, service_url)
 except:
-    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     pass
-#service_url = 'http://dashb-cms-sam.cern.ch/dashboard/request.py/' \
-#    'historicalserviceavailability.png'
 
 def download_data(site, service, start, end):
     params = dict(dashboard_defaults)

@@ -50,11 +50,11 @@ class WLCGReporter(Authenticate):
         modName = 'getcpuinfodictionary'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            urlcpuinfo = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            urlcpuinfo = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, urlcpuinfo)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
 	xmldoc = urllib2.urlopen(urlcpuinfo)
 	dom = parse(xmldoc)
@@ -76,11 +76,11 @@ class WLCGReporter(Authenticate):
         modName = 'get_apel_data'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            apel_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            apel_url = GratiaURLS().GetUrl(srchUrl, year, month)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, apel_url)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         usock = urllib2.urlopen(apel_url)
         data = usock.read()

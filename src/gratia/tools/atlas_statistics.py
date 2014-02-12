@@ -17,16 +17,14 @@ srchUrl = 'DashboardUrl'
 modName = 'atlas_statistics'
 print "%s: srchUrl: %s" % (modName, srchUrl)
 try:
-    dashboard_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    dashboard_url  = GratiaURLS().GetUrl(srchUrl)
+    print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     print "%s: retUrl: %s" % (modName, dashboard_url)
 except:
-    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     pass
 print "===================================="
-#dashboard_url = 'http://dashb-atlas-data.cern.ch/dashboard/request.py/site'
-#dashboard_t0_url ='http://dashb-atlas-data-tier0.cern.ch/dashboard/request.py'\
-#    '/site'
+
 dashboard_t0_url = dashboard_url
 
 def parse_and_print(url, to='.*'):

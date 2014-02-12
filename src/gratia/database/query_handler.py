@@ -78,11 +78,11 @@ class OimCriticalMetrics(PeriodicUpdater):
         modName = 'OimCriticalMetrics'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            self.url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            self.url = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, self.url)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         super(OimCriticalMetrics, self).__init__(self.url)
 
@@ -130,11 +130,11 @@ class OimVoFilter(PeriodicUpdater):
         modName = 'OimVoFilter'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            self.url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            self.url = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, self.url)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         super(OimVoFilter, self).__init__(self.url)
 
@@ -178,17 +178,15 @@ class OimResourceFilter(PeriodicUpdater):
     """
 
     def __init__(self):
-        #self.url = "http://myosg.grid.iu.edu/rgsummary/xml?datasource=" \
-        #    "summary&all_resources=on&summary_attrs_showwlcg=on"
         srchUrl = 'OimResFilterUrl'
         modName = 'OimResourceFilter'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            self.url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            self.url = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, self.url)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         super(OimResourceFilter, self).__init__(self.url)
 
@@ -246,17 +244,15 @@ class OimFosFilter(PeriodicUpdater):
     """ Adds a 'Field Of Science' value to query results """
 
     def __init__(self):
-        #self.url = "http://myosg.grid.iu.edu/miscproject/xml?count_sg_1&count_active="\
-        #    "on&count_enabled=on"
         srchUrl = 'OimFosFilterUrl'
         modName = 'OimFosFilter'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            self.url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            self.url = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, self.url)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         super(OimFosFilter, self).__init__(self.url)
 
@@ -307,18 +303,15 @@ oim_fos_filter = OimFosFilter()
 class OimScienceFilter(PeriodicUpdater):
 
     def __init__(self):
-        #self.url = 'http://myosg.grid.iu.edu/vosummary/xml?datasource=summary' \
-        #    '&summary_attrs_showfield_of_science=on&all_vos=on&' \
-        #    'show_disabled=on&active_value=1'
         srchUrl = 'OimScienceFilterUrl'
         modName = 'OimScienceFilter'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            self.url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            self.url = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, self.url)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         super(OimScienceFilter, self).__init__(self.url)
 
@@ -397,61 +390,51 @@ class CSVScienceFilter(PeriodicUpdater):
 class ScienceFilter(object):
     
     def __init__(self):
-        #engage_filter = CSVScienceFilter('http://engage-central.renci.org/' \
-        #    'engage-sciences.csv')
         srchUrl = 'EngageFilterUrl'
         modName = 'ScienceFilter'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            EngageUrl = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            EngageUrl = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, EngageUrl)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         engage_filter = CSVScienceFilter(EngageUrl)
-        #nysgrid_filter = CSVScienceFilter('http://t2.unl.edu/store/NYSGrid-' \
-        #    'classifications.csv')
-        #-----------------------------------------------------------------
-        #nysgrid_filter = CSVScienceFilter('https://www.ccr.buffalo.edu/' \
-        #    'download/attachments/31558659/NYSGrid-classifications.csv')
+        #-----------------------------------------------------------------------
         srchUrl = 'NysGridFilterUrl'
         modName = 'ScienceFilter'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            NysGridUrl = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            NysGridUrl = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, NysGridUrl)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         nysgrid_filter = CSVScienceFilter(NysGridUrl)
         #-----------------------------------------------------------------
-        #override_filter = CSVScienceFilter('http://t2.unl.edu/store/' \
-        #    'override-classifications.csv')
         srchUrl = 'OverrideFilterUrl'
         modName = 'ScienceFilter'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            OverrideUrl = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            OverrideUrl = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, OverrideUrl)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         override_filter = CSVScienceFilter(OverrideUrl)
         oim_filter = OimScienceFilter()
-        #twiki_filter = CSVScienceFilter('https://twiki.grid.iu.edu/twiki/pub' \
-        #    '/MeasurementsAndMetrics/MetricScienceUsage/othermapping.csv')
         srchUrl = 'TwikiFilterUrl'
         modName = 'ScienceFilter'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            TwikiUrl = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            TwikiUrl = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, TwikiUrl)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         twiki_filter = CSVScienceFilter(TwikiUrl)
         self.filters = [engage_filter, nysgrid_filter, oim_filter, twiki_filter,
@@ -838,20 +821,6 @@ def init_data(d, serviceData, serviceNames, metricNames, starttime, endtime,
 def init_service_summary(serviceSummary, serviceData, serviceNames,metricNames,
         startTime, endTime):
     for serviceName in serviceNames:
-        #if 'Maintenance' in metricNames:
-            # We must make sure that the "Maintenance" metric is set to the
-            # OK status at all times to start out with.  If Maintenance is
-            # actually done, the Maintenance metric will be degraded to
-            # MAINTENANCE status.
-        #    curDate = startTime
-        #    oneDay = datetime.timedelta(1, 0)
-        #    key = serviceName, 'Maintenance'
-        #    if key not in serviceData:
-        #        serviceData[key] = {}
-        #    vals = serviceData[key]
-        #    while curDate < endTime:
-        #        vals[curDate] = "OK"
-        #        curDate += oneDay
         for metricName in metricNames:
             key = serviceName, metricName
             if key not in serviceData:
@@ -865,9 +834,6 @@ def init_service_summary(serviceSummary, serviceData, serviceNames,metricNames,
                 vals[startTime] = startStatus
             if endTime not in vals:
                 vals[endTime] = startStatus
-        #serviceSummary[serviceName] = {}
-        #serviceSummary[serviceName][startTime] = [endTime, 'UNKNOWN']
-        #serviceSummary[serviceName][endTime] = [endTime, 'UNKNOWN']
 
     serviceSummaries = []
     for metricName in metricNames:
@@ -900,15 +866,10 @@ def init_service_summary(serviceSummary, serviceData, serviceNames,metricNames,
                             max_j = j
                             break
 
-                    #if serviceName == 'UCSDT2-B':
-                    #    print serviceName, starttime, endtime, 'OK', metricName
-
                     # Expire tests after 24 hours, unless it's maintenance
                     if metricName != 'Maintenance':
                         endtime = min(endtime, starttime + datetime.timedelta(0,
                             86400))
-                    #else:
-                    #    print serviceName, starttime, endtime - starttime, 
                     max_j_endtime = endtime
 
                     # Make sure that our start and end times are within the
@@ -960,15 +921,6 @@ def wlcg_availability(d, globals=globals(), **kw):
     init_service_summary(serviceSummary, serviceData, serviceNames,
         metricNames, startTime, endTime)
 
-    # Calculate when the status changes occur
-    #for metric in metricNames:
-    #    print metric, serviceData['Purdue-Steele', metric]
-    #    keys = serviceData['Purdue-Steele', metric].keys(); keys.sort()
-    #    print keys
-    #print serviceSummary["Purdue-Steele"]
-    #filter_summaries("OK", serviceNames, metricNames, serviceData,
-    #    serviceSummary)
-    #print serviceSummary["Purdue-Steele"]
     filter_summaries("UNKNOWN", serviceNames, metricNames, serviceData,
         serviceSummary)
     #print serviceSummary["Purdue-Steele"]
@@ -1330,17 +1282,16 @@ def get_gratia_ownership(globals):
 
 
 def voownership():
-    #urltofetch='https://myosg.grid.iu.edu/rgsummary/xml?datasource=summary&summary_attrs_showvoownership=on&gip_status_attrs_showtestresults=on&downtime_attrs_showpast=&account_type=cumulative_hours&ce_account_type=gip_vo&se_account_type=vo_transfer_volume&bdiitree_type=total_jobs&bdii_object=service&bdii_server=is-osg&start_type=7daysago&start_date=02%2F02%2F2012&end_type=now&end_date=02%2F02%2F2012&all_resources=on&facility_10009=on&gridtype=on&gridtype_1=on&active_value=1&disable_value=1'
     print "================================="
     srchUrl = 'VoOwnershipUrl'
     modName = 'voownership'
     print "%s: srchUrl: %s" % (modName, srchUrl)
     try:
-        urltofetch = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-        print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+        urltofetch = GratiaURLS().GetUrl(srchUrl)
+        print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
         print "%s: retUrl: %s" % (modName, urltofetch)
     except:
-        print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+        print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
         pass
     print "================================="
     try:

@@ -17,13 +17,12 @@ srchUrl = 'GumsTemplateUrl'
 modName = 'voms_init'
 print "%s: srchUrl: %s" % (modName, srchUrl)
 try:
-    gums_template_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    gums_template_url  = GratiaURLS().GetUrl(srchUrl)
+    print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     print "%s: retUrl: %s" % (modName, gums_template_url)
 except:
-    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     pass
-#gums_template_url = "http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template"
 
 class HTTPSConnection2(HTTPSConnection):
 

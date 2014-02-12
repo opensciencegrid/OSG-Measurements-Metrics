@@ -52,21 +52,19 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         self.bysite = self.template('bysite.tmpl')(self.bysite)
         self.byvo = self.template('byvo.tmpl')(self.byvo)
         self.monbyvo = self.template('monbyvo.tmpl')(self.monbyvo)
-        self.monbyvo_running_graphsonly = self.plain_template('monbyvo_running_graphsonly.tmpl')(self.monbyvo_running_graphsonly)
-        self.monbyvo_waiting_graphsonly = self.plain_template('monbyvo_waiting_graphsonly.tmpl')(self.monbyvo_waiting_graphsonly)
+        self.monbyvo_running_graphsonly = self.plain_template('monbyvo_running_graphsonly.tmpl')\
+            (self.monbyvo_running_graphsonly)
+        self.monbyvo_waiting_graphsonly = self.plain_template('monbyvo_waiting_graphsonly.tmpl')\
+            (self.monbyvo_waiting_graphsonly)
         self.monbysite = self.template('monbysite.tmpl')(self.monbysite)
-        self.wlcg_reporting = self.template('wlcg_reporting.tmpl')(\
-            self.apel_data)
+        self.wlcg_reporting = self.template('wlcg_reporting.tmpl')(self.apel_data)
         self.jot_reporting = self.template('jot_uslhc.tmpl')(self.uslhc_table)
-        self.email_lookup = self.template('email_lookup.tmpl')(\
-            self.email_lookup)
+        self.email_lookup = self.template('email_lookup.tmpl')(self.email_lookup)
         self.email_lookup_xml = self.plain_template('email_lookup_xml.tmpl',
             content_type='text/xml')(self.email_lookup_xml)
         self.subclusters = self.template('subcluster.tmpl')(self.subclusters)
-        self.installed = self.template('installed_capacity.tmpl')\
-            (self.site_table)
-        self.site_report = self.template('gratia_site_report.tmpl')\
-            (self.site_report)    
+        self.installed = self.template('installed_capacity.tmpl')(self.site_table)
+        self.site_report = self.template('gratia_site_report.tmpl')(self.site_report)
         self.pilot = self.template('pilot.tmpl')(self.pilot)
         self.campus = self.template('campus.tmpl')(self.campus)
         self.project = self.template('project.tmpl')(self.project)
@@ -81,7 +79,6 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         doc = parse(configfile)
         for node in doc.getElementsByTagName("staticfilehostname"):
             self.metadata['static_url']=node.getAttribute("value")  
-        
         
         self._cp_config ={}
         self.index = self.overview
@@ -260,24 +257,11 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         # Generate image maps:
         if data['focus']['value'] == 'facility' or \
                 data['focus']['value'] == 'both':
-            #self.image_map(token, data, 'GratiaBarQueries', 
-            #               'facility_transfer_rate', 'main', 'facility')
             self.image_map(token, data, 'GratiaBarQueries',
                 'facility_hours_bar_smry', 'main', 'facility')
-            #self.image_map(token, data, 'GratiaBarQueries', 
-            #               'facility_quality', 'main', 'facility')
-                           
-            #self.image_map(token, data, 'GratiaBarQueries',
-            #               'facility_transfer_volume', 'main', 'facility')
         else:
             self.image_map(token, data, 'GratiaBarQueries',
                 'vo_hours_bar_smry', 'main', 'vo')
-            #self.image_map(token, data, 'GratiaBarQueries', 'vo_transfer_rate',
-            #               'main', 'vo')
-            #self.image_map(token, data, 'GratiaBarQueries', 'vo_quality',
-            #               'main', 'vo')
-            #self.image_map(token, data, 'GratiaBarQueries', 
-            #               'vo_transfer_volume', 'main', 'vo')
                            
         self.finish_image_maps(token)
 
@@ -317,9 +301,6 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         if data['filter_url2'] != '':
             data['filter_url2'] = '?' + data['filter_url2']
 
-        #self.image_map(token, data2, "RSVSummaryQueries",
-        #    "reli_summary_daily", "site", "facility")
-
         self.finish_image_maps(token)
 
         if data['is_authenticated']:
@@ -343,10 +324,6 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
             'status_facility', 'site', 'facility')
         self.image_map(token, data, 'GratiaStatusQueries',
             'status_facility_pie', 'site', 'facility')
-        #self.image_map(token, data, 'GIPQueries',
-        #    'gip_free_cpu_realtime', 'site', 'facility')
-        #self.image_map(token, data, 'GIPQueries',
-        #    'gip_free_cpus_history', 'site', 'facility')
         self.image_map(token, data, 'GratiaStatusQueries',
             'status_facility_waiting', 'site', 'facility')
         self.image_map(token, data, 'GratiaStatusQueries',
@@ -404,16 +381,6 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         # Generate image maps:
         self.image_map(token, data, 'GratiaStatusQueries',
             'status_facility', 'site', 'facility')
-        #self.image_map(token, data, 'GratiaStatusQueries',
-        #    'status_facility_pie', 'site', 'facility')
-        #self.image_map(token, data, 'GIPQueries',
-        #    'gip_free_cpu_realtime', 'site', 'facility')
-        #self.image_map(token, data, 'GIPQueries',
-        #    'gip_free_cpus_history', 'site', 'facility')
-        #self.image_map(token, data, 'GratiaStatusQueries',
-        #    'status_facility_waiting', 'site', 'facility')
-        #self.image_map(token, data, 'GratiaStatusQueries',
-        #    'status_facility_waiting_pie', 'site', 'facility')
 
         self.finish_image_maps(token)
 
@@ -432,16 +399,6 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         # Generate image maps:
         self.image_map(token, data, 'GratiaStatusQueries',
             'status_facility', 'site', 'facility')
-        #self.image_map(token, data, 'GratiaStatusQueries',
-        #    'status_facility_pie', 'site', 'facility')
-        #self.image_map(token, data, 'GIPQueries',
-        #    'gip_free_cpu_realtime', 'site', 'facility')
-        #self.image_map(token, data, 'GIPQueries',
-        #    'gip_free_cpus_history', 'site', 'facility')
-        #self.image_map(token, data, 'GratiaStatusQueries',
-        #    'status_facility_waiting', 'site', 'facility')
-        #self.image_map(token, data, 'GratiaStatusQueries',
-        #    'status_facility_waiting_pie', 'site', 'facility')
 
         self.finish_image_maps(token)
 
@@ -582,8 +539,6 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         token = self.start_image_maps()
         #Generate image maps
         if data['focus']['value'] == 'user' or data['focus']['value'] == 'both':
-            #self.image_map(token, data, 'GratiaSiteBarQueries', \
-            #    'site_user_job_quality', 'site_owner', 'user')
             self.image_map(token, data, 'GratiaSiteBarQueries', 
                 'site_user_job_hours', 'site_owner', 'user')
             self.image_map(token, data, 'GratiaSiteBarQueries', 
@@ -773,13 +728,12 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         modName = 'gip_validation'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            GipValidUrl = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            GipValidUrl = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, GipValidUrl)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
-        #doc = urllib2.urlopen('http://gip-validate.grid.iu.edu/production')
         doc = urllib2.urlopen(GipValidUrl)
         row_re = re.compile("<td valign='middle'>(.*)</td>")
         row_re2 = re.compile(site)
@@ -814,8 +768,6 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
                         result = "Unknown"
                 if fac not in my_facs:
                     my_facs.append(fac)
-                    #info.append((result, "http://gip-validate.grid.iu.edu/production/" + link,
-                    #    fac))
                     info.append((result, GipValidUrl + link, fac))
         return info
 
@@ -849,8 +801,6 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         for pivot in keys:
             cnt = results[pivot]
             pivot = int(pivot)
-            #pivot = time.gmtime(pivot)
-            #pivot = time.strftime("%Y-%m-%d %H:%M:%S", pivot)
             str += '%s,%i\n' % (pivot, cnt)
 
         cherrypy.response.headers['Content-Type'] = 'text/plain'
@@ -1081,14 +1031,12 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         modName = 'd0'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            D0Url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            D0Url = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, D0Url)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
-        #url = self.metadata.get('d0_csv', 'http://physics.lunet.edu/~snow/' \
-        #    'd0osgprod.csv')
         url = self.metadata.get('d0_csv', D0Url)
         url_fp = urllib2.urlopen(url)
         metadata = {'croptime':True, 'span':86400, 'pivot_name': 'OSG Site', \
@@ -1128,14 +1076,12 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         modName = 'd0'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            D0Url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            D0Url = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, D0Url)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
-        #url = self.metadata.get('d0_csv', 'http://physics.lunet.edu/~snow/' \
-        #    'd0osgprod.csv')
         url = self.metadata.get('d0_csv', D0Url)
         url_fp = urllib2.urlopen(url)
         metadata = {'croptime':False, 'span':86400, 'pivot_name': 'Date', \

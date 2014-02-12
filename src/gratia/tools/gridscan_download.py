@@ -72,13 +72,12 @@ srchUrl = 'GridScanUrl'
 modName = 'gridscan_download'
 print "%s: srchUrl: %s" % (modName, srchUrl)
 try:
-    gridscan_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    gridscan_url  = GratiaURLS().GetUrl(srchUrl)
+    print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     print "%s: retUrl: %s" % (modName, gridscan_url)
 except:
-    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     pass
-#gridscan_url = "http://scan.grid.iu.edu/cgi-bin/get_grid_sv?"
 
 def site_listing():
     query = urllib.urlencode({"get":"set1"})

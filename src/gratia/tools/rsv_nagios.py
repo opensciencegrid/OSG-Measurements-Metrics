@@ -19,13 +19,12 @@ srchUrl = 'LastStatusUrl'
 modName = 'rsv_nagios'
 print "%s: srchUrl: %s" % (modName, srchUrl)
 try:
-    last_status_url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-    print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+    last_status_url = GratiaURLS().GetUrl(srchUrl)
+    print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     print "%s: retUrl: %s" % (modName, last_status_url)
 except:
-    print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+    print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
     pass
-#last_status_url = "http://t2.unl.edu/gratia/xml/wlcg_last_status"
 
 def simple_results_parser(dom):
     data = {}

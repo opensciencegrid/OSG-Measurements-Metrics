@@ -113,7 +113,6 @@ src/gratia/summary/LigoProbeConfigItb
 src/gratia/summary/LigoProbeConfigProd
 src/gratia/summary/__init__.py
 src/gratia/summary/dashboard_slurp.py
-src/gratia/summary/ligo_query.py
 src/gratia/templates/__init__.py
 src/gratia/templates/__init__.pyc
 src/gratia/templates/bysite.tmpl
@@ -154,11 +153,9 @@ src/gratia/tools/atlas_statistics.py
 src/gratia/tools/avail_vs_work.py
 src/gratia/tools/cms_storage_record.py
 src/gratia/tools/dashboard_analyzer.py
-src/gratia/tools/fnal_ce_rsv.py
 src/gratia/tools/gip_count.py
 src/gratia/tools/gip_record.py
 src/gratia/tools/gip_subcluster_record.py
-src/gratia/tools/gip_vs_gratia.py
 src/gratia/tools/gratia_basic_web.py
 src/gratia/tools/gratia_basic_web_dev.py
 src/gratia/tools/gratia_voms_query.py
@@ -170,7 +167,6 @@ src/gratia/tools/rsv_calc.py
 src/gratia/tools/rsv_nagios.py
 src/gratia/tools/site_normalization.py
 src/gratia/tools/static_graphs.py
-src/gratia/tools/wlcg_pledge_email.py
 src/gratia/utility/__init__.py
 src/gratia/utility/make_table.py
 src/gratia/voms/__init__.py
@@ -185,7 +181,6 @@ src/gratia/web/subcluster_report.py
 src/gratia/web/template.py
 src/gratia/web/thumbnails.py
 src/gratia/web/vo_installed_capacity.py
-src/gratia/web/wlcg_json_cap.py
 src/gratia/web/wlcg_json_data.py
 src/gratia/web/wlcg_reporting.py
 src/osg_measurements_metrics_db.egg-info/PKG-INFO

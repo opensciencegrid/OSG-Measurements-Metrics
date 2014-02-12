@@ -7,7 +7,7 @@ import os.path
 from gratia.web.gratia_urls import GratiaURLS
 
 class WLCGWebUtil:
-    def wlcg_pledges(self, month=datetime.datetime.now().month, year=datetime.datetime.now().year):     
+    def wlcg_pledges(self, month=None, year=None):
             
         thisyear = str(year)
         debug=1
@@ -22,21 +22,19 @@ class WLCGWebUtil:
         atlas_pledge = {}
         alice_pledge = {}
 
-        #url = 'http://gstat-wlcg.cern.ch/apps/topology/2/json'
         srchUrl = 'TopologyUrl'
         modName = 'wlcg_pledges'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            url = GratiaURLS().GetUrl(srchUrl, year, month)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, url)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         response  = urllib2.urlopen(url)
 	s = response.read()
 	x = simplejson.loads(s)
-	#resourcesnestedlist=x['aaData']
 	for obj in x:
 	    if('USA'==obj['Country']):   
 		try:
@@ -79,21 +77,19 @@ class WLCGWebUtil:
             for key in alice_fed:
                 print "debug: \t\t %s " % key
 
-        #url = 'http://gstat-wlcg.cern.ch/apps/pledges/resources/'+thisyear+'/2/json'
         srchUrl = 'PledgeUrl'
         modName = 'wlcg_pledges'
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
-            url = getattr(globals()['GratiaURLS'](), 'GetUrl')(srchUrl)
-            print "%s: SUCCESS: getattr(globals()['GratiaURLS'](), 'GetUrl')(%s)" % (modName,srchUrl)
+            url = GratiaURLS().GetUrl(srchUrl, year, month)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             print "%s: retUrl: %s" % (modName, url)
         except:
-            print "%s: FAILED: getattr(globals()['GratiaURLS'](), 'GetUrl')(urlname=%s)" % (modName,srchUrl)
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
         response  = urllib2.urlopen(url)
 	s = response.read()
 	x = simplejson.loads(s)
-	#resourcesnestedlist=x['aaData']
 	for obj in x:
 	    if('USA'==obj['Country'] and 'HEP-SPEC06' == obj['PledgeUnit']):
 		try:
@@ -147,7 +143,7 @@ class WLCGWebUtil:
                 print "degub: \t\t Resource Groups:"
                 for key2 in alice_pledge[key]['ResourceGroups']:
                     print "debug: \t\t\t %s" % key2
-        if(debug > 1):
+        if(debug > 0):
             print "\ndebug: ======================================================"
             print "debug: cms_fed: CMS Federation Accounting Names"
             print "debug: ======================================================"

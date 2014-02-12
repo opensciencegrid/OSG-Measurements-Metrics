@@ -1,4 +1,5 @@
 import datetime
+import urllib
 import urllib2
 import os
 import sys
@@ -66,7 +67,8 @@ class GratiaURLS:
             print "GratiaURLS: GetUrl: var discovery %s is successful at %s-%s" % (urlname, myYear, myMonth)
             localvars = {'year': myYear, 'month': myMonth}
             print "GratiaURLS: GetUrl: localvars: ", localvars
-            retUrl = retUrlStr.format(**localvars)
+            retUrl1 = retUrlStr.format(**localvars)
+            retUrl = urllib2.Request(retUrl1)
             print "GratiaURLS: GetUrl: %s" % retUrl
         else:
             print "GratiaURLS().GetUrl(): ERROR: 'Search_Url_Name' supplied: %s" % urlname
