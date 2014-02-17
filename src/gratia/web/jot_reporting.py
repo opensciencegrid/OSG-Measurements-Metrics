@@ -168,8 +168,12 @@ class JOTReporter(Authenticate):
         mySumApelData = []
         mySumApel = {}
         for MyNewApelRow in myNewApel:
-            print "MyNewApelRow %d: %s" % (cnt, MyNewApelRow)
+            #print "MyNewApelRow %d: %s" % (cnt, MyNewApelRow)
+            #print "================================================================"
+            #print "Debug: Before 'if': cnt: %d    myLastFedName: %s" % (cnt, myLastFedName)
             if (cnt == 1) and (myLastFedName == None):
+                #print "Debug: -----------------------------------------------------------------"
+                #print "Debug: top: (cnt ==1) and (myLastFedName == None)"
                 myLastFedName  = MyNewApelRow['FederationName']
                 mySum_Njobs    = int(MyNewApelRow['Njobs'])
                 mySum_SumCPU   = int(MyNewApelRow['SumCPU'])
@@ -177,13 +181,24 @@ class JOTReporter(Authenticate):
                 mySum_Norm_CPU = int(MyNewApelRow['Norm_CPU'])
                 mySum_Norm_WCT = int(MyNewApelRow['Norm_WCT'])
                 mySumApel['FederationName'] = MyNewApelRow['FederationName']
-            elif (MyNewApelRow['FederationName'] == myLastFedName) and (cnt < myLastRecord):
+                #print "Debug: bottom: cnt: %d    myLastFedName: %s" % (cnt, myLastFedName)
+                #print "Debug: mySumApel: %s" % mySumApel
+                #print "Debug: -----------------------------------------------------------------"
+            elif (MyNewApelRow['FederationName'] == myLastFedName):
+                #print "Debug: -----------------------------------------------------------------"
+                #print "Debug: top: (MyNewApelRow['FederationName'] == myLastFedName)"
                 mySum_Njobs    = int(mySum_Njobs)    + int(MyNewApelRow['Njobs'])
                 mySum_SumCPU   = int(mySum_SumCPU)   + int(MyNewApelRow['SumCPU'])
                 mySum_SumWCT   = int(mySum_SumWCT)   + int(MyNewApelRow['SumWCT'])
                 mySum_Norm_CPU = int(mySum_Norm_CPU) + int(MyNewApelRow['Norm_CPU'])
                 mySum_Norm_WCT = int(mySum_Norm_WCT) + int(MyNewApelRow['Norm_WCT'])
-            elif (MyNewApelRow['FederationName'] != myLastFedName) and (cnt < myLastRecord):
+                #print "Debug: bottom: cnt: %d    myLastFedName: %s" % (cnt, myLastFedName)
+                #print "Debug: mySumApel: %s" % mySumApel
+                #print "Debug: -----------------------------------------------------------------"
+            else:
+                #else (MyNewApelRow['FederationName'] != myLastFedName):
+                #print "Debug: -----------------------------------------------------------------"
+                #print "Debug: top: (MyNewApelRow['FederationName'] != myLastFedName)"
                 mySumApel['Njobs']    = int(mySum_Njobs)
                 mySumApel['SumCPU']   = int(mySum_SumCPU)
                 mySumApel['SumWCT']   = int(mySum_SumWCT)
@@ -210,18 +225,27 @@ class JOTReporter(Authenticate):
                 mySum_Norm_CPU = int(MyNewApelRow['Norm_CPU'])
                 mySum_Norm_WCT = int(MyNewApelRow['Norm_WCT'])
                 mySumApel['FederationName'] = MyNewApelRow['FederationName']
-            else:
+                #print "Debug: bottom: cnt: %d    myLastFedName: %s" % (cnt, myLastFedName)
+                #print "Debug: mySumApel: %s" % mySumApel
+                #print "Debug: -----------------------------------------------------------------"
+
+            if (cnt == myLastRecord):
+                #print "Debug: -----------------------------------------------------------------"
+                #print "Debug: top: (cnt == myLastRecord)"
                 mySumApel['Njobs']    = int(mySum_Njobs)
                 mySumApel['SumCPU']   = int(mySum_SumCPU)
                 mySumApel['SumWCT']   = int(mySum_SumWCT)
                 mySumApel['Norm_CPU'] = int(mySum_Norm_CPU)
                 mySumApel['Norm_WCT'] = int(mySum_Norm_WCT)
                 mySumApelData.append(mySumApel)
-                print "==================================================="
-                print "mySumApel = %s" % mySumApel
-                print "---------------------------------------------------"
-                print "mySumApelData: %s " % mySumApelData
-                print "==================================================="
+                #print "==================================================="
+                #print "mySumApel = %s" % mySumApel
+                #print "---------------------------------------------------"
+                #print "mySumApelData: %s " % mySumApelData
+                #print "==================================================="
+                #print "Debug: bottom: cnt: %d    myLastFedName: %s" % (cnt, myLastFedName)
+                #print "Debug: mySumApel: %s" % mySumApel
+                #print "Debug: -----------------------------------------------------------------"
             cnt += 1
 
         mySumApel     = {}
