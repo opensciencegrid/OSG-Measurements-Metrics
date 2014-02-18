@@ -163,13 +163,13 @@ class JOTReporter(Authenticate):
         mySum_SumCpu  = 0
         mySum_SumWct  = 0
         mySum_NormCpu = 0
-        mySum_NormWCT = 0
+        mySum_PctEff  = 0
         cnt = 1
         mySumApelData = []
         mySumApel = {}
         for MyNewApelRow in myNewApel:
-            #print "MyNewApelRow %d: %s" % (cnt, MyNewApelRow)
-            #print "================================================================"
+            print "MyNewApelRow %d: %s" % (cnt, MyNewApelRow)
+            print "================================================================"
             #print "Debug: Before 'if': cnt: %d    myLastFedName: %s" % (cnt, myLastFedName)
             if (cnt == 1) and (myLastFedName == None):
                 #print "Debug: -----------------------------------------------------------------"
@@ -196,7 +196,6 @@ class JOTReporter(Authenticate):
                 #print "Debug: mySumApel: %s" % mySumApel
                 #print "Debug: -----------------------------------------------------------------"
             else:
-                #else (MyNewApelRow['FederationName'] != myLastFedName):
                 #print "Debug: -----------------------------------------------------------------"
                 #print "Debug: top: (MyNewApelRow['FederationName'] != myLastFedName)"
                 mySumApel['Njobs']    = int(mySum_Njobs)
@@ -204,6 +203,17 @@ class JOTReporter(Authenticate):
                 mySumApel['SumWCT']   = int(mySum_SumWCT)
                 mySumApel['Norm_CPU'] = int(mySum_Norm_CPU)
                 mySumApel['Norm_WCT'] = int(mySum_Norm_WCT)
+                # no div by 0
+                if (mySum_SumWCT > 0):
+                    mySum_PctEff = float(round(float(mySum_SumCPU * 100) / 
+                                               (float(mySum_SumWCT)),0))
+                else:
+                    mySum_PctEff = 0
+                mySumApel['PctEff']   = int(mySum_PctEff)
+                #print "Debug: ==================================================================="
+                #print "Debug: mySum_SumCPU: %f   mySum_SumWCT: %f  mySum_PctEff: %f" % \
+                #           (mySum_SumCPU, mySum_SumWCT, mySum_PctEff)
+                #print "Debug: ==================================================================="
                 mySumApelData.append(mySumApel)
                 print "==================================================="
                 print "mySumApel = %s" % mySumApel
@@ -217,6 +227,7 @@ class JOTReporter(Authenticate):
                 mySum_SumWct  = 0
                 mySum_NormCpu = 0
                 mySum_NormWCT = 0
+                mySum_PctEff  = 0
                 #-------------------------------------------
                 myLastFedName  = MyNewApelRow['FederationName']
                 mySum_Njobs    = int(MyNewApelRow['Njobs'])
@@ -237,15 +248,26 @@ class JOTReporter(Authenticate):
                 mySumApel['SumWCT']   = int(mySum_SumWCT)
                 mySumApel['Norm_CPU'] = int(mySum_Norm_CPU)
                 mySumApel['Norm_WCT'] = int(mySum_Norm_WCT)
+                # no div by 0
+                if (mySum_SumWCT > 0):
+                    mySum_PctEff = float(round(float(mySum_SumCPU * 100) / 
+                                               (float(mySum_SumWCT)),0))
+                else:
+                    mySum_PctEff = 0
+                mySumApel['PctEff']   = int(mySum_PctEff)
+                #print "Debug: ==================================================================="
+                #print "Debug: mySum_SumCPU: %f   mySum_SumWCT: %f  mySum_PctEff: %f" % \
+                #    (mySum_SumCPU, mySum_SumWCT, mySum_PctEff)
+                #print "Debug: ==================================================================="
                 mySumApelData.append(mySumApel)
-                #print "==================================================="
-                #print "mySumApel = %s" % mySumApel
-                #print "---------------------------------------------------"
-                #print "mySumApelData: %s " % mySumApelData
-                #print "==================================================="
-                #print "Debug: bottom: cnt: %d    myLastFedName: %s" % (cnt, myLastFedName)
-                #print "Debug: mySumApel: %s" % mySumApel
-                #print "Debug: -----------------------------------------------------------------"
+                print "==================================================="
+                print "mySumApel = %s" % mySumApel
+                print "---------------------------------------------------"
+                print "mySumApelData: %s " % mySumApelData
+                print "==================================================="
+                print "Debug: bottom: cnt: %d    myLastFedName: %s" % (cnt, myLastFedName)
+                print "Debug: mySumApel: %s" % mySumApel
+                print "Debug: -----------------------------------------------------------------"
             cnt += 1
 
         mySumApel     = {}
