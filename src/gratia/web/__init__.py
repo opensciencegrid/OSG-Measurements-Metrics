@@ -691,8 +691,6 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
 
     def fetch_gridscan(self, site):
         return []
-        #doc = urllib2.urlopen('http://scan.grid.iu.edu/cgi-bin/show_results' \
-        #    '?grid=1')
         in_row = False
         in_font = False
         link_re = re.compile('HREF="(.*?)"')
@@ -1082,8 +1080,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         except:
             print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
-        url = self.metadata.get('d0_csv', D0Url)
-        url_fp = urllib2.urlopen(url)
+        url_fp = urllib2.urlopen(D0Url)
         metadata = {'croptime':False, 'span':86400, 'pivot_name': 'Date', \
             'column_names': 'Merged Events', \
             'title': 'D0 OSG Production'}
