@@ -112,19 +112,41 @@ class WLCGReporter(Authenticate):
             count=0
             info = {}
             fed_info = {}
+            mySumCPU    = 0
+            mySumWCT    = 0
+            mySumPctEff = 0
             for thisField in thisTuple:
                 print "thisField: %s" % thisField
                 if(thisField.strip() == ""):
                     continue
                 if(count<numcells):
                     info[datafields[count]]=thisField
-                    print "info[datafields[%d]]= %s" % (count, thisField)
+                    print "info[datafields[%d]]: %s =  %s" % (count, datafields[count], thisField)
                     if datafields[count] == 'ResourceGroup':
                         fed_info[datafields[count]] = thisField
                     if datafields[count] == 'FederationName':
                         fed_info[datafields[count]] = thisField
                     if datafields[count] == 'ResourcesReporting':
                         fed_info[datafields[count]] = thisField
+                    if datafields[count] == 'SumCPU':
+                        mySumCPU = int(thisField)
+                        print "debug: ==============================================="
+                        print "debug: datafields[%d]: mySumCPU: %d" % (count, mySumCPU)
+                        print "debug: -----------------------------------------------"
+                    if datafields[count] == 'SumWCT':
+                        mySumWCT = int(thisField)
+                        print "debug: -----------------------------------------------"
+                        print "debug: datafields[%d]: mySumWCT: %d" % (count, mySumWCT)
+                        print "debug: -----------------------------------------------"
+                        if (mySumCPU > 0) and (mySumWCT > 0):
+                            mySumPctEff = float(round( (float(mySumCPU * 100) / float(mySumWCT)), 0) )
+                        else:
+                            mySumPctEff = 0
+                        print "debug: -----------------------------------------------"
+                        print "debug: mySumCPU: %d   mySumWCT: %d  mySumPctEff: %d" % \
+                            (int(mySumCPU), int(mySumWCT), int(mySumPctEff))
+                        info['PctEff'] = mySumPctEff
+                        print "debug: ==============================================="
                 if count<numcells and datafields[count] == 'MeasurementDate' and report_time == None:
                     report_time = thisField
                 count=count+1
