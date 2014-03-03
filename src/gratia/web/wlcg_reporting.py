@@ -51,21 +51,41 @@ class WLCGReporter(Authenticate):
         print "%s: srchUrl: %s" % (modName, srchUrl)
         try:
             urlcpuinfo = GratiaURLS().GetUrl(srchUrl)
-            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
-            print "%s: retUrl: %s" % (modName, urlcpuinfo)
         except:
             print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
-	xmldoc = urllib2.urlopen(urlcpuinfo)
-	dom = parse(xmldoc)
-	hepspecCpuDict = {}
-	normconstCpuDict = {}
-	for rowDom in dom.getElementsByTagName('CPUInfo'):
-	    cpuname=self.getText((rowDom.getElementsByTagName("Name")[0]).childNodes).upper().replace(' ', '')
-	    hepspec=self.getText((rowDom.getElementsByTagName("HEPSPEC")[0]).childNodes)
-            normconstant = self.getText((rowDom.getElementsByTagName("NormalizationConstant")[0]).childNodes) 
-	    hepspecCpuDict[cpuname]=hepspec
-	    normconstCpuDict[cpuname]=normconstant
+        else:
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, urlcpuinfo)
+            try:
+                xmldoc = urllib2.urlopen(urlcpuinfo)
+            except urllib2.HTTPError as e:
+                print "%s: ======================================" % modName
+                print "%s: HTTPError: URL server couldn\'t fulfill the URL request." %modName
+                print modName, ': HTTPError: Error code: ', e.code
+                print modName, ': HTTPError:  ', e.read()
+                print "%s: ======================================" % modName
+                raise
+            except urllib2.URLError as e:
+                print "%s: ======================================" % modName
+                print "%s: URLError: Failed to reach the URL server."
+                print modName, ": URLError: Reason: ", e.reason
+                print "%s: ======================================" % modName
+                raise
+            else:
+                print "%s: ======================================" % modName
+                print "%s: Successful URL open to: %s" % (modName, urlcpuinfo)
+                print "%s: ======================================" % modName
+
+                dom = parse(xmldoc)
+                hepspecCpuDict = {}
+                normconstCpuDict = {}
+                for rowDom in dom.getElementsByTagName('CPUInfo'):
+                    cpuname=self.getText((rowDom.getElementsByTagName("Name")[0]).childNodes).upper().replace(' ', '')
+                    hepspec=self.getText((rowDom.getElementsByTagName("HEPSPEC")[0]).childNodes)
+                    normconstant = self.getText((rowDom.getElementsByTagName("NormalizationConstant")[0]).childNodes) 
+                    hepspecCpuDict[cpuname]=hepspec
+                    normconstCpuDict[cpuname]=normconstant
         return hepspecCpuDict,normconstCpuDict
 
     ###########################################################################
@@ -75,89 +95,109 @@ class WLCGReporter(Authenticate):
         srchUrl = 'ApelUrl'
         modName = 'get_apel_data'
         print "%s: srchUrl: %s" % (modName, srchUrl)
+        apel_data = []
+        fed_rpt = []
+        report_time = None
         try:
             apel_url = GratiaURLS().GetUrl(srchUrl, year, month)
-            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
-            print "%s: retUrl: %s" % (modName, apel_url)
         except:
             print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
             pass
-        usock = urllib2.urlopen(apel_url)
-        data = usock.read()
-        usock.close()
-        apel_data = []
-        fed_rpt = []
-        datafields = []
-        numcells=13
-        report_time = None
-        for i in range(numcells):
-            datafields.append(0)
-        datafields[0]="ResourceGroup"
-        datafields[1]="NormFactor"
-        datafields[2]="LCGUserVO"
-        datafields[3]="Njobs"
-        datafields[4]="SumCPU"
-        datafields[5]="SumWCT"
-        datafields[6]="Norm_CPU"
-        datafields[7]="Norm_WCT"
-        datafields[8]="RecordStart"
-        datafields[9]="RecordEnd"
-        datafields[10]="MeasurementDate"
-        datafields[11]="FederationName"
-        datafields[12]="ResourcesReporting"
-        linesrec=data.split('\n')
-        for line in linesrec:
-            thisTuple=line.split('\t')
-            print "thisTuple: %s" % thisTuple
-            count=0
-            info = {}
-            fed_info = {}
-            mySumCPU    = 0
-            mySumWCT    = 0
-            mySumPctEff = 0
-            for thisField in thisTuple:
-                print "thisField: %s" % thisField
-                if(thisField.strip() == ""):
-                    continue
-                if(count<numcells):
-                    info[datafields[count]]=thisField
-                    print "info[datafields[%d]]: %s =  %s" % (count, datafields[count], thisField)
-                    if datafields[count] == 'ResourceGroup':
-                        fed_info[datafields[count]] = thisField
-                    if datafields[count] == 'FederationName':
-                        fed_info[datafields[count]] = thisField
-                    if datafields[count] == 'ResourcesReporting':
-                        fed_info[datafields[count]] = thisField
-                    if datafields[count] == 'SumCPU':
-                        mySumCPU = int(thisField)
-                        print "debug: ==============================================="
-                        print "debug: datafields[%d]: mySumCPU: %d" % (count, mySumCPU)
-                        print "debug: -----------------------------------------------"
-                    if datafields[count] == 'SumWCT':
-                        mySumWCT = int(thisField)
-                        print "debug: -----------------------------------------------"
-                        print "debug: datafields[%d]: mySumWCT: %d" % (count, mySumWCT)
-                        print "debug: -----------------------------------------------"
-                        if (mySumCPU > 0) and (mySumWCT > 0):
-                            mySumPctEff = float(round( (float(mySumCPU * 100) / float(mySumWCT)), 0) )
-                        else:
-                            mySumPctEff = 0
-                        print "debug: -----------------------------------------------"
-                        print "debug: mySumCPU: %d   mySumWCT: %d  mySumPctEff: %d" % \
-                            (int(mySumCPU), int(mySumWCT), int(mySumPctEff))
-                        info['PctEff'] = mySumPctEff
-                        print "debug: ==============================================="
-                if count<numcells and datafields[count] == 'MeasurementDate' and report_time == None:
-                    report_time = thisField
-                count=count+1
-            if(not info):
-                continue
-            info['month']=month
-            info['year']=year
-            apel_data.append(info)
-            print "info: %s" % info
-            fed_rpt.append(fed_info)
-            print "fed_info: %s" % fed_info
+        else:
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, apel_url)
+
+            try:
+                usock = urllib2.urlopen(apel_url)
+            except urllib2.HTTPError as e:
+                print "%s: ======================================" % modName
+                print "%s: HTTPError: URL server couldn\'t fulfill the URL request." %modName
+                print modName, ': HTTPError: Error code: ', e.code
+                print modName, ': HTTPError:  ', e.read()
+                print "%s: ======================================" % modName
+                raise
+            except urllib2.URLError as e:
+                print "%s: ======================================" % modName
+                print "%s: URLError: Failed to reach the URL server."
+                print modName, ": URLError: Reason: ", e.reason
+                print "%s: ======================================" % modName
+                raise
+            else:
+                print "%s: ======================================" % modName
+                print "%s: Successful URL open to: %s" % (modName, apel_url)
+                print "%s: ======================================" % modName
+                data = usock.read()
+                datafields = []
+                numcells=13
+                for i in range(numcells):
+                    datafields.append(0)
+                datafields[0]="ResourceGroup"
+                datafields[1]="NormFactor"
+                datafields[2]="LCGUserVO"
+                datafields[3]="Njobs"
+                datafields[4]="SumCPU"
+                datafields[5]="SumWCT"
+                datafields[6]="Norm_CPU"
+                datafields[7]="Norm_WCT"
+                datafields[8]="RecordStart"
+                datafields[9]="RecordEnd"
+                datafields[10]="MeasurementDate"
+                datafields[11]="FederationName"
+                datafields[12]="ResourcesReporting"
+                linesrec=data.split('\n')
+                for line in linesrec:
+                    thisTuple=line.split('\t')
+                    print "thisTuple: %s" % thisTuple
+                    count=0
+                    info = {}
+                    fed_info = {}
+                    mySumCPU    = 0
+                    mySumWCT    = 0
+                    mySumPctEff = 0
+                    for thisField in thisTuple:
+                        print "thisField: %s" % thisField
+                        if(thisField.strip() == ""):
+                            continue
+                        if(count<numcells):
+                            info[datafields[count]]=thisField
+                            print "info[datafields[%d]]: %s =  %s" % (count, datafields[count], thisField)
+                            if datafields[count] == 'ResourceGroup':
+                                fed_info[datafields[count]] = thisField
+                            if datafields[count] == 'FederationName':
+                                fed_info[datafields[count]] = thisField
+                            if datafields[count] == 'ResourcesReporting':
+                                fed_info[datafields[count]] = thisField
+                            if datafields[count] == 'SumCPU':
+                                mySumCPU = int(thisField)
+                                print "debug: ==============================================="
+                                print "debug: datafields[%d]: mySumCPU: %d" % (count, mySumCPU)
+                                print "debug: -----------------------------------------------"
+                            if datafields[count] == 'SumWCT':
+                                mySumWCT = int(thisField)
+                                print "debug: -----------------------------------------------"
+                                print "debug: datafields[%d]: mySumWCT: %d" % (count, mySumWCT)
+                                print "debug: -----------------------------------------------"
+                                if (mySumCPU > 0) and (mySumWCT > 0):
+                                    mySumPctEff = float(round( (float(mySumCPU * 100) / float(mySumWCT)), 0) )
+                                else:
+                                    mySumPctEff = 0
+                                print "debug: -----------------------------------------------"
+                                print "debug: mySumCPU: %d   mySumWCT: %d  mySumPctEff: %d" % \
+                                    (int(mySumCPU), int(mySumWCT), int(mySumPctEff))
+                                info['PctEff'] = mySumPctEff
+                                print "debug: ==============================================="
+                        if count<numcells and datafields[count] == 'MeasurementDate' and report_time == None:
+                            report_time = thisField
+                        count=count+1
+                    if(not info):
+                        continue
+                    info['month']=month
+                    info['year']=year
+                    apel_data.append(info)
+                    print "info: %s" % info
+                    fed_rpt.append(fed_info)
+                    print "fed_info: %s" % fed_info
+            usock.close()
         return apel_data, report_time, fed_rpt
 
     ###########################################################################

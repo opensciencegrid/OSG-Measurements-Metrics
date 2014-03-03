@@ -37,8 +37,8 @@ class JOTReporter(Authenticate):
     ###########################################################################
     def get_apel_data_jot(self, year=None, month=None):
 
-        apel_data = []
-        report_time     = None
+        apel_data   = []
+        report_time = None
 
         if (year is not None) and (month is not None):
 
@@ -47,54 +47,76 @@ class JOTReporter(Authenticate):
             print "%s: srchUrl: %s" % (modName, srchUrl)
             try:
                 apel_url = GratiaURLS().GetUrl(srchUrl, year, month)
+            except:
+                print "%s: ======================================" % modName
+                print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
+                print "%s: ======================================" % modName
+                pass
+            else:
                 print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
                 print "%s: retUrl: %s" % (modName, apel_url)
-            except:
-                print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
-                pass
-            usock = urllib2.urlopen(apel_url)
-            data = usock.read()
-            usock.close()
-            datafields = []
-            numcells=13
-            for i in range(numcells):
-                datafields.append(0)
-            datafields[0]="ResourceGroup"
-            datafields[1]="NormFactor"
-            datafields[2]="LCGUserVO"
-            datafields[3]="Njobs"
-            datafields[4]="SumCPU"
-            datafields[5]="SumWCT"
-            datafields[6]="Norm_CPU"
-            datafields[7]="Norm_WCT"
-            datafields[8]="RecordStart"
-            datafields[9]="RecordEnd"
-            datafields[10]="MeasurementDate"
-            datafields[11]="FederationName"
-            datafields[12]="ResourcesReporting"
-            linesrec=data.split('\n')
-            for line in linesrec:
-                thisTuple=line.split('\t')
-                print "thisTuple: %s" % thisTuple
-                count=0
-                info = {}
-                for thisField in thisTuple:
-                    print "thisField: %s" % thisField
-                    if(thisField.strip() == ""):
-                        continue
-                    if(count<numcells):
-                        info[datafields[count]]=thisField
-                        print "info[datafields[%d]]= %s" % (count, thisField)
-                    if count<numcells and datafields[count] == 'MeasurementDate' and report_time == None:
-                        report_time = thisField
-                    count=count+1
-                if(not info):
-                    continue
+                try:
+                    usock = urllib2.urlopen(apel_url)
+                except urllib2.HTTPError as e:
+                    print "%s: ======================================" % modName
+                    print "%s: HTTPError: URL server couldn\'t fulfill the URL request." %modName
+                    print modName, ': HTTPError: Error code: ', e.code
+                    print modName, ': HTTPError:  ', e.read()
+                    print "%s: ======================================" % modName
+                    raise
+                except urllib2.URLError as e:
+                    print "%s: ======================================" % modName
+                    print "%s: URLError: Failed to reach the URL server."
+                    print modName, ": URLError: Reason: ", e.reason
+                    print "%s: ======================================" % modName
+                    raise
+                else:
+                    print "%s: ======================================" % modName
+                    print "%s: Successful URL open to: %s" % (modName, apel_url)
+                    print "%s: ======================================" % modName
 
-                info['month']  = month
-                info['year']   = year
-                apel_data.append(info)
-                print "info: %s" % info
+                    data = usock.read()
+                    usock.close()
+                    datafields = []
+                    numcells=13
+                    for i in range(numcells):
+                        datafields.append(0)
+                    datafields[0]="ResourceGroup"
+                    datafields[1]="NormFactor"
+                    datafields[2]="LCGUserVO"
+                    datafields[3]="Njobs"
+                    datafields[4]="SumCPU"
+                    datafields[5]="SumWCT"
+                    datafields[6]="Norm_CPU"
+                    datafields[7]="Norm_WCT"
+                    datafields[8]="RecordStart"
+                    datafields[9]="RecordEnd"
+                    datafields[10]="MeasurementDate"
+                    datafields[11]="FederationName"
+                    datafields[12]="ResourcesReporting"
+                    linesrec=data.split('\n')
+                    for line in linesrec:
+                        thisTuple=line.split('\t')
+                        print "thisTuple: %s" % thisTuple
+                        count=0
+                        info = {}
+                        for thisField in thisTuple:
+                            print "thisField: %s" % thisField
+                            if(thisField.strip() == ""):
+                                continue
+                            if(count<numcells):
+                                info[datafields[count]]=thisField
+                                print "info[datafields[%d]]= %s" % (count, thisField)
+                            if count<numcells and datafields[count] == 'MeasurementDate' and report_time == None:
+                                report_time = thisField
+                            count=count+1
+                        if(not info):
+                            continue
+
+                        info['month']  = month
+                        info['year']   = year
+                        apel_data.append(info)
+                        print "info: %s" % info
         else:
             print "Error no (Month,Day) for the report"
         return apel_data, report_time
@@ -255,19 +277,19 @@ class JOTReporter(Authenticate):
                 else:
                     mySum_PctEff = 0
                 mySumApel['PctEff']   = int(mySum_PctEff)
-                #print "Debug: ==================================================================="
-                #print "Debug: mySum_SumCPU: %f   mySum_SumWCT: %f  mySum_PctEff: %f" % \
-                #    (mySum_SumCPU, mySum_SumWCT, mySum_PctEff)
-                #print "Debug: ==================================================================="
+                print "Debug: ==================================================================="
+                print "Debug: mySum_SumCPU: %f   mySum_SumWCT: %f  mySum_PctEff: %f" % \
+                    (mySum_SumCPU, mySum_SumWCT, mySum_PctEff)
+                print "Debug: ==================================================================="
                 mySumApelData.append(mySumApel)
                 print "==================================================="
                 print "mySumApel = %s" % mySumApel
                 print "---------------------------------------------------"
                 print "mySumApelData: %s " % mySumApelData
                 print "==================================================="
-                print "Debug: bottom: cnt: %d    myLastFedName: %s" % (cnt, myLastFedName)
-                print "Debug: mySumApel: %s" % mySumApel
-                print "Debug: -----------------------------------------------------------------"
+                #print "Debug: bottom: cnt: %d    myLastFedName: %s" % (cnt, myLastFedName)
+                #print "Debug: mySumApel: %s" % mySumApel
+                #print "Debug: -----------------------------------------------------------------"
             cnt += 1
 
         mySumApel     = {}

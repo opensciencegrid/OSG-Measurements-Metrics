@@ -14,6 +14,7 @@ class GratiaURLS:
         if urlname is not None:
             urlsDict = {
                 "ApelUrl": "http://gratia-apel-wlcg.opensciencegrid.org:8319/gratia-apel/{year}-{month}.summary.dat",
+                "ApelUrl2": "http://gr13x6.fnal.gov:8319/gratia-apel/{year}-{month}.summary.dat",
                 "CpuInfoUrl": "http://myosg.grid.iu.edu/misccpuinfo/xml?count_sg_1&count_active=on&count_enabled=on&datasource=cpuinfo",
                 "OimUrl": "http://myosg.grid.iu.edu/misccpuinfo/xml?datasource=cpuinfo&count_sg_1=on",
                 "TopologyUrl": "http://gstat-wlcg.cern.ch/apps/topology/2/json",
