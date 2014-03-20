@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.2
-Release:        27%{?dist}
+Release:        28%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -18,14 +18,14 @@ BuildArch:      noarch
 
 
 BuildRequires:  python-setuptools
-Requires:       graphtool >= 0.6.4 
-Requires:	MySQL-python 
-Requires:	python-sqlite 
-Requires:	python-cheetah 
-Requires:	/usr/bin/ldapsearch 
-Requires:	python-cherrypy >= 3.1.2 
-Requires:	python-ZSI 
-Requires: 	python-setuptools 
+Requires:       graphtool >= 0.6.4
+Requires:       MySQL-python
+Requires:       python-sqlite
+Requires:       python-cheetah
+Requires:       /usr/bin/ldapsearch
+Requires:       python-cherrypy >= 3.1.2
+Requires:       python-ZSI
+Requires:       python-setuptools
 
 
 
