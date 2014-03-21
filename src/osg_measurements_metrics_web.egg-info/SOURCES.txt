@@ -87,6 +87,7 @@ src/gratia/config/security.xml
 src/gratia/config/static_generator.cfg
 src/gratia/config/text_queries.xml
 src/gratia/config/text_queries_basic.xml
+src/gratia/config/urls_list.conf
 src/gratia/config/vo_ownership_queries.xml
 src/gratia/config/website-basic-devel.xml
 src/gratia/config/website-basic.xml
