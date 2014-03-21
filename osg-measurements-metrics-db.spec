@@ -61,6 +61,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
+* Fri Mar 21 2014 William B Hurst <wbhurst@cse.unl.edu
+- completed final step to move all URLs to a config file.
+
 * Fri Mar 14 2014 William B Hurst <wbhurst@cse.unl.edu>
 - bumping the version because last git-build failed
 
