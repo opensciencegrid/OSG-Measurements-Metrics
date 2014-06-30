@@ -36,15 +36,26 @@ case "$1" in
 
         # Actually start the daemon now.
         echo -n "Starting GratiaWeb: "
-        daemon --user $USER --pidfile /var/run/GratiaWeb.pid gratia_web -d
+        #daemon --user $USER --pidfile /var/run/GratiaWeb.pid gratia_web -d
+        daemon gratia_web -d
         echo
-        touch /var/lock/subsys/GratiaWeb
+	sleep 1
+	ps aux | grep gratia_web | grep -v grep | awk '{print $2}' > /tmp/GratiaWeb.pid
+	cat /tmp/GratiaWeb.pid
+	cp /tmp/GratiaWeb.pid /var/run/GratiaWeb.pid
+	if [ ! -f /var/lock/subsys/gratia_web ]; then
+	    echo "creating /var/lock/subsys/gratia_web"
+            touch /var/lock/subsys/gratia_web
+	fi
         ;;
   stop)
         echo -n "Shutting down GratiaWeb: "
         killproc -p /var/run/GratiaWeb.pid gratia_web
         echo
-        rm -f /var/lock/subsys/GratiaWeb
+	if [ -f /var/lock/subsys/gratia_web ]; then
+	    echo "rm -f /var/lock/subsys/gratia_web"
+            rm -f /var/lock/subsys/gratia_web
+	fi
         ;;
   status)
         status gratia_web

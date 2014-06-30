@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        28%{?dist}
+Release:        29%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -81,7 +81,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
-* Fri Mar 21 2014 William B Hurst <wbhurst@cse.unl.edu
+* Mon Jun 30 2014 William B Hurst <wbhurst@cse.unl.edu>
+- modifications and program additions to resolve OSG
+- Software-1478 ticket.
+
+* Fri Mar 21 2014 William B Hurst <wbhurst@cse.unl.edu>
 - completed final step to move all URLs to a config file.
 
 * Fri Mar 14 2014 William B Hurst <wbhurst@cse.unl.edu>

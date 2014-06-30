@@ -1,0 +1,73 @@
+#!/bin/bash
+#---------------------------------------------------------------------------
+# created: 2014Jun16
+# author:  wbhurst
+# simple bash program to clean up extra gratia_web processes that are
+# created due to multi-threading capabilities from apache
+#
+#---------------------------------------------------------------------------
+
+export dt=`date '+%Y%b%d_%H_%M'`
+progname="gratia_clean_procs:${dt}"
+pgname=gratia_web
+pidfile="/var/run/GratiaWeb.pid"
+logfile=/var/log/GratiaWeb_clean.log
+if [ ! -x ${logfile} ]; then
+  touch ${logfile}
+fi 
+chown daemon:root ${logfile}
+#---------------------------------------------------------
+# user define: the maximum number of processes desired
+maxNumProcs=2
+#---------------------------------------------------------
+
+make_pslist() {
+  pslist=`pgrep ${pgname}`
+  #echo "${progname}: pslist: ${pslist}" | tee -a ${logfile}
+}
+
+count_pslist() {
+  cnt=0
+  for i in ${pslist}; do
+    let cnt=cnt+1
+    #echo "cnt = $cnt"
+  done
+  #echo "${progname}: cnt: ${cnt}" | tee -a ${logfile}
+}
+
+make_pskill () {
+  psnum=`cat ${pidfile}`
+  pskill=`echo ${pslist} | grep -v ${psnum}`
+  #echo "${progname}: pskill: ${pskill}" | tee -a ${logfile}
+}
+
+kill_pskill () {
+  for i in ${pskill}; do
+    echo "${progname}: kill -9 ${i}" | tee -a ${logfile}
+    kill -9 $i
+  done
+}
+
+restart_gratiaweb () {
+  #echo "${progname}: restarting GratiaWeb service" | tee -a ${logfile}
+  service GratiaWeb restart
+}
+
+make_pslist
+count_pslist
+
+if [ ${cnt} -gt ${maxNumProcs} ]; then
+    #echo "${progname}: cnt greater than 1" | tee -a ${logfile}
+    if [ -s $pidfile ]; then
+       make_pskill
+       kill_pskill
+       restart_gratiaweb
+    else
+        echo "${progname}: Error: could not find ${pidfile}" | tee -a ${logfile}
+        exit 1
+    fi
+#else
+    #echo "${progname}: cnt is not greater than 1" | tee -a ${logfile}
+fi
+
+exit 0
