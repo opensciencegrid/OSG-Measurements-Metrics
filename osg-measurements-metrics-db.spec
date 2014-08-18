@@ -61,6 +61,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
+* Mon Aug 18 2014 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications and program additions to resolve OSG
+- GRATIAWEB-53 ticket on JIRA Distinguish between 
+- transfers in and out (Additional parameter options
+- are (IN|OUT|BOTH)).
+
 * Mon Jun 30 2014 William B Hurst <wbhurst@cse.unl.edu>
 - modifications and program additions to resolve OSG
 - Software-1478 ticket.

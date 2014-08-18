@@ -13,9 +13,23 @@
 
     <!-- Grid-wide queries -->
     <query name="user_transfer_volume" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> CommonName </filler>
             <filler name="column"> sum(TransferSize)/pow(1024, 3)</filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
+            </filler>
         </sql>
         <results>
             <inputs>
@@ -29,9 +43,23 @@
     </query>
 
     <query name="facility_transfer_volume" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> SiteName </filler>
             <filler name="column"> sum(TransferSize)/pow(1024, 3)</filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
+            </filler>
         </sql>
         <attribute name="pivot_name">Facility</attribute>
         <attribute name="title">Volume of Gigabytes Transferred By Facility</attribute>
@@ -40,9 +68,23 @@
     </query>
 
     <query name="facility_transfer_rate" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> SiteName </filler>
             <filler name="column"> sum(TransferSize)/pow(1024, 2)/:span</filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
+            </filler>
         </sql>
         <attribute name="pivot_name">Facility</attribute>
         <attribute name="title">Transfer Rate By Facility</attribute>
@@ -51,9 +93,23 @@
     </query>
 
     <query name="vo_transfer_volume" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> VO.VOName </filler>
             <filler name="column"> sum(TransferSize)/pow(1024, 3)</filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
+            </filler>
         </sql>
         <attribute name="pivot_name">VO</attribute>
         <attribute name="title">Volume of Gigabytes Transferred By VO</attribute>
@@ -62,9 +118,23 @@
     </query>
 
     <query name="probe_transfer_volume" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> R.ProbeName </filler>
             <filler name="column"> sum(TransferSize)/pow(1024, 3)</filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
+            </filler>
         </sql>
         <attribute name="pivot_name">Probe</attribute>
         <attribute name="title">Volume of Gigabytes Transferred By Probe</attribute>
@@ -73,9 +143,23 @@
     </query>
 
     <query name="remote_site_transfer_volume" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> SUBSTRING_INDEX(R.RemoteSite, '.', -2) </filler>
             <filler name="column"> sum(TransferSize)/pow(1024, 3)</filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
+            </filler>
         </sql>
         <attribute name="pivot_name">VO</attribute>
         <attribute name="title">Volume of Gigabytes Transferred By VO</attribute>
@@ -84,9 +168,23 @@
     </query>
 
     <query name="vo_transfer_rate" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> VO.VOName </filler>
             <filler name="column"> sum(TransferSize)/pow(1024, 2)/:span</filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
+            </filler>
         </sql>
         <attribute name="pivot_name">VO</attribute>
         <attribute name="title">Transfer Rate By VO</attribute>
@@ -95,9 +193,23 @@
     </query>
 
     <query name="protocol_transfer_volume" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> R.Protocol </filler>
             <filler name="column"> sum(TransferSize)/pow(1024, 3)</filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
+            </filler>
         </sql>
         <attribute name="pivot_name">Protocol</attribute>
         <attribute name="title">Volume of Gigabytes Transferred By Protocol</attribute>
@@ -106,9 +218,23 @@
     </query>
 
     <query name="protocol_transfer_rate" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> R.Protocol </filler>
             <filler name="column"> sum(TransferSize)/pow(1024, 2)/:span</filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
+            </filler>
         </sql>
         <attribute name="pivot_name">Protocol</attribute>
         <attribute name="title">Transfer Rate By Protocol</attribute>
@@ -117,9 +243,23 @@
     </query>
 
     <query name="facility_transfer_count" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> SiteName </filler>
             <filler name="column"> sum(Njobs)</filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
+            </filler>
         </sql>
         <attribute name="pivot_name">Protocol</attribute>
         <attribute name="title">Transfer Count by Site</attribute>
@@ -128,11 +268,25 @@
     </query>
 
     <query name="facility_quality" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> SiteName </filler>
             <filler name="column"> 
                 sum(CASE R.Status WHEN 0 THEN 1 ELSE 0 END) as Successes,
                 sum(CASE R.Status WHEN 0 THEN 0 ELSE 1 END) as Failures
+            </filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
             </filler>
         </sql>
         <results>
@@ -149,11 +303,25 @@
     </query>
 
     <query name="vo_quality" base="GratiaStorageQuery.summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> VO.VOName </filler>
             <filler name="column">
                 sum(CASE R.Status WHEN 0 THEN 1 ELSE 0 END) as Successes,
                 sum(CASE R.Status WHEN 0 THEN 0 ELSE 1 END) as Failures
+            </filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
             </filler>
         </sql>
         <results>
@@ -172,8 +340,8 @@
         <sql>
             <filler name="group"> CommonName </filler>
             <filler name="column">
-                sum(CASE R.Status WHEN 0 THEN 1 ELSE 0 END) as Successes,
-                sum(CASE R.Status WHEN 0 THEN 0 ELSE 1 END) as Failures
+                sum(CASE R.Status WHEN 0 THEN 1.0 ELSE 0.0 END) as Successes,
+                sum(CASE R.Status WHEN 0 THEN 0.0 ELSE 1.0 END) as Failures
             </filler>
         </sql>
         <results>
@@ -194,11 +362,25 @@
     <!-- Site queries -->
 
     <query name="site_user_quality" base="GratiaStorageQuery.site_summary">
+        <inputs>
+            <!-- ACCEPTS IN/OUT/BOTH -->
+            <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+        </inputs>
         <sql>
             <filler name="group"> CommonName </filler>
             <filler name="column">
                 sum(CASE R.Status WHEN 0 THEN 1 ELSE 0 END) as Successes,
                 sum(CASE R.Status WHEN 0 THEN 0 ELSE 1 END) as Failures
+            </filler>
+            <filler name="where"> 
+                AND 
+                    (
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'IN' AND R.isNew = 1)
+                        OR
+                        (UPPER(TRIM(:transfer_direction(in|out|both))) = 'OUT' AND R.isNew = 0)
+                        OR
+                        UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
+                    )
             </filler>
         </sql>  
         <results>
