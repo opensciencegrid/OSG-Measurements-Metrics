@@ -560,6 +560,19 @@ def displayNameSite(*args, **kw):
         return 0
     return "%s @ %s" % (dn.upper(), site)
 
+'''
+  juanfmx2: JIRA -> GRATIAWEB-53 
+  Parse isNew to IN ot OUT 
+'''
+def displayIsNewAsInOut(*args, **kw):
+    isNew = args[0]
+    if isNew == 0 or isNew == '0':
+      return "OUT"
+    elif isNew == 1 or isNew == '1':
+      return "IN"
+    else:
+      return "UNKNOWN"
+
 '''wbh: GratiaWeb Request-56: change @ to , for csv transfer files '''
 def displayNameCommaSite(*args, **kw):
     site = args[1]
@@ -1306,7 +1319,16 @@ def voownership():
         for innernode in node.getElementsByTagName('Ownership'):
             voname= (innernode.getElementsByTagName("VO")) 
             t = voname[0].firstChild.nodeValue.encode("utf8"),resourcename[0].firstChild.nodeValue.encode("utf8")
-            allresources.append(t)
+            percent_num = 0
+            p_str = None
+            try:
+                p_str = innernode.getElementsByTagName("Percent")[0].firstChild.nodeValue.encode("utf8")
+                percent_num = int(p_str)
+            except:
+                print "CAN'T CONVERT VO OWNERSHIP PERCENTAGE: %s" % p_str
+                percent_num = -1
+            if percent_num > 0:
+                allresources.append(t)
     #print "All Resources  %s"%(allresources)
     return allresources
 
@@ -1333,21 +1355,39 @@ def opportunistic_usage_parser(sql_results, vo="Unknown", globals=globals(), **k
     return results_parser(sql_results, pivot_transform=pivot_transform,\
         globals=globals, vo=vo, **kw)
     
+def opportunistic_usage_parser_by_vo_facility(sql_results, vo="Unknown", globals=globals(), **kw):
+    """
+    For a given VO, turn the pivots into "Usage Type" - opportunistic or owned.
+    """
+    vo_listing=voownership()
+    #print ownership
+    def pivot_transform(*pivot, **kw):
+        virt_org = pivot[0]
+        facility = pivot[1]
+        for v, site in vo_listing:
+            if virt_org.lower() == v.lower() and facility.lower() == site.lower() :
+                return (virt_org+"-"+facility+"-Owned")
+        return (virt_org+"-"+facility+"-Opportunistic")
+    try:
+        kw.pop('pivot_transform')
+    except:
+        pass
+    return results_parser(sql_results, pivot_transform=pivot_transform,\
+        globals=globals, vo=vo, **kw)
+    
 def opportunistic_usage_parser2(sql_results, vo="Unknown", globals=globals(), **kw):
     """
     For a given VO, turn the pivots into "Usage Type" - opportunistic or owned.
     """
     vo_listing=voownership()
-    #vo_listing, dummy = globals['RegistrationQueries'].ownership_query()
-    ownership = []
-    for v, site in vo_listing:
-        if vo.lower() == v.lower():
-            ownership.append(site)
     #print ownership
-    def pivot_transform(arg, **kw):
-        if arg in ownership:
-            return "Owned"
-        return "Opportunistic"
+    def pivot_transform(*pivot, **kw):
+        virt_org = pivot[0]
+        facility = pivot[1]
+        for v, site in vo_listing:
+            if virt_org.lower() == v.lower() and facility.lower() == site.lower() :
+                return ("Owned")
+        return ("Opportunistic")
     try:
         kw.pop('pivot_transform')
     except:

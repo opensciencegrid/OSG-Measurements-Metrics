@@ -42,6 +42,28 @@
         <attribute name="column_units">GB</attribute>
     </query>
 
+    <query name="in_out_transfer_volume" base="GratiaStorageQuery.summary">
+        <inputs>
+        </inputs>
+        <sql>
+            <filler name="group"> R.isNew  </filler>
+            <filler name="column"> sum(TransferSize)/pow(1024, 3)</filler>
+        </sql>
+        <results module="graphtool.database.query_handler" function="results_parser">
+            <inputs>
+                <input name="pivots"> 0 </input>
+                <input name="grouping"> 1 </input>
+                <input name="results"> 2 </input>
+                <input name="pivot_transform">displayIsNewAsInOut</input>
+                <input name="grouping_transform">make_int</input>
+            </inputs>
+        </results>
+        <attribute name="pivot_name">IN/OUT</attribute>
+        <attribute name="title">Aggregated Volume of Gigabytes Transferred IN/OUT</attribute>
+        <attribute name="column_names">Transfer Volume</attribute>
+        <attribute name="column_units">GB</attribute>
+    </query>
+
     <query name="facility_transfer_volume" base="GratiaStorageQuery.summary">
         <inputs>
             <!-- ACCEPTS IN/OUT/BOTH -->

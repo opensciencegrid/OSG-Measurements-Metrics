@@ -5,8 +5,8 @@ SSLConfExample.txt
 access.db
 buildrpms.sh
 changelog.txt
-osg-measurements-metrics-db.spec
-osg-measurements-metrics-web.spec
+setup.cfg
+setup.py
 setup.sh
 setuptools-0.6c11-py2.4.egg
 config/DBParam.xml.rpmnew
@@ -21,8 +21,6 @@ config/gip_schema
 config/gratia_data.cron
 config/gratia_logrotate.conf
 config/gratia_mon.cron
-config/gratiaweb_clean.cron
-config/gratiaweb_clean_procs
 config/osg_graphs.conf
 config/registration_schema
 config/static_graphs
