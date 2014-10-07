@@ -46,7 +46,6 @@ setup/setup_static_graphs.py
 src/gratia/__init__.py
 src/gratia/config/DBSecurity.xml
 src/gratia/config/__init__.py
-src/gratia/config/__init__.pyc
 src/gratia/config/campus_bar_queries.xml
 src/gratia/config/development.conf
 src/gratia/config/generic_gip_queries.xml
@@ -115,7 +114,6 @@ src/gratia/summary/LigoProbeConfigProd
 src/gratia/summary/__init__.py
 src/gratia/summary/dashboard_slurp.py
 src/gratia/templates/__init__.py
-src/gratia/templates/__init__.pyc
 src/gratia/templates/bysite.tmpl
 src/gratia/templates/byvo.tmpl
 src/gratia/templates/campus.tmpl
