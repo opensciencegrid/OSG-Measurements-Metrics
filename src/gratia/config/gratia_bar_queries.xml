@@ -59,7 +59,7 @@
       </inputs>
       <sql>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
-        <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
+        <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
         <filler name="column"> sum(Njobs) </filler>
         <filler name="where"> AND PNC.ReportableProjectName regexp :projectname 
 	  AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
@@ -73,7 +73,10 @@
       <attribute name="graph_type"> GratiaStackedBar </attribute>
       <results>
         <inputs>
-          <input name="pivot_transform">oim_fos_filter</input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+          <input name="pivot_transform">oim_vo_project_fos_filter</input>
           <input name="grouping_transform">make_int</input>
         </inputs>
       </results>
@@ -454,7 +457,7 @@
         <input name="exclude-projectname" kind="sql"> unknown|other </input>
       </inputs>
       <sql>
-        <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
+        <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
         <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
         <filler name="where"> AND WallDuration > 0 
 	  AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
@@ -468,7 +471,10 @@
       <attribute name="graph_type"> GratiaStackedBar </attribute>
       <results>
         <inputs>
-	  <input name="pivot_transform"> oim_fos_filter </input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+          <input name="pivot_transform">oim_vo_project_fos_filter</input>
           <input name="grouping_transform">make_int</input>
         </inputs>
       </results>
@@ -520,7 +526,7 @@
           <input name="exclude-projectname" kind="sql"> unknown|other </input>
       </inputs>
       <sql>
-      <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
+        <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
         <filler name="column"> sum(CpuUserDuration + CpuSystemDuration)/3600 </filler>
         <filler name="where"> AND WallDuration > 0 
 	  AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
@@ -534,7 +540,10 @@
       <attribute name="graph_type"> GratiaStackedBar </attribute>
       <results>
         <inputs>
-	  <input name="pivot_transform"> oim_fos_filter </input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+          <input name="pivot_transform">oim_vo_project_fos_filter</input>
           <input name="grouping_transform">make_int</input>
         </inputs>
       </results>
@@ -586,7 +595,7 @@
         <input name="exclude-projectname" kind="sql"> unknown|other </input>
       </inputs>
       <sql>
-        <filler name="group"> UPPER(PNC.ReportableProjectName) </filler>
+        <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
         <filler name="column"> sum(Njobs) </filler>
         <filler name="where"> AND WallDuration > 0 
 	  AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
@@ -600,7 +609,10 @@
       <attribute name="graph_type"> GratiaStackedBar </attribute>
       <results>
         <inputs>
-	  <input name="pivot_transform"> oim_fos_filter </input>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+          <input name="pivot_transform">oim_vo_project_fos_filter</input>
           <input name="grouping_transform">make_int</input>
         </inputs>
       </results>
@@ -1342,7 +1354,7 @@
       </inputs>
         <sql>
             <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
-            <filler name="group"> COALESCE(UPPER(PNC.ReportableProjectName), "UNKNOWN"), R.HostDescription </filler>
+            <filler name="group"> UPPER(VO.VOName), UPPER(PNC.ReportableProjectName), R.HostDescription </filler>
             <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
             <filler name="where"> AND WallDuration > 0 
 	      AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
@@ -1355,10 +1367,10 @@
         <attribute name="graph_type">GratiaStackedBar</attribute>
         <results module="graphtool.database.query_handler" function="results_parser">
             <inputs>
-                <input name="pivots"> 0,1 </input>
-                <input name="grouping"> 2 </input>
-                <input name="results"> 3 </input>
-		<input name="pivot_transform"> displayFosCommaSite </input>
+                <input name="pivots"> 0,1,2 </input>
+                <input name="grouping"> 3 </input>
+                <input name="results"> 4 </input>
+                <input name="pivot_transform"> displayVOProjectFosCommaSite </input>
             </inputs>
         </results>
     </query> 
@@ -1451,7 +1463,7 @@
           <input name="exclude-projectname" kind="sql"> unknown|other </input>
       </inputs>
         <sql>
-            <filler name="group"> UPPER(COALESCE(PNC.ReportableProjectName, "UNKNOWN")) </filler>
+            <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
             <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
             <filler name="where"> AND WallDuration > 0 
 	      AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
@@ -1459,10 +1471,11 @@
         </sql>
         <results module="graphtool.database.query_handler" function="results_parser">
             <inputs>
-                <input name="pivots"> 0 </input>
-                <input name="grouping"> 1 </input>
-                <input name="results"> 2 </input>
-		<input name="pivot_transform"> oim_fos_filter </input>
+                <input name="pivots"> 0,1 </input>
+                <input name="grouping"> 2 </input>
+                <input name="results"> 3 </input>
+                <input name="pivot_transform">oim_vo_project_fos_filter</input>
+                <input name="grouping_transform">make_int</input>
             </inputs>
         </results>
         <attribute name="pivot_name">FieldOfScience</attribute>

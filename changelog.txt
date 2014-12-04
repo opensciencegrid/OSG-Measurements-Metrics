@@ -1,5 +1,9 @@
 %changelog
 
+* Wed Dec 03 2014 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications and program additions to resolve OSG
+- GRATIAWEB-67.
+
 * Thu Oct 09 2014 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications and program additions to resolve OSG
 - GRATIAWEB-53 and GRATIAWEB-65.

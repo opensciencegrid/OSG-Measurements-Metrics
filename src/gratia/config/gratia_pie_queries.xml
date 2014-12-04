@@ -65,7 +65,7 @@
           <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-14*86400</input>
         </inputs>
       <sql>
-        <filler name="group"> UPPER(ReportableProjectName) </filler>
+        <filler name="group">UPPER(VO.VOName), UPPER(ReportableProjectName)</filler>
         <filler name="column"> sum(R.Cores*R.WallDuration)/3600 as WallHours </filler>
         <filler name="having"> HAVING sum(R.Cores*R.WallDuration)/3600 >= :min_hours </filler>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
@@ -78,7 +78,9 @@
       <attribute name="column_units">Hours</attribute>
       <results>
         <inputs>
-	  <input name="pivot_transform"> oim_fos_filter </input>
+          <input name="pivots"> 0,1 </input>
+          <input name="results"> 2 </input>
+          <input name="pivot_transform">oim_vo_project_fos_filter</input>
           <input name="grouping_transform">make_int</input>
         </inputs>
       </results>

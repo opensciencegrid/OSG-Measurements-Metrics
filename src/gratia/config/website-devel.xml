@@ -7,6 +7,7 @@
   <import module="gratia.config" data_file="gratia_graphs.xml" />
   <import module="gratia.config" data_file="text_queries.xml" />
   <import module="gratia.config" data_file="vo_ownership_queries.xml"/>
+  <import module="gratia.config" data_file="rsv_queries.xml"/>
 
   <class name="LogLoader" type="GraphToolLogging">
     <log module="gratia.config">logging.conf</log>
@@ -14,55 +15,58 @@
 
   <class name="GratiaWeb" type="Gratia">
       <sets>
-          <set kind="site" focus="both" name="CMS T2 Sites">Nebraska, UCSD, CIT, GLOW, MIT_CMS, Purdue, UFlorida</set>
-          <set kind="site" focus="both" name="ATLAS T2 Sites">AGLT2, BU_ATLAS_Tier2, IU_OSG, MWT2_IU, MWT2_UC, PROD_SLAC, OU_OCHEP_SWT2, OU_OSCER_ATLAS, UC_Teraport, UC_ATLAS_MWT2, UTA_SWT2, SWT2_CPB</set>
-          <set kind="vo" focus="both" name="Non-HEP VOs">nanohub,glow,sdss,dteam,ligo,osg,engage,osgedu,tigre,nysgrid</set>
+          <set kind="site" focus="both" name="CMS T2 Sites">Nebraska, UCSD, CIT, GLOW, MIT_CMS, Purdue, UFlorida, UERJ, SPRACE</set>
+          <set kind="site" focus="both" name="ATLAS T2 Sites">AGLT2.*, .*_ATLAS_.*, IU_OSG.*, MWT2_.*, WT2.*, OU_OCHEP_.*, OU_OSCER_ATLAS.*, UC_Teraport.*, UTA_SWT2.*, SWT2_.*</set>
+          <set kind="vo" focus="both" name="Non-HEP VOs">nanohub,glow,sdss,dteam,ligo,osg,engage,osgedu,tigre,nysgrid,cigi,compbiogrid,des,fmri,gpn,grase,gugrid,i2u2,mariachi,nwicg,sbgrid,star,hcc,nebiogrid</set>
       </sets>
-      <attribute name="base_server">https://t2.unl.edu</attribute>
-      <attribute name="base_url">/gratia_dev</attribute>
-      <attribute name="base_url_noauth">/gratia_dev</attribute>
+      <attribute name="base_url">/gratia</attribute>
+      <attribute name="base_url_noauth">/gratia</attribute>
       <attribute name="user_security">GratiaSecurity</attribute>
       <attribute name="vo_security">OIMSecurity</attribute>
       <attribute name="site_security">OIMSecurity</attribute>
-      <attribute name="static_url">http://t2.unl.edu/store/gratia/</attribute>
+      <attribute name="static_url">http://red-web.unl.edu/gratiagraphs/</attribute>
       <attribute name="static_site_url">/gratia/static-site</attribute>
-      <attribute name="vos_url">http://t2.unl.edu/gratia/xml/vo_corrected_table</attribute>
-      <attribute name="registered_vos_url">http://t2.unl.edu/gratia/xml/vo</attribute>
-      <attribute name="keep_vos">gpn, mipp, Unknown, hypercp, tigre, dteam</attribute>
-      <attribute name="dashboard_sam_url">http://lxarda16.cern.ch/dashboard/request.py/historicalsiteavailability?siteSelect3=T2&amp;sites=T2_BR_SPRACE&amp;sites=T2_BR_UERJ&amp;sites=T2_US_Caltech&amp;sites=T2_US_Florida&amp;sites=T2_US_MIT&amp;sites=T2_US_Nebraska&amp;sites=T2_US_Purdue&amp;sites=T2_US_UCSD&amp;sites=T2_US_Wisconsin&amp;timeRange=last2Weeks</attribute>
-      <attribute name="dashboard_sam_url_all">http://lxarda16.cern.ch/dashboard/request.py/historicalsiteavailability?siteSelect3=All%20Sites&amp;sites=ampath.net&amp;sites=BG-INRNE&amp;sites=bo.infn.it&amp;sites=cac.cornell.edu&amp;sites=ccr.buffalo.edu&amp;sites=CGG-LCG2&amp;sites=CYFRONET-LCG2&amp;sites=EENet&amp;sites=GR-05-DEMOKRITOS&amp;sites=GRASE-CCR-U2&amp;sites=grid.&amp;sites=grid.vgtu.lt&amp;sites=hep.wisc.edu&amp;sites=hosted.ats.ucla.edu&amp;sites=hpcc.unical.it&amp;sites=IMCSUL&amp;sites=IMCSUL-INF&amp;sites=INFN-BOLOGNA&amp;sites=INFN-CATANIA&amp;sites=INFN-NAPOLI-CMS&amp;sites=INFN-PADOVA&amp;sites=INFN-ROMA2&amp;sites=ITB-BARI&amp;sites=KTU-BG-GLITE&amp;sites=marie.hellasgrid.gr&amp;sites=osgce.he&amp;sites=osgce.hepgri&amp;sites=PDC&amp;sites=physics.ox.ac.uk&amp;sites=ru-Moscow-FIAN-LCG2&amp;sites=Ru-Troitsk-INR-LCG2&amp;sites=T0_CH_CERN&amp;sites=T1_DE_FZK&amp;sites=T1_ES_PIC&amp;sites=T1_FR_CCIN2P3&amp;sites=T1_IT_CNAF&amp;sites=T1_TW_ASGC&amp;sites=T1_UK_RAL&amp;sites=T1_US_FNAL&amp;sites=T2_AT_Vienna&amp;sites=T2_BE_IIHE&amp;sites=T2_BE_UCL&amp;sites=T2_BR_SPRACE&amp;sites=T2_BR_UERJ&amp;sites=T2_CH_CSCS&amp;sites=T2_CN_Beijing&amp;sites=T2_DE_DESY&amp;sites=T2_DE_RWTH&amp;sites=T2_EE_Estonia&amp;sites=T2_ES_CIEMAT&amp;sites=T2_ES_IFCA&amp;sites=T2_FR_CCIN2P3&amp;sites=T2_FR_GRIF_LLR&amp;sites=T2_HU_Budapest&amp;sites=T2_IN_TIFR&amp;sites=T2_IT_Bari&amp;sites=T2_IT_Legnaro&amp;sites=T2_IT_Pisa&amp;sites=T2_IT_Rome&amp;sites=T2_KR_KNU&amp;sites=T2_PL_Warsaw&amp;sites=T2_PT_LIP_Coimbra&amp;sites=T2_PT_LIP_Lisbon&amp;sites=T2_RU_IHEP&amp;sites=T2_RU_ITEP&amp;sites=T2_RU_JINR&amp;sites=T2_RU_PNPI&amp;sites=T2_RU_RRC_KI&amp;sites=T2_RU_SINP&amp;sites=T2_TR_METU&amp;sites=T2_TR_ULAKBIM&amp;sites=T2_TW_Taiwan&amp;sites=T2_UK_London_Brunel&amp;sites=T2_UK_London_Imperial&amp;sites=T2_UK_London_QMUL&amp;sites=T2_UK_London_RHUL&amp;sites=T2_UK_SouthGrid_Bristol&amp;sites=T2_UK_SouthGrid_RALPPD&amp;sites=T2_US_Caltech&amp;sites=T2_US_Florida&amp;sites=T2_US_MIT&amp;sites=T2_US_Nebraska&amp;sites=T2_US_Purdue&amp;sites=T2_US_UCSD&amp;sites=T2_US_Wisconsin&amp;sites=T3_DE_Karlsruhe&amp;sites=T3_FR_IRES&amp;sites=T3_GR_IASA&amp;sites=T3_IT_Trieste&amp;sites=T3_US_TTU&amp;sites=T3_US_UCR&amp;sites=TW-NCUHEP&amp;sites=UKI-LT2-UCL-CENTRAL&amp;sites=UKI-NORTHGRID-MAN-HEP&amp;sites=UKI-NORTHGRID-SHEF-HEP&amp;sites=UKI-SCOTGRID-GLASGOW&amp;sites=UKI-SOUTHGRID-BHAM-HEP&amp;sites=UKI-SOUTHGRID-OX-HEP&amp;sites=uniandes.edu.co&amp;sites=unknown&amp;sites=viking.lesc.doc.ic.ac.uk&amp;timeRange=last2Weeks</attribute>
-
+      <attribute name="vos_url">http://localhost/gratia/xml/vo_corrected_table</attribute>
+      <attribute name="registered_vos_url">http://localhost/gratia/xml/vo</attribute>
+      <attribute name="keep_vos">gpn, mipp, hypercp, tigre</attribute>
+      <attribute name="dashboard_sam_url">http://dashb-nagios-cms.cern.ch/dashboard/request.py/historicalsiteavailability?siteSelect3=T2&amp;sites=T2_BR_SPRACE&amp;sites=T2_BR_UERJ&amp;sites=T2_US_Caltech&amp;sites=T2_US_Florida&amp;sites=T2_US_MIT&amp;sites=T2_US_Nebraska&amp;sites=T2_US_Purdue&amp;sites=T2_US_UCSD&amp;sites=T2_US_Wisconsin&amp;timeRange=last2Weeks</attribute>
+      <attribute name="dashboard_sam_url_all">http://dashb-nagios-cms.cern.ch/dashboard/request.py/historicalsiteavailability?siteSelect3=All%20Sites&amp;sites=ampath.net&amp;sites=BG-INRNE&amp;sites=bo.infn.it&amp;sites=cac.cornell.edu&amp;sites=ccr.buffalo.edu&amp;sites=CGG-LCG2&amp;sites=CYFRONET-LCG2&amp;sites=EENet&amp;sites=GR-05-DEMOKRITOS&amp;sites=GRASE-CCR-U2&amp;sites=grid.&amp;sites=grid.vgtu.lt&amp;sites=hep.wisc.edu&amp;sites=hosted.ats.ucla.edu&amp;sites=hpcc.unical.it&amp;sites=IMCSUL&amp;sites=IMCSUL-INF&amp;sites=INFN-BOLOGNA&amp;sites=INFN-CATANIA&amp;sites=INFN-NAPOLI-CMS&amp;sites=INFN-PADOVA&amp;sites=INFN-ROMA2&amp;sites=ITB-BARI&amp;sites=KTU-BG-GLITE&amp;sites=marie.hellasgrid.gr&amp;sites=osgce.he&amp;sites=osgce.hepgri&amp;sites=PDC&amp;sites=physics.ox.ac.uk&amp;sites=ru-Moscow-FIAN-LCG2&amp;sites=Ru-Troitsk-INR-LCG2&amp;sites=T0_CH_CERN&amp;sites=T1_DE_FZK&amp;sites=T1_ES_PIC&amp;sites=T1_FR_CCIN2P3&amp;sites=T1_IT_CNAF&amp;sites=T1_TW_ASGC&amp;sites=T1_UK_RAL&amp;sites=T1_US_FNAL&amp;sites=T2_AT_Vienna&amp;sites=T2_BE_IIHE&amp;sites=T2_BE_UCL&amp;sites=T2_BR_SPRACE&amp;sites=T2_BR_UERJ&amp;sites=T2_CH_CSCS&amp;sites=T2_CN_Beijing&amp;sites=T2_DE_DESY&amp;sites=T2_DE_RWTH&amp;sites=T2_EE_Estonia&amp;sites=T2_ES_CIEMAT&amp;sites=T2_ES_IFCA&amp;sites=T2_FR_CCIN2P3&amp;sites=T2_FR_GRIF_LLR&amp;sites=T2_HU_Budapest&amp;sites=T2_IN_TIFR&amp;sites=T2_IT_Bari&amp;sites=T2_IT_Legnaro&amp;sites=T2_IT_Pisa&amp;sites=T2_IT_Rome&amp;sites=T2_KR_KNU&amp;sites=T2_PL_Warsaw&amp;sites=T2_PT_LIP_Coimbra&amp;sites=T2_PT_LIP_Lisbon&amp;sites=T2_RU_IHEP&amp;sites=T2_RU_ITEP&amp;sites=T2_RU_JINR&amp;sites=T2_RU_PNPI&amp;sites=T2_RU_RRC_KI&amp;sites=T2_RU_SINP&amp;sites=T2_TR_METU&amp;sites=T2_TR_ULAKBIM&amp;sites=T2_TW_Taiwan&amp;sites=T2_UK_London_Brunel&amp;sites=T2_UK_London_Imperial&amp;sites=T2_UK_London_QMUL&amp;sites=T2_UK_London_RHUL&amp;sites=T2_UK_SouthGrid_Bristol&amp;sites=T2_UK_SouthGrid_RALPPD&amp;sites=T2_US_Caltech&amp;sites=T2_US_Florida&amp;sites=T2_US_MIT&amp;sites=T2_US_Nebraska&amp;sites=T2_US_Purdue&amp;sites=T2_US_UCSD&amp;sites=T2_US_Wisconsin&amp;sites=T3_DE_Karlsruhe&amp;sites=T3_FR_IRES&amp;sites=T3_GR_IASA&amp;sites=T3_IT_Trieste&amp;sites=T3_US_TTU&amp;sites=T3_US_UCR&amp;sites=TW-NCUHEP&amp;sites=UKI-LT2-UCL-CENTRAL&amp;sites=UKI-NORTHGRID-MAN-HEP&amp;sites=UKI-NORTHGRID-SHEF-HEP&amp;sites=UKI-SCOTGRID-GLASGOW&amp;sites=UKI-SOUTHGRID-BHAM-HEP&amp;sites=UKI-SOUTHGRID-OX-HEP&amp;sites=uniandes.edu.co&amp;sites=unknown&amp;sites=viking.lesc.doc.ic.ac.uk&amp;timeRange=last2Weeks</attribute>
   </class>
 
   <class name="static" type="StaticContent">
     <module name="content"> graphtool.static_content </module>
   </class>
 
+  <class name="static-site" type="StaticContent">
+    <directory location="/gratia/static-site" name="/gratia/static-site">/home/jmorales/fermi-dev/osg/OSG-Measurements-Metrics/static/</directory>
+  </class>
+
   <class name="web" type="WebHost">
-    <mount location="/gratia_dev/bar_graphs" content="image/png"> <instance name="gratia_bar_grapher" /> </mount>
-    <mount location="/gratia_dev/rt_graphs" content="image/png"> <instance name="gratia_rt_grapher" /> </mount>
-    <mount location="/gratia_dev/pie_graphs" content="image/png"> <instance name="gratia_pie_grapher" /> </mount>
-    <mount location="/gratia_dev/cumulative_graphs" content="image/png"> <instance name="gratia_cumulative_grapher" /> </mount>
-    <mount location="/gratia_dev/status_graphs" content="image/png"> <instance name="gratia_status_grapher" /> </mount>
-    <mount location="/gratia_dev/events_graphs" content="image/png"> <instance name="gratia_events_grapher" /> </mount>
-    <mount location="/gratia_dev/gridscan_graphs" content="image/png"> <instance name="gridscan_grapher" /> </mount>
-    <mount location="/gratia_dev/gip_graphs" content="image/png"> <instance name="gip_grapher" /> </mount>
-    <mount location="/gratia_dev/rsv_graphs" content="image/png"> <instance name="rsv_grapher" /> </mount>
-    <mount location="/gratia_dev/rsv_summary_graphs" content="image/png"> <instance name="rsv_summary_grapher" /> </mount>
-    <mount location="/gratia_dev/rsv_wlcg_graphs" content="image/png"> <instance name="rsv_wlcg_grapher" /> </mount>
-    <mount location="/gratia_dev/xml" content="text/xml"> <instance name="query_xml" /> </mount>
-    <mount location="/gratia_dev/transfer_graphs" content="image/png"> <instance name="gratia_transfer_grapher" /> </mount>
-    <mount location="/gratia_dev/csv" content="text/plain"> <instance name="query_csv" /> </mount>
-    <mount location="/gratia_dev/csv2" content="text/plain"> <instance name="query_csv_secure"/></mount>
-    <mount location="/gratia_dev/site_xml" content="text/xml"> <instance name="site_xml"/> </mount>
-    <mount location="/gratia_dev/vo_xml" content="text/xml"> <instance name="vo_xml"/> </mount>
-    <mount location="/gratia_dev/user_xml" content="text/xml"> <instance name="user_xml"/> </mount>
-    <mount location="/gratia_dev/site_graphs" content="image/png"> <instance name="gratia_site_grapher"/> </mount>
-    <mount location="/gratia_dev/vo_graphs" content="image/png"> <instance name="gratia_vo_grapher"/> </mount>
-    <mount location="/gratia_dev/user_graphs" content="image/png"> <instance name="gratia_user_grapher"/> </mount>
-    <instance name="static" location="/gratia_dev/static" />
-    <instance name="GratiaWeb" location="/gratia_dev"/>
+    <mount location="/gratia/bar_graphs" content="image/png"> <instance name="gratia_bar_grapher" /> </mount>
+    <mount location="/gratia/glidein_bar_graphs" content="image/png"> <instance name="glidein_gratia_bar_grapher" /> </mount>
+    <mount location="/gratia/rt_graphs" content="image/png"> <instance name="gratia_rt_grapher" /> </mount>
+    <mount location="/gratia/pie_graphs" content="image/png"> <instance name="gratia_pie_grapher" /> </mount>
+    <mount location="/gratia/cumulative_graphs" content="image/png"> <instance name="gratia_cumulative_grapher" /> </mount>
+    <mount location="/gratia/status_graphs" content="image/png"> <instance name="gratia_status_grapher" /> </mount>
+    <mount location="/gratia/events_graphs" content="image/png"> <instance name="gratia_events_grapher" /> </mount>
+    <mount location="/gratia/gridscan_graphs" content="image/png"> <instance name="gridscan_grapher" /> </mount>
+    <mount location="/gratia/gip_graphs" content="image/png"> <instance name="gip_grapher" /> </mount>
+    <mount location="/gratia/rsv_graphs" content="image/png"> <instance name="rsv_grapher" /> </mount>
+    <mount location="/gratia/transfer_graphs" content="image/png"> <instance name="gratia_transfer_grapher" /> </mount>
+    <mount location="/gratia/rsv_summary_graphs" content="image/png"> <instance name="rsv_summary_grapher" /> </mount>
+    <mount location="/gratia/rsv_wlcg_graphs" content="image/png"> <instance name="rsv_wlcg_grapher" /> </mount>
+    <mount location="/gratia/xml" content="text/xml"> <instance name="query_xml" /> </mount>
+    <mount location="/gratia/csv" content="text/plain"> <instance name="query_csv" /> </mount>
+    <mount location="/gratia/site_xml" content="text/xml"> <instance name="site_xml"/> </mount>
+    <mount location="/gratia/site_graphs" content="image/png"> <instance name="gratia_site_grapher"/> </mount>
+    <mount location="/gratia/vo_xml" content="text/xml"> <instance name="vo_xml"/> </mount>
+    <mount location="/gratia/user_xml" content="text/xml"> <instance name="user_xml"/> </mount>
+    <mount location="/gratia/vo_graphs" content="image/png"> <instance name="gratia_vo_grapher"/> </mount>
+    <mount location="/gratia/user_graphs" content="image/png"> <instance name="gratia_user_grapher"/> </mount>
+    <instance name="static" location="/gratia/static" />
     <config module="gratia.config">development.conf</config>
+    <instance name="static-site" location="/gratia/static-site" />
+    <instance name="GratiaWeb" location="/gratia"/>
   </class>
 
 </graphtool-config>

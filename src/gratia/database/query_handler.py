@@ -6,12 +6,15 @@ import copy
 import urllib2
 import datetime
 import xml.dom.minidom
+import collections
 
 from graphtool.database.query_handler import results_parser, simple_results_parser, pivot_group_parser_plus
 from graphtool.tools.common import convert_to_datetime
-import string
-import os.path
 from gratia.web.gratia_urls import GratiaURLS
+
+UNCLASSIFIED = "UNCLASSIFIED"
+MULTI_SCIENCE = "Multi-Science Community"
+UNKNOWN = "UNKNOWN"
 
 class PeriodicUpdater(object):
 
@@ -284,12 +287,12 @@ class OimFosFilter(PeriodicUpdater):
         name_to_fos, fos_to_name = self.results()
         firstRow = pivot
         l_row = list(firstRow)
-        fos = "UNCLASSIFIED"
+        fos = UNCLASSIFIED
         proj_name = firstRow[0]
         print "proj_name: ", proj_name
         if proj_name is not None:
             if name_to_fos.has_key(proj_name):
-                fos = name_to_fos.get(proj_name,"UNCLASSIFIED")
+                fos = name_to_fos.get(proj_name,UNCLASSIFIED)
                 print "fos: ", fos
             else:
                 print "OimFosFilter: name_to_fos.has_keys(): '%s' NOT FOUND -> merged UNCLASSIFIED" % proj_name
@@ -299,6 +302,100 @@ class OimFosFilter(PeriodicUpdater):
         return returnRow
 
 oim_fos_filter = OimFosFilter()
+
+class OimProjectFOSFilter(PeriodicUpdater):
+    """ Adds a 'Field Of Science' value to query results """
+
+    def __init__(self):
+        srchUrl = 'OimProjectFOSFilterUrl'
+        modName = 'OimProjectFOSFilter'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            self.url = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, self.url)
+        except:
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
+            pass
+        super(OimProjectFOSFilter, self).__init__(self.url)
+
+    def parse(self, results):
+        dom = xml.dom.minidom.parseString(results)
+        pname_to_fos = {}
+        for p_dom in dom.getElementsByTagName("Project"):
+          try: 
+              pname = str(p_dom.getElementsByTagName("Name")[0].\
+                              firstChild.data).strip().upper()
+              
+              fos = str(p_dom.getElementsByTagName("FieldOfScience")[0].\
+                              firstChild.data).strip()
+              pname_to_fos[pname] = fos
+          except:
+              continue
+        return pname_to_fos
+
+    def __call__(self, *pivot, **kw):
+        pname_to_fos = self.results()
+        project_name = pivot[0]
+        if pname_to_fos.has_key(project_name):
+            return pname_to_fos[project_name]
+        return UNCLASSIFIED 
+
+oim_project_fos_filter = OimProjectFOSFilter()
+
+class OimVOProjectFOSFilter(PeriodicUpdater):
+
+    def __init__(self):
+        srchUrl = 'OimVOProjectFOSFilterUrl'
+        modName = 'OimVOProjectFOSFilter'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            self.url = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, self.url)
+        except:
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
+            pass
+        super(OimVOProjectFOSFilter, self).__init__(self.url)
+
+    def parse(self, results):
+        dom = xml.dom.minidom.parseString(results)
+        vo_fos = {}
+        for vo_dom in dom.getElementsByTagName('VO'):
+            try:
+                primary_field = UNCLASSIFIED
+                secondary_field = UNCLASSIFIED
+                primary_doms = vo_dom.getElementsByTagName('PrimaryFields')
+                secondary_doms = vo_dom.getElementsByTagName('SecondaryFields')
+                if len(primary_doms) > 0:
+                  field_doms = primary_doms[0].getElementsByTagName('Field')
+                  if len(field_doms) > 0:
+                    primary_field = str(field_doms[0].firstChild.data)
+                elif len(secondary_doms) > 0:
+                  field_doms = secondary_doms[0].getElementsByTagName('Field')
+                  if len(field_doms) > 0:
+                    secondary_field = str(field_doms[0].firstChild.data)
+                vo_name = str(vo_dom.getElementsByTagName('Name')[0].firstChild.data).upper()
+                if primary_field != UNCLASSIFIED:
+                    vo_fos[vo_name] = primary_field
+                else:
+                    vo_fos[vo_name] = secondary_field
+            except:
+                continue
+        return vo_fos
+
+    def __call__(self, *pivot, **kw):
+        vo_fos = self.results()
+        pname_to_fos = oim_project_fos_filter.results()
+        vo_name = pivot[0]
+        project_name = pivot[1]
+        if project_name and project_name.upper() != UNKNOWN and pname_to_fos.has_key(project_name):
+            return pname_to_fos[project_name]
+        if vo_fos.has_key(vo_name):
+            return vo_fos[vo_name]
+        return UNCLASSIFIED
+
+oim_vo_project_fos_filter = OimVOProjectFOSFilter()
 
 class OimScienceFilter(PeriodicUpdater):
 
@@ -599,6 +696,11 @@ def displayFosCommaSite(*args, **kw):
         fos = "UNCLASSIFIED"
         print "proj: ", proj, " is not FOUND --> merging into UNCLASSIFIED"
         return
+    return "%s, %s" % (fos, site)
+
+def displayVOProjectFosCommaSite(*args, **kw):
+    site = args[2]
+    fos = oim_vo_project_fos_filter(*args, **kw)
     return "%s, %s" % (fos, site)
 
 def displayNameExitSite(*args, **kw):
@@ -1811,4 +1913,3 @@ def results_parser_fillin(sql_results, globals=globals(), **kw):
                     val = 0
                 new_results[pivot][all_groups[idx]] = val
     return new_results, md
-
