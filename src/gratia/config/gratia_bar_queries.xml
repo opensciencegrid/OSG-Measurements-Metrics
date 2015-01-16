@@ -55,15 +55,18 @@
       <inputs>
         <input name="resource-type" kind="sql"> BatchPilot </input>
         <input name="projectname" kind="sql"> .* </input>
-        <input name="exclude-projectname" kind="sql"> unknown|other </input>
+        <input name="exclude-projectname" kind="sql"> NONE </input>
+        <input name="fos">.*</input>
+        <input name="exclude-fos">NONE</input>  
       </inputs>
       <sql>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
         <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
         <filler name="column"> sum(Njobs) </filler>
-        <filler name="where"> AND PNC.ReportableProjectName regexp :projectname 
-	  AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
-	</filler>
+        <filler name="where"> 
+          AND PNC.ReportableProjectName regexp :projectname  
+          AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
+        </filler>
       </sql>
       <attribute name="title">Job Count by Field of Science</attribute>
       <attribute name="pivot_name">FieldOfScience</attribute>
@@ -454,13 +457,19 @@
       <query name="monthly_fos_hours" base="GratiaGenericQuery.glidein_monthly_master_summary">
       <inputs>
         <input name="resource-type" kind="sql"> BatchPilot </input>
-        <input name="exclude-projectname" kind="sql"> unknown|other </input>
+        <input name="projectname" kind="sql"> .* </input>
+        <input name="exclude-projectname" kind="sql"> NONE </input>
+        <input name="fos">.*</input>
+        <input name="exclude-fos">NONE</input>  
       </inputs>
       <sql>
         <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
         <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
-        <filler name="where"> AND WallDuration > 0 
-	  AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
+        <filler name="where"> 
+          AND WallDuration > 0 
+          AND PNC.ReportableProjectName regexp :projectname 
+          AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
+        </filler>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
       </sql>
       <attribute name="title">Monthly Wall Hours per Field Of Science</attribute>
@@ -523,13 +532,19 @@
     <query name="monthly_fos_cpu_hours" base="GratiaGenericQuery.glidein_monthly_master_summary">
       <inputs>
           <input name="resource-type" kind="sql"> BatchPilot </input>
-          <input name="exclude-projectname" kind="sql"> unknown|other </input>
+          <input name="projectname" kind="sql"> .* </input>
+          <input name="exclude-projectname" kind="sql"> NONE </input>
+          <input name="fos">.*</input>
+          <input name="exclude-fos">NONE</input>  
       </inputs>
       <sql>
         <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
         <filler name="column"> sum(CpuUserDuration + CpuSystemDuration)/3600 </filler>
-        <filler name="where"> AND WallDuration > 0 
-	  AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
+        <filler name="where"> 
+          AND WallDuration > 0 
+          AND PNC.ReportableProjectName regexp :projectname  
+          AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
+        </filler>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
       </sql>
       <attribute name="title">Monthly CPU Hours by Field of Science</attribute>
@@ -592,13 +607,19 @@
     <query name="monthly_fos_job_count" base="GratiaGenericQuery.glidein_monthly_master_summary">
       <inputs>
         <input name="resource-type" kind="sql"> BatchPilot </input>
-        <input name="exclude-projectname" kind="sql"> unknown|other </input>
+        <input name="projectname" kind="sql"> .* </input>
+        <input name="exclude-projectname" kind="sql"> NONE </input>
+        <input name="fos">.*</input>
+        <input name="exclude-fos">NONE</input>  
       </inputs>
       <sql>
         <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
         <filler name="column"> sum(Njobs) </filler>
-        <filler name="where"> AND WallDuration > 0 
-	  AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
+        <filler name="where"> 
+          AND WallDuration > 0
+          AND PNC.ReportableProjectName regexp :projectname  
+          AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
+        </filler>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
       </sql>
       <attribute name="title">Monthly Job Count by Field of Science</attribute>
@@ -1350,14 +1371,20 @@
     <query name="fos_site_hours_bar" base="GratiaGenericQuery.glidein_master_summary">
       <inputs>
           <input name="resource-type" kind="sql"> BatchPilot </input>
-          <input name="exclude-projectname" kind="sql"> unknown|other </input>
+          <input name="projectname" kind="sql"> .* </input>
+          <input name="exclude-projectname" kind="sql"> NONE </input>
+          <input name="fos">.*</input>
+          <input name="exclude-fos">NONE</input>  
       </inputs>
         <sql>
             <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
             <filler name="group"> UPPER(VO.VOName), UPPER(PNC.ReportableProjectName), R.HostDescription </filler>
             <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
-            <filler name="where"> AND WallDuration > 0 
-	      AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
+            <filler name="where"> 
+              AND WallDuration > 0 
+              AND PNC.ReportableProjectName regexp :projectname
+              AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
+            </filler>
         </sql>
         <attribute name="pivot_name">FieldOfScience</attribute> 
         <attribute name="grouping_name">Time</attribute>
@@ -1460,13 +1487,19 @@
     <query name="project_fos_hours_bar" base="GratiaGenericQuery.glidein_master_summary">
       <inputs>
           <input name="resource-type" kind="sql">  BatchPilot </input>
-          <input name="exclude-projectname" kind="sql"> unknown|other </input>
+          <input name="projectname" kind="sql"> .* </input>
+          <input name="exclude-projectname" kind="sql"> NONE </input>
+          <input name="fos">.*</input>
+          <input name="exclude-fos">NONE</input>  
       </inputs>
         <sql>
             <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
             <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
-            <filler name="where"> AND WallDuration > 0 
-	      AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))</filler>
+            <filler name="where"> 
+              AND WallDuration > 0 
+              AND PNC.ReportableProjectName regexp :projectname  
+              AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
+            </filler>
             <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
         </sql>
         <results module="graphtool.database.query_handler" function="results_parser">

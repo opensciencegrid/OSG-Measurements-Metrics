@@ -59,14 +59,14 @@ class WLCGReporter(Authenticate):
             print "%s: retUrl: %s" % (modName, urlcpuinfo)
             try:
                 xmldoc = urllib2.urlopen(urlcpuinfo)
-            except urllib2.HTTPError as e:
+            except urllib2.HTTPError, e:
                 print "%s: ======================================" % modName
                 print "%s: HTTPError: URL server couldn\'t fulfill the URL request." %modName
                 print modName, ': HTTPError: Error code: ', e.code
                 print modName, ': HTTPError:  ', e.read()
                 print "%s: ======================================" % modName
                 raise
-            except urllib2.URLError as e:
+            except urllib2.URLError, e:
                 print "%s: ======================================" % modName
                 print "%s: URLError: Failed to reach the URL server."
                 print modName, ": URLError: Reason: ", e.reason
@@ -109,14 +109,14 @@ class WLCGReporter(Authenticate):
 
             try:
                 usock = urllib2.urlopen(apel_url)
-            except urllib2.HTTPError as e:
+            except urllib2.HTTPError, e:
                 print "%s: ======================================" % modName
                 print "%s: HTTPError: URL server couldn\'t fulfill the URL request." %modName
                 print modName, ': HTTPError: Error code: ', e.code
                 print modName, ': HTTPError:  ', e.read()
                 print "%s: ======================================" % modName
                 raise
-            except urllib2.URLError as e:
+            except urllib2.URLError, e:
                 print "%s: ======================================" % modName
                 print "%s: URLError: Failed to reach the URL server."
                 print modName, ": URLError: Reason: ", e.reason

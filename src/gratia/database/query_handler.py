@@ -390,10 +390,23 @@ class OimVOProjectFOSFilter(PeriodicUpdater):
         vo_name = pivot[0]
         project_name = pivot[1]
         if project_name and project_name.upper() != UNKNOWN and pname_to_fos.has_key(project_name):
-            return pname_to_fos[project_name]
-        if vo_fos.has_key(vo_name):
-            return vo_fos[vo_name]
-        return UNCLASSIFIED
+            fos = pname_to_fos[project_name]
+        elif vo_fos.has_key(vo_name):
+            fos = vo_fos[vo_name]
+        else:
+            fos = MULTI_SCIENCE
+        # FOS-EXCLUDE_FOS Fiter
+        fos_filter = ".*"
+        if kw.has_key("fos") :
+          fos_filter = kw["fos"]
+        exclude_fos_filter = "NONE"
+        if kw.has_key("exclude-fos") :
+          exclude_fos_filter = kw["exclude-fos"]
+        if re.match(exclude_fos_filter, fos, re.IGNORECASE) != None:
+          return None
+        elif re.match(fos_filter, fos, re.IGNORECASE) != None:
+          return fos
+        return None
 
 oim_vo_project_fos_filter = OimVOProjectFOSFilter()
 
@@ -701,6 +714,8 @@ def displayFosCommaSite(*args, **kw):
 def displayVOProjectFosCommaSite(*args, **kw):
     site = args[2]
     fos = oim_vo_project_fos_filter(*args, **kw)
+    if fos is None:
+      return None
     return "%s, %s" % (fos, site)
 
 def displayNameExitSite(*args, **kw):

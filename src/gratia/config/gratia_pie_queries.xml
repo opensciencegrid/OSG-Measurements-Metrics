@@ -63,13 +63,20 @@
           <input name="resource-type" kind="sql"> BatchPilot </input>
           <input kind="sql" type="float" name="min_hours"> 10 </input>
           <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-14*86400</input>
+          <input name="projectname" kind="sql"> .* </input>
+          <input name="exclude-projectname" kind="sql"> NONE </input>
+          <input name="fos">.*</input>
+          <input name="exclude-fos">NONE</input>  
         </inputs>
       <sql>
-        <filler name="group">UPPER(VO.VOName), UPPER(ReportableProjectName)</filler>
+        <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
         <filler name="column"> sum(R.Cores*R.WallDuration)/3600 as WallHours </filler>
         <filler name="having"> HAVING sum(R.Cores*R.WallDuration)/3600 >= :min_hours </filler>
         <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
-        <filler name="where"> AND (NOT (ReportableProjectName regexp "unknown|other")) </filler>
+        <filler name="where"> 
+          AND PNC.ReportableProjectName regexp :projectname  
+          AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
+        </filler>
       </sql>
       <attribute name="title">Wall Hours by Field of Science</attribute>
       <attribute name="pivot_name">FOS</attribute>
