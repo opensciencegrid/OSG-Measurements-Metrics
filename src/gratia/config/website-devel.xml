@@ -10,7 +10,7 @@
   <import module="gratia.config" data_file="rsv_queries.xml"/>
 
   <class name="LogLoader" type="GraphToolLogging">
-    <log module="gratia.config">logging.conf</log>
+    <log module="gratia.config">logging-devel.conf</log>
   </class>
 
   <class name="GratiaWeb" type="Gratia">
@@ -53,6 +53,7 @@
     <mount location="/gratia/gip_graphs" content="image/png"> <instance name="gip_grapher" /> </mount>
     <mount location="/gratia/rsv_graphs" content="image/png"> <instance name="rsv_grapher" /> </mount>
     <mount location="/gratia/transfer_graphs" content="image/png"> <instance name="gratia_transfer_grapher" /> </mount>
+    <mount location="/gratia/fermi_storage_graphs" content="image/png"> <instance name="gratia_fermi_storage_grapher" /> </mount>
     <mount location="/gratia/rsv_summary_graphs" content="image/png"> <instance name="rsv_summary_grapher" /> </mount>
     <mount location="/gratia/rsv_wlcg_graphs" content="image/png"> <instance name="rsv_wlcg_grapher" /> </mount>
     <mount location="/gratia/xml" content="text/xml"> <instance name="query_xml" /> </mount>

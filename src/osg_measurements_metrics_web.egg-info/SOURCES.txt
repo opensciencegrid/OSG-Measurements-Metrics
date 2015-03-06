@@ -46,6 +46,7 @@ setup/setup_static_graphs.py
 src/gratia/__init__.py
 src/gratia/config/DBSecurity.xml
 src/gratia/config/__init__.py
+src/gratia/config/__init__.pyc
 src/gratia/config/campus_bar_queries.xml
 src/gratia/config/development.conf
 src/gratia/config/generic_gip_queries.xml
@@ -59,6 +60,7 @@ src/gratia/config/gratia_bar_queries.xml
 src/gratia/config/gratia_cumulative_queries.xml
 src/gratia/config/gratia_data_queries.xml
 src/gratia/config/gratia_events_queries.xml
+src/gratia/config/gratia_fermi_storage_queries.xml
 src/gratia/config/gratia_glidein_bar_queries.xml
 src/gratia/config/gratia_graphs.xml
 src/gratia/config/gratia_graphs_basic.xml
@@ -70,6 +72,7 @@ src/gratia/config/gratia_transfer_queries.xml
 src/gratia/config/gratia_user_queries.xml
 src/gratia/config/gratia_vo_queries.xml
 src/gratia/config/gridscan_queries.xml
+src/gratia/config/logging-devel.conf
 src/gratia/config/logging.conf
 src/gratia/config/matplotlibrc
 src/gratia/config/osg_logo_4c_white.png

@@ -33,6 +33,15 @@
       <attribute name="Port"> 3306 </attribute>
     </connection>
 
+    <connection name="gratia-fnal-tape">
+      <attribute name="Interface"> MySQL </attribute>
+      <attribute name="Database"> gratia_osg_transfer </attribute>
+      <attribute name="Host"> fermicloud029.fnal.gov </attribute>
+      <attribute name="AuthDBUsername"> ****** </attribute>
+      <attribute name="AuthDBPassword"> ****** </attribute>
+      <attribute name="Port"> 3306 </attribute>
+    </connection>
+
     <connection name="gratia-itb">
       <attribute name="Interface"> MySQL </attribute>
       <attribute name="Database"> gratia_itb </attribute>

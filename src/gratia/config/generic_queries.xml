@@ -723,6 +723,168 @@
       <connection> gratia </connection>
     </aggregate>
 
+    <query name="storage_tape_summary"> <!-- TRACE This is the query for storage group -->
+      <inputs>
+        <input name="span" type="int" kind="sql">86400</input>
+        <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-13*86400</input>
+        <input name="endtime" partial="up" type="datetime" kind="sql">time.time()</input>
+        <input name="facility" kind="sql"> .* </input>
+        <input name="type" kind="sql"> StorageGroup </input>
+        <input name="vo" kind="sql"> .* </input>
+        <input name="exclude-vo" kind="sql"> other </input>
+        <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
+      </inputs>
+      <sql>
+       SELECT
+          <slot name="group"/>,
+          truncate( unix_timestamp(R.Timestamp) / :span, 0 ) * :span as time,
+          <slot name="column"/>
+        FROM
+          StorageElement V,StorageElementRecord R
+        JOIN
+          Probe P on R.ProbeName = P.probename
+        JOIN
+          Site S on S.siteid = P.siteid
+        <slot name="JOIN"/>
+        WHERE
+          R.UsedSpace is not NULL AND
+          R.UniqueID=V.UniqueID AND
+          R.UniqueID regexp :type AND
+          R.Timestamp &gt;= :starttime AND
+          R.Timestamp &lt; :endtime AND
+          S.SiteName regexp :facility AND
+          VO regexp :vo AND
+          (NOT (S.SiteName regexp :exclude-facility)) AND
+          (NOT (VO regexp :exclude-vo))
+          <slot name="where"/>
+        GROUP BY
+          <slot name="group"/>,
+          time
+      </sql>
+      <results module="graphtool.database.query_handler" function="results_parser">
+        <inputs>
+          <input name="pivots"> 0 </input>
+          <input name="grouping"> 1 </input>
+          <input name="results"> 2 </input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <attribute name="pivot_name" />
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="title" />
+      <attribute name="column_names" />
+      <attribute name="column_units" />
+    </query>
+    <query name="storage_tape_mount"> <!-- TRACE This is the query for storage group -->
+      <inputs>
+        <input name="span" type="int" kind="sql">86400</input>
+        <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-13*86400</input>
+        <input name="endtime" partial="up" type="datetime" kind="sql">time.time()</input>
+        <input name="facility" kind="sql"> .* </input>
+        <input name="probe" kind="sql"> .* </input>
+        <input name="tape" kind="sql">.*</input>
+        <input name="vo" kind="sql"> .* </input>
+        <input name="exclude-vo" kind="sql"> other </input>
+        <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
+      </inputs>
+      <sql>
+       SELECT
+          <slot name="group"/>,
+          truncate( unix_timestamp(R.EndTime) / :span, 0 ) * :span as time,
+          <slot name="column"/>
+        FROM
+          JobUsageRecord R, JobUsageRecord_Meta M
+        JOIN
+          Probe P on M.ProbeName = P.probename
+        JOIN
+          Site S on S.siteid = P.siteid
+        <slot name="JOIN"/>
+        WHERE
+          R.dbid=M.dbid AND
+          ResourceType='TapeDrive' AND
+          R.EndTime &gt;= :starttime AND
+          R.EndTime &lt; :endtime AND
+          S.SiteName regexp :facility AND
+          M.probename regexp :probe AND
+          R.LocalJobId regexp :tape AND
+          R.VOName regexp :vo AND
+          (NOT (S.SiteName regexp :exclude-facility)) AND
+          (NOT (R.VOName regexp :exclude-vo))
+          <slot name="where"/>
+        GROUP BY
+          <slot name="group"/>,
+          time
+      </sql>
+      <results module="graphtool.database.query_handler" function="results_parser">
+        <inputs>
+          <input name="pivots"> 0 </input>
+          <input name="grouping"> 1 </input>
+          <input name="results"> 2 </input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <attribute name="pivot_name" />
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="title" />
+      <attribute name="column_names" />
+      <attribute name="column_units" />
+    </query>
+    <query name="storage_tape_deleted_summary"> <!-- TRACE This is the query for storage group -->
+      <inputs>
+        <input name="span" type="int" kind="sql">2592000</input>
+        <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-13*86400</input>
+        <input name="endtime" partial="up" type="datetime" kind="sql">time.time()</input>
+        <input name="facility" kind="sql"> .* </input>
+        <input name="type" kind="sql"> StorageGroup </input>
+        <input name="vo" kind="sql"> .* </input>
+        <input name="exclude-vo" kind="sql"> other </input>
+        <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
+      </inputs>
+      <sql>
+       SELECT
+          <slot name="group"/>,
+          truncate( unix_timestamp(R.Timestamp) / :span, 0 ) * :span as time,
+          <slot name="column"/>
+        FROM
+          StorageElement V,StorageElementRecord R
+        JOIN
+          Probe P on R.ProbeName = P.probename
+        JOIN
+          Site S on S.siteid = P.siteid
+        <slot name="JOIN"/>
+        WHERE
+          R.FreeSpace is not NULL AND
+          R.UniqueID=V.UniqueID AND
+          R.UniqueID regexp :type AND
+          R.Timestamp &gt;= :starttime AND
+          R.Timestamp &lt; :endtime AND
+          S.SiteName regexp :facility AND
+          VO regexp :vo AND
+          (NOT (S.SiteName regexp :exclude-facility)) AND
+          (NOT (VO regexp :exclude-vo))
+          <slot name="where"/>
+        GROUP BY
+          <slot name="group"/>,
+          time
+      </sql>
+      <results module="graphtool.database.query_handler" function="results_parser">
+        <inputs>
+          <input name="pivots"> 0 </input>
+          <input name="grouping"> 1 </input>
+          <input name="results"> 2 </input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+      <attribute name="graph_type">GratiaStackedBar</attribute>
+      <attribute name="pivot_name" />
+      <attribute name="grouping_name">Time</attribute>
+      <attribute name="title" />
+      <attribute name="column_names" />
+      <attribute name="column_units" />
+    </query>
+
     <query name="simple_query">
       <inputs>
         <input name="span" type="int" kind="sql">86400</input>
