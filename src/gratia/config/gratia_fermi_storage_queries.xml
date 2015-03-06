@@ -1,0 +1,72 @@
+<graphtool-config>
+
+  <import module="gratia.config" data_file="generic_queries.xml" />
+
+  <class type="SqlQueries" name="GratiaFermiStorageQueries">
+    <attribute name="display_name"> Fermi Storage </attribute>
+    <attribute name="connection_manager"> GratiaConnMan </attribute>
+
+    <aggregate>
+      <connection>gratia-fnal-tape</connection>
+    </aggregate>
+    
+    <query name="vo_storage_group_space" base="GratiaStorageQuery.storage_tape_summary">
+      <sql>
+        <filler name="group"> VO </filler>
+        <filler name="column"> UsedSpace</filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">Space Used by VO</attribute>
+      <attribute name="column_names">Space Used</attribute>
+      <attribute name="column_units">GB</attribute>
+    </query>
+    <query name="vo_storage_group_on_tape" base="GratiaStorageQuery.storage_tape_summary">
+      <inputs>
+        <input name="span" type="int" kind="sql">2592000</input>
+      </inputs>
+      <sql>
+        <filler name="group"> VO </filler>
+        <filler name="column"> UsedSpace/pow(1024, 3)</filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">Tape Storage Used by VO</attribute>
+      <attribute name="column_names">Space Used</attribute>
+      <attribute name="column_units">GB</attribute>
+    </query>
+    <query name="vo_tape_mount" base="GratiaStorageQuery.storage_tape_mount">
+      <sql>
+        <filler name="group"> VOName </filler>
+        <filler name="column"> sum(NJobs)</filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">Tape Mounts by VO</attribute>
+      <attribute name="column_names">Tape Mounts</attribute>
+      <attribute name="column_units"/>
+    </query>
+    <query name="vo_tape_mount_duration" base="GratiaStorageQuery.storage_tape_mount">
+      <sql>
+        <filler name="group"> VOName </filler>
+        <filler name="column"> sum(WallDuration/3600.)</filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">Hours of Tape Mounts by VO</attribute>
+      <attribute name="column_names">Hours of Tape Mounts</attribute>
+      <attribute name="column_units"/>
+    </query>
+    <query name="vo_storage_group_deleted_tape" base="GratiaStorageQuery.storage_tape_deleted_summary">
+      <inputs>
+        <input name="span" type="int" kind="sql">2592000</input>
+      </inputs>
+      <sql>
+        <filler name="group"> VO </filler>
+        <filler name="column"> FreeSpace/pow(1024, 3)</filler>
+      </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">Tape Storage Deleted by VO</attribute>
+      <attribute name="column_names">Space Deleted</attribute>
+      <attribute name="column_units">GB</attribute>
+    </query>
+    
+    
+  </class>
+</graphtool-config>
