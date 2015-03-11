@@ -1,5 +1,9 @@
 %changelog
 
+* Tue Mar 10 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications to include fnal tape queries, and changes
+- to logging levels in production
+
 * Tue Feb 10 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - Modifications to include the FOS requests and increase 
 - on the web server pool size
