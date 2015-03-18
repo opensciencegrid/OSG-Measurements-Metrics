@@ -1,5 +1,8 @@
 %changelog
 
+* Tue Mar 18 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications to replace unescaped characters in cron job
+
 * Tue Mar 10 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications to include fnal tape queries, and changes
 - to logging levels in production
