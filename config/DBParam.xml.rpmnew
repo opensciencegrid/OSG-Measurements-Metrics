@@ -35,8 +35,8 @@
 
     <connection name="gratia-fnal-tape">
       <attribute name="Interface"> MySQL </attribute>
-      <attribute name="Database"> gratia_osg_transfer </attribute>
-      <attribute name="Host"> fermicloud029.fnal.gov </attribute>
+      <attribute name="Database"> tape_db_name </attribute>
+      <attribute name="Host"> tape.db.host </attribute>
       <attribute name="AuthDBUsername"> ****** </attribute>
       <attribute name="AuthDBPassword"> ****** </attribute>
       <attribute name="Port"> 3306 </attribute>
@@ -54,19 +54,19 @@
     <connection name="gratia-status">
       <attribute name="Interface"> MySQL </attribute>
       <attribute name="Database"> gratia </attribute>
-      <attribute name="Host"> rcf-gratia.unl.edu </attribute>
+      <attribute name="Host"> gr-osg-mysql-reports.opensciencegrid.org </attribute>
       <attribute name="AuthDBUsername"> ****** </attribute>
       <attribute name="AuthDBPassword"> ****** </attribute>
-      <attribute name="Port"> 49152 </attribute>
+      <attribute name="Port"> 3306 </attribute>
     </connection>
 
     <connection name="gratia-events">
       <attribute name="Interface"> MySQL </attribute>
       <attribute name="Database"> gratia_events </attribute>
-      <attribute name="Host"> rcf-gratia.unl.edu </attribute>
+      <attribute name="Host"> gr-osg-mysql-reports.opensciencegrid.org </attribute>
       <attribute name="AuthDBUsername"> ****** </attribute>
       <attribute name="AuthDBPassword"> ****** </attribute>
-      <attribute name="Port"> 49152 </attribute>
+      <attribute name="Port"> 3306 </attribute>
     </connection>
 
   </class>
