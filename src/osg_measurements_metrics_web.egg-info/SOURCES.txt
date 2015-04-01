@@ -62,6 +62,7 @@ src/gratia/config/gratia_data_queries.xml
 src/gratia/config/gratia_events_queries.xml
 src/gratia/config/gratia_fermi_storage_queries.xml
 src/gratia/config/gratia_glidein_bar_queries.xml
+src/gratia/config/gratia_google_charts_queries.xml
 src/gratia/config/gratia_graphs.xml
 src/gratia/config/gratia_graphs_basic.xml
 src/gratia/config/gratia_pie_queries.xml
