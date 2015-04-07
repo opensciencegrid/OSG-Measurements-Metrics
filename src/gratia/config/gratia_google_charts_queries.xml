@@ -6,18 +6,16 @@
     <attribute name="display_name"> Google Charts </attribute>
     <attribute name="connection_manager"> GratiaConnMan </attribute>
     
-    <query name="osg_fos_hours_tree_map" base="GratiaGenericQuery.simple_glidein_master_summary">
+    <query name="osg_hours_efficiency_tree_map_by_vo_project_facility" base="GratiaGenericQuery.simple_glidein_master_summary">
         <inputs>
           <input name="resource-type" kind="sql"> BatchPilot </input>
-          <input kind="sql" type="float" name="min_hours"> 10 </input>
+          <input kind="sql" type="float" name="min_hours"> 0 </input>
           <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-14*86400</input>
           <input name="projectname" kind="sql"> .* </input>
           <input name="exclude-projectname" kind="sql"> NONE </input>
-          <input name="fos">.*</input>
-          <input name="exclude-fos">NONE</input>  
         </inputs>
       <sql>
-        <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName)</filler>
+        <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName), HostDescription</filler>
         <filler name="column"> sum(R.Cores*R.WallDuration)/3600 as WallHours,
                                sum(R.CpuUserDuration + R.CpuSystemDuration)/sum(R.Cores*R.WallDuration)
         </filler>
@@ -31,19 +29,33 @@
       </sql>
       <results>
         <inputs>
-          <input name="pivots"> 0,1 </input>
-          <input name="results"> 2,3 </input>
+          <input name="pivots"> 0,1,2 </input>
+          <input name="results"> 3,4 </input>
           <input name="pivot_transform">json_pivot_arr</input>
           <input name="grouping_transform">make_int</input>
         </inputs>
       </results>
-      <attribute name="title">Wall Hours by Field of Science</attribute>
-      <attribute name="pivot_name">["VO","Project"]</attribute>
+      <attribute name="title">Wall Hours &amp; Efficiency by VO/Project/Facility</attribute>
+      <attribute name="pivot_name">["VO","Project","Facility"]</attribute>
       <attribute name="column_names">Wall Time,Efficiency</attribute>
       <attribute name="column_units">Hours,%</attribute>
       <attribute name="graph_type">gc_tree_map</attribute>
       <attribute name="graph_kind">google_charts</attribute>
-      <attribute name="js_data_transformation">data=table_group_to_table_tree(data)</attribute>
+      <attribute name="js_data_transformation">
+        data = table_group_to_table_tree(data);
+        chart_properties = {
+            minColorValue                     : 0.0             ,
+            maxColorValue                     : 1.0             ,
+            minColor                          : '#f00'          ,
+            midColor                          : '#ffa500'       ,
+            maxColor                          : '#0f0'          ,
+            headerHeight                      : 30              ,
+            fontColor                         : 'black'         ,
+            showScale                         : true            ,
+            useWeightedAverageForAggregation  : true            ,
+            generateTooltip                   : defaultToolTip  
+          };
+      </attribute>
     </query>
     
   </class>
