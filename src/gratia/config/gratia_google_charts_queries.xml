@@ -15,7 +15,12 @@
           <input name="exclude-projectname" kind="sql"> NONE </input>
         </inputs>
       <sql>
-        <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName), (CASE :resource-type WHEN 'BatchPilot' THEN R.HostDescription ELSE S.SiteName END)</filler>
+        <filler name="group">
+          UPPER(VO.VOName), 
+          UPPER(PNC.ReportableProjectName), 
+          (CASE :resource-type WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END),
+          R.CommonName
+         </filler>
         <filler name="column"> sum(R.Cores*R.WallDuration)/3600 as WallHours,
                                sum(R.CpuUserDuration + R.CpuSystemDuration)/sum(R.Cores*R.WallDuration)
         </filler>
@@ -29,20 +34,19 @@
       </sql>
       <results>
         <inputs>
-          <input name="pivots"> 0,1,2 </input>
-          <input name="results"> 3,4 </input>
+          <input name="pivots"> 0,1,2,3 </input>
+          <input name="results"> 4,5 </input>
           <input name="pivot_transform">json_pivot_arr</input>
           <input name="grouping_transform">make_int</input>
         </inputs>
       </results>
-      <attribute name="title">Wall Hours &amp; Efficiency by VO/Project/Facility</attribute>
-      <attribute name="pivot_name">["VO","Project","Facility"]</attribute>
+      <attribute name="title">Wall Hours &amp; Efficiency Map</attribute>
+      <attribute name="pivot_name">["VO","Project","Facility","User"]</attribute>
       <attribute name="column_names">Wall Time,Efficiency</attribute>
       <attribute name="column_units">Hours,%</attribute>
       <attribute name="graph_type">gc_tree_map</attribute>
       <attribute name="graph_kind">google_charts</attribute>
       <attribute name="js_chart_setup">
-        data = table_group_to_table_tree(data);
         chart_properties = {
             minColorValue                     : 0.0             ,
             maxColorValue                     : 1.0             ,
