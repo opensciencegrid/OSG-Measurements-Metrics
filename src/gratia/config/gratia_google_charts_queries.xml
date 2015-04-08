@@ -15,7 +15,7 @@
           <input name="exclude-projectname" kind="sql"> NONE </input>
         </inputs>
       <sql>
-        <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName), HostDescription</filler>
+        <filler name="group">UPPER(VO.VOName), UPPER(PNC.ReportableProjectName), (CASE :resource-type WHEN 'BatchPilot' THEN R.HostDescription ELSE S.SiteName END)</filler>
         <filler name="column"> sum(R.Cores*R.WallDuration)/3600 as WallHours,
                                sum(R.CpuUserDuration + R.CpuSystemDuration)/sum(R.Cores*R.WallDuration)
         </filler>
@@ -41,7 +41,7 @@
       <attribute name="column_units">Hours,%</attribute>
       <attribute name="graph_type">gc_tree_map</attribute>
       <attribute name="graph_kind">google_charts</attribute>
-      <attribute name="js_data_transformation">
+      <attribute name="js_chart_setup">
         data = table_group_to_table_tree(data);
         chart_properties = {
             minColorValue                     : 0.0             ,
@@ -54,7 +54,7 @@
             showScale                         : true            ,
             useWeightedAverageForAggregation  : true            ,
             generateTooltip                   : defaultToolTip  
-          };
+        };
       </attribute>
     </query>
     
