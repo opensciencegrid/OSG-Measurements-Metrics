@@ -18,7 +18,7 @@
         <filler name="group">
           UPPER(VO.VOName), 
           UPPER(PNC.ReportableProjectName), 
-          (CASE :resource-type WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END),
+          (CASE R.ResourceType WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END),
           R.CommonName
          </filler>
         <filler name="column"> sum(R.Cores*R.WallDuration)/3600 as WallHours,
@@ -37,7 +37,6 @@
           <input name="pivots"> 0,1,2,3 </input>
           <input name="results"> 4,5 </input>
           <input name="pivot_transform">json_pivot_arr</input>
-          <input name="grouping_transform">make_int</input>
         </inputs>
       </results>
       <attribute name="title">Wall Hours &amp; Efficiency Map</attribute>
@@ -47,7 +46,7 @@
       <attribute name="graph_type">gc_tree_map</attribute>
       <attribute name="graph_kind">google_charts</attribute>
       <attribute name="js_chart_setup">
-        chart_properties = {
+        gc_obj.chart_properties = {
             minColorValue                     : 0.0             ,
             maxColorValue                     : 1.0             ,
             minColor                          : '#f00'          ,
@@ -57,7 +56,12 @@
             fontColor                         : 'black'         ,
             showScale                         : true            ,
             useWeightedAverageForAggregation  : true            ,
-            generateTooltip                   : defaultToolTip  
+            generateTooltip                   : gc_obj.defaultToolTip.bind(gc_obj)
+        };
+        gc_obj.chart_formatters = {
+          level_formatters :  [null,null,null,graphtool.GC_COMMON.format_common_name],
+          size_formatter   :  graphtool.GC_COMMON.format_number_2dec,
+          value_formatter  :  graphtool.GC_COMMON.format_percentage
         };
       </attribute>
     </query>

@@ -229,7 +229,7 @@ class OimResourceFilter(PeriodicUpdater):
         if preference == 'resource':
             if pivot in r_to_rg:
                 return pivot
-            return rg_to_r.get(pivot, pivot)
+            return pivot
         if preference == 'resource_group':
             #print r_to_rg
             return r_to_rg.get(pivot, pivot)
