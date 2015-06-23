@@ -9,14 +9,49 @@
     <aggregate>
       <connection>gratia-fnal-tape</connection>
     </aggregate>
-    
-    <query name="vo_storage_group_space" base="GratiaStorageQuery.storage_tape_summary">
+    <query name="vo_storage_group_space_enstore" base="GratiaStorageQuery.storage_tape_summary">
+      <inputs>
+        <input name="show-pools" kind="sql">false</input>
+      </inputs>
       <sql>
-        <filler name="group"> VO </filler>
-        <filler name="column"> UsedSpace</filler>
+        <filler name="group"> VO, R.UniqueID </filler>
+        <filler name="column"> UsedSpace/1073741824</filler>
+        <filler name="where"> AND R.UniqueID LIKE 'Fermilab Enstore:%%'</filler>
       </sql>
+      <results module="graphtool.database.query_handler" function="results_parser">
+        <inputs>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+          <input name="pivot_transform">fermi_storage_pools_parser</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
       <attribute name="pivot_name">VO</attribute>
-      <attribute name="title">Space Used by VO</attribute>
+      <attribute name="title">Space Used by VO in Enstore</attribute>
+      <attribute name="column_names">Space Used</attribute>
+      <attribute name="column_units">GB</attribute>
+    </query>
+    <query name="vo_storage_group_space_dcache" base="GratiaStorageQuery.storage_tape_summary">
+      <inputs>
+        <input name="show-pools" kind="sql">false</input>
+      </inputs>
+      <sql>
+        <filler name="group"> VO, R.UniqueID </filler>
+        <filler name="column"> UsedSpace</filler>
+        <filler name="where"> AND R.UniqueID LIKE 'Fermilab Public dCache:%%'</filler>
+      </sql>
+      <results module="graphtool.database.query_handler" function="results_parser">
+        <inputs>
+          <input name="pivots"> 0,1 </input>
+          <input name="grouping"> 2 </input>
+          <input name="results"> 3 </input>
+          <input name="pivot_transform">fermi_storage_pools_parser</input>
+          <input name="grouping_transform">make_int</input>
+        </inputs>
+      </results>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="title">Space Used by VO in dCache</attribute>
       <attribute name="column_names">Space Used</attribute>
       <attribute name="column_units">GB</attribute>
     </query>

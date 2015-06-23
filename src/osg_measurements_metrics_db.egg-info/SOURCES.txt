@@ -100,6 +100,7 @@ src/gratia/config/website.xml
 src/gratia/config/wlcg_email.conf
 src/gratia/database/__init__.py
 src/gratia/database/metrics.py
+src/gratia/database/opportunistic_filter.py
 src/gratia/database/query_handler.py
 src/gratia/database/query_handler_deprecated.py
 src/gratia/gip/__init__.py

@@ -8,7 +8,7 @@ scp ./dist/osg-measurements-metrics-db-1.2-$2.noarch.rpm root@$1:~/
 scp ./dist/osg-measurements-metrics-web-1.2-$2.noarch.rpm root@$1:~/
 cd ../graphtool
 ./buildrpms.sh
-scp ./dist/graphtool-0.6.6-$3.noarch.rpm root@$1:~/
+scp ./dist/graphtool-0.7.0-$3.noarch.rpm root@$1:~/
 cd ../OSG-Measurements-Metrics
 # Get Root Access
 # stop service
@@ -20,7 +20,7 @@ ssh root@$1 "service GratiaWeb stop ;
  rpm -e osg-measurements-metrics-db ; 
  rpm -e graphtool ; 
  cd ~/;
- rpm -ivh graphtool-0.6.6-$3.noarch.rpm ;
+rpm -ivh graphtool-0.7.0-$3.noarch.rpm ;
  rpm -ivh osg-measurements-metrics-db-1.2-$2.noarch.rpm ; 
  rpm -ivh osg-measurements-metrics-web-1.2-$2.noarch.rpm ; 
  cd .. ; 
