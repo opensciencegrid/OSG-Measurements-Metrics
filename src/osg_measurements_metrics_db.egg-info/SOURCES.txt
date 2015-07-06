@@ -33,17 +33,10 @@ gratiamonitor/SOURCES/gratiagraph-monitor/gratiagraph-monitor.sh
 gratiamonitor/SPECS/InstalledCapacityReport.spec
 gratiamonitor/SPECS/gratiagraph-monitor.spec
 gratiamonitor/SRPMS/gratiagraph-monitor-rpm-1.0-1.src.rpm
-setup/setup.cfg
-setup/setup.py
 setup/setup_Db.cfg
 setup/setup_Db.py
 setup/setup_Web.cfg
 setup/setup_Web.py
-setup/setup_basic.cfg
-setup/setup_basic.py
-setup/setup_gip.py
-setup/setup_static_graphs.cfg
-setup/setup_static_graphs.py
 src/gratia/__init__.py
 src/gratia/config/DBSecurity.xml
 src/gratia/config/__init__.py
