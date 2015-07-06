@@ -1496,6 +1496,10 @@
             <input name="exclude-vo" kind="sql"> Unknown|unknown|other </input>
             <input name="exclude-user" kind="sql"> NONE </input>
             <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
+            <!-- opportunistic filter variables -->
+            <input name="opportunistic-filter" kind="sql">BOTH</input>
+            <input name="sql_dynamic_modif_func_mod_name">gratia.database.opportunistic_filter</input>
+            <input name="sql_dynamic_modif_func">oim_vo_ownership.alter_sql</input>
         </inputs>
         <sql>
           SELECT
@@ -1528,7 +1532,8 @@
                 (NOT (R.CommonName regexp :exclude-user)) AND
                 (NOT (VO.VOName regexp :exclude-vo)) AND
                 R.WallDuration &lt; 1100000000 AND
-                R.ProbeName regexp :probe
+                R.ProbeName regexp :probe AND
+                :opportunistic-filter
             GROUP BY 
                 time, R.CommonName
           ) as foo

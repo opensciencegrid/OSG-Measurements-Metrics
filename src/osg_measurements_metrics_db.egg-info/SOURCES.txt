@@ -33,20 +33,14 @@ gratiamonitor/SOURCES/gratiagraph-monitor/gratiagraph-monitor.sh
 gratiamonitor/SPECS/InstalledCapacityReport.spec
 gratiamonitor/SPECS/gratiagraph-monitor.spec
 gratiamonitor/SRPMS/gratiagraph-monitor-rpm-1.0-1.src.rpm
-setup/setup.cfg
-setup/setup.py
 setup/setup_Db.cfg
 setup/setup_Db.py
 setup/setup_Web.cfg
 setup/setup_Web.py
-setup/setup_basic.cfg
-setup/setup_basic.py
-setup/setup_gip.py
-setup/setup_static_graphs.cfg
-setup/setup_static_graphs.py
 src/gratia/__init__.py
 src/gratia/config/DBSecurity.xml
 src/gratia/config/__init__.py
+src/gratia/config/__init__.pyc
 src/gratia/config/campus_bar_queries.xml
 src/gratia/config/development.conf
 src/gratia/config/generic_gip_queries.xml
@@ -62,6 +56,7 @@ src/gratia/config/gratia_data_queries.xml
 src/gratia/config/gratia_events_queries.xml
 src/gratia/config/gratia_fermi_storage_queries.xml
 src/gratia/config/gratia_glidein_bar_queries.xml
+src/gratia/config/gratia_google_charts_queries.xml
 src/gratia/config/gratia_graphs.xml
 src/gratia/config/gratia_graphs_basic.xml
 src/gratia/config/gratia_pie_queries.xml
@@ -98,6 +93,7 @@ src/gratia/config/website.xml
 src/gratia/config/wlcg_email.conf
 src/gratia/database/__init__.py
 src/gratia/database/metrics.py
+src/gratia/database/opportunistic_filter.py
 src/gratia/database/query_handler.py
 src/gratia/database/query_handler_deprecated.py
 src/gratia/gip/__init__.py

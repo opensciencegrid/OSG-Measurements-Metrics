@@ -11,7 +11,7 @@
 
     <query name="glidein_hours_bar_smry" base="GratiaGenericQuery.glidein_master_summary">
       <sql>
-        <filler name="group"> IF(length(R.HostDescription) > 0, R.HostDescription, "UNKNOWN") </filler>
+        <filler name="group"> IF(length(R.HostDescription) > 0, R.HostDescription, 'UNKNOWN') </filler>
         <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
         <filler name="where"> AND WallDuration > 0 </filler>
       </sql>

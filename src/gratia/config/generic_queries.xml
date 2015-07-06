@@ -73,6 +73,10 @@
             <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
             <input name="exclude-user" kind="sql"> NONE </input>
             <input name="resource-type" kind="sql"> ^Batch$ </input>
+            <!-- opportunistic filter variables -->
+            <input name="opportunistic-filter" kind="sql">BOTH</input>
+            <input name="sql_dynamic_modif_func_mod_name">gratia.database.opportunistic_filter</input>
+            <input name="sql_dynamic_modif_func">oim_vo_ownership.alter_sql</input>
         </inputs>
         <sql>
             SELECT
@@ -104,7 +108,8 @@
                 R.WallDuration &lt; 1100000000 AND
                 R.ProbeName regexp :probe AND
                 (NOT (R.CommonName regexp :exclude-user)) AND
-                R.CommonName regexp :user
+                R.CommonName regexp :user AND
+                :opportunistic-filter
                 <slot name="where"/>
             GROUP BY 
                 <slot name="group"/>
@@ -141,6 +146,10 @@
             <input name="exclude-facility" kind="sql"> NONE  </input>
             <input name="resource-type" kind="sql"> BatchPilot </input>
             <input name="grid" kind="sql"> .* </input>
+            <!-- opportunistic filter variables -->
+            <input name="opportunistic-filter" kind="sql">BOTH</input>
+            <input name="sql_dynamic_modif_func_mod_name">gratia.database.opportunistic_filter</input>
+            <input name="sql_dynamic_modif_func">oim_vo_ownership.alter_sql</input>
         </inputs>
         <sql>
             SELECT
@@ -160,7 +169,7 @@
             WHERE
                 R.EndTime &gt;= :starttime AND
                 R.EndTime &lt; :endtime AND
-                R.HostDescription regexp :facility AND
+                (CASE R.ResourceType WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END) regexp :facility AND
                 R.Grid regexp :grid AND
                 VO.VOName regexp :vo AND
                 VC.VOName regexp :role AND
@@ -169,11 +178,12 @@
                 R.CommonName regexp :user AND
                 (:includeFailed='true' OR ApplicationExitCode=0) AND
                 (:includeSuccess ='true' OR ApplicationExitCode!=0) AND
-                (NOT (S.SiteName regexp :exclude-facility)) AND
+                (NOT ((CASE R.ResourceType WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END) regexp :exclude-facility)) AND
                 (NOT (R.CommonName regexp :exclude-user)) AND
                 (NOT (VO.VOName regexp :exclude-vo)) AND
                 R.WallDuration &lt; 1100000000 AND
-                R.ProbeName regexp :probe
+                R.ProbeName regexp :probe AND
+                :opportunistic-filter
                 <slot name="where"/>
             GROUP BY 
                 <slot name="group"/>
@@ -210,6 +220,10 @@
             <input name="exclude-facility" kind="sql"> NONE  </input>
             <input name="resource-type" kind="sql"> BatchPilot </input>
             <input name="grid" kind="sql"> .* </input>
+            <!-- opportunistic filter variables -->
+            <input name="opportunistic-filter" kind="sql">BOTH</input>
+            <input name="sql_dynamic_modif_func_mod_name">gratia.database.opportunistic_filter</input>
+            <input name="sql_dynamic_modif_func">oim_vo_ownership.alter_sql</input>
         </inputs>
         <sql>
             SELECT
@@ -239,11 +253,12 @@
                 R.CommonName regexp :user AND
                 (:includeFailed='true' OR ApplicationExitCode=0) AND
                 (:includeSuccess ='true' OR ApplicationExitCode!=0) AND
-                (NOT (R.HostDescription regexp :exclude-facility)) AND
+                (NOT (IF(length(R.HostDescription) > 0, R.HostDescription, 'UNKNOWN') regexp :exclude-facility)) AND
                 (NOT (R.CommonName regexp :exclude-user)) AND
                 (NOT (VO.VOName regexp :exclude-vo)) AND
                 R.WallDuration &lt; 1100000000 AND
-                R.ProbeName regexp :probe
+                R.ProbeName regexp :probe AND
+                :opportunistic-filter
                 <slot name="where"/>
             GROUP BY 
                 <slot name="group"/>,
@@ -281,6 +296,10 @@
             <input name="exclude-user" kind="sql"> NONE </input>
             <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
             <input name="resource-type" kind="sql"> ^Batch$ </input>
+            <!-- opportunistic filter variables -->
+            <input name="opportunistic-filter" kind="sql">BOTH</input>
+            <input name="sql_dynamic_modif_func_mod_name">gratia.database.opportunistic_filter</input>
+            <input name="sql_dynamic_modif_func">oim_vo_ownership.alter_sql</input>
         </inputs>
         <sql>
             SELECT
@@ -313,7 +332,8 @@
                 (NOT (R.CommonName regexp :exclude-user)) AND
                 (NOT (VO.VOName regexp :exclude-vo)) AND
                 R.WallDuration &lt; 1100000000 AND
-                R.ProbeName regexp :probe
+                R.ProbeName regexp :probe AND
+                :opportunistic-filter
                 <slot name="where"/>
             GROUP BY 
                 <slot name="group"/>,
@@ -350,6 +370,10 @@
             <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
             <input name="exclude-user" kind="sql"> NONE </input>
             <input name="resource-type" kind="sql"> ^Batch$ </input>
+            <!-- opportunistic filter variables -->
+            <input name="opportunistic-filter" kind="sql">BOTH</input>
+            <input name="sql_dynamic_modif_func_mod_name">gratia.database.opportunistic_filter</input>
+            <input name="sql_dynamic_modif_func">oim_vo_ownership.alter_sql</input>
         </inputs>
         <sql>
             SELECT
@@ -381,7 +405,8 @@
                 AND (NOT (R.CommonName regexp :exclude-user))
                 AND (NOT (VO.VOName regexp :exclude-vo))
                 AND R.WallDuration &lt; 1100000000
-                AND R.ProbeName regexp :probe
+                AND R.ProbeName regexp :probe AND
+                :opportunistic-filter
                 <slot name="where"/>
             GROUP BY 
                 <slot name="group"/>,
@@ -419,6 +444,10 @@
             <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
             <input name="exclude-user" kind="sql"> NONE </input>
             <input name="resource-type" kind="sql"> ^Batch$ </input>
+            <!-- opportunistic filter variables -->
+            <input name="opportunistic-filter" kind="sql">BOTH</input>
+            <input name="sql_dynamic_modif_func_mod_name">gratia.database.opportunistic_filter</input>
+            <input name="sql_dynamic_modif_func">oim_vo_ownership.alter_sql</input>
         </inputs>
         <sql>
             SELECT
@@ -450,7 +479,8 @@
                 (NOT (R.CommonName regexp :exclude-user)) AND
                 (NOT (VO.VOName regexp :exclude-vo)) AND
                 R.WallDuration &lt; 1100000000 AND
-                R.ProbeName regexp :probe
+                R.ProbeName regexp :probe AND
+                :opportunistic-filter
                 <slot name="where"/>
             GROUP BY 
                 <slot name="group"/>,
@@ -482,6 +512,10 @@
             <input name="exclude-vo" kind="sql"> Unknown|unknown|other </input>
             <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
             <input name="resource-type" kind="sql"> ^Batch$ </input>
+            <!-- opportunistic filter variables -->
+            <input name="opportunistic-filter" kind="sql">BOTH</input>
+            <input name="sql_dynamic_modif_func_mod_name">gratia.database.opportunistic_filter</input>
+            <input name="sql_dynamic_modif_func">oim_vo_ownership.alter_sql</input>
         </inputs>
         <sql>
             SELECT
@@ -507,7 +541,8 @@
                 (NOT (S.SiteName regexp :exclude-facility)) AND
                 (NOT (VO.VOName regexp :exclude-vo)) AND
                 R.WallDuration &lt; 1100000000 AND
-                R.ProbeName regexp :probe
+                R.ProbeName regexp :probe AND
+                :opportunistic-filter
                 <slot name="where"/>
             GROUP BY 
                 <slot name="group"/>
@@ -598,6 +633,10 @@
         <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
         <input name="probe" kind="sql"> .* </input>
         <input name="resource-type" kind="sql"> ^Batch$ </input>
+        <!-- opportunistic filter variables -->
+        <input name="opportunistic-filter" kind="sql">BOTH</input>
+        <input name="sql_dynamic_modif_func_mod_name">gratia.database.opportunistic_filter</input>
+        <input name="sql_dynamic_modif_func">oim_vo_ownership.alter_sql</input>
       </inputs>
       <sql>
        SELECT
@@ -628,7 +667,8 @@
           (NOT (S.SiteName regexp :exclude-facility)) AND
           (NOT (VO.VOName regexp :exclude-vo)) AND
           R.ProbeName regexp :probe AND
-          WallDuration &lt; 1100000000
+          WallDuration &lt; 1100000000 AND
+          :opportunistic-filter
           <slot name="where"/>
         GROUP BY
           <slot name="group"/>,
@@ -663,6 +703,10 @@
         <input name="exclude-user" kind="sql"> NONE </input>
         <input name="probe" kind="sql"> .* </input>
         <input name="resource-type" kind="sql"> ^Batch$ </input>
+        <!-- opportunistic filter variables -->
+        <input name="opportunistic-filter" kind="sql">BOTH</input>
+        <input name="sql_dynamic_modif_func_mod_name">gratia.database.opportunistic_filter</input>
+        <input name="sql_dynamic_modif_func">oim_vo_ownership.alter_sql</input>
       </inputs>
       <sql>
        SELECT
@@ -691,7 +735,8 @@
           (NOT (R.CommonName regexp :exclude-user)) AND
           (NOT (VO.VOName regexp :exclude-vo)) AND
           R.ProbeName regexp :probe AND
-          WallDuration &lt; 1100000000
+          WallDuration &lt; 1100000000 AND
+          :opportunistic-filter
           <slot name="where"/>
         GROUP BY
           <slot name="group"/>,
@@ -729,7 +774,7 @@
         <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-13*86400</input>
         <input name="endtime" partial="up" type="datetime" kind="sql">time.time()</input>
         <input name="facility" kind="sql"> .* </input>
-        <input name="type" kind="sql"> StorageGroup </input>
+        <input name="type" kind="sql"> StorageGroup.* </input>
         <input name="vo" kind="sql"> .* </input>
         <input name="exclude-vo" kind="sql"> other </input>
         <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>

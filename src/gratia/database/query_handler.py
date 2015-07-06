@@ -229,7 +229,7 @@ class OimResourceFilter(PeriodicUpdater):
         if preference == 'resource':
             if pivot in r_to_rg:
                 return pivot
-            return rg_to_r.get(pivot, pivot)
+            return pivot
         if preference == 'resource_group':
             #print r_to_rg
             return r_to_rg.get(pivot, pivot)
@@ -1425,10 +1425,10 @@ def voownership():
         pass
     print "================================="
     try:
-       f = urllib2.urlopen(urltofetch)
+        f = urllib2.urlopen(urltofetch)
     except:
-       print "Unable to fetch OIM Data for VO Resource Allocations"
-       raise    
+        print "Unable to fetch OIM Data for VO Resource Allocations"
+        raise    
     dom = xml.dom.minidom.parse(f)
     allresources=[]
     for node in dom.getElementsByTagName('Resource'):
@@ -1928,3 +1928,10 @@ def results_parser_fillin(sql_results, globals=globals(), **kw):
                     val = 0
                 new_results[pivot][all_groups[idx]] = val
     return new_results, md
+  
+def fermi_storage_pools_parser(*pivot, **kw): 
+  vo = pivot[0]
+  unique_id = pivot[1]
+  if kw['show-pools'] and kw['show-pools'].lower() == 'true':
+    return unique_id.split(':')[2]
+  return vo
