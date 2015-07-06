@@ -16,6 +16,59 @@ def add_to_dict_grouping(dictionary,x,y):
       dictionary[x] = []
   dictionary[x].append(y)
 
+class OimVoParentFilter(query_handler.PeriodicUpdater):
+
+    def __init__(self):
+        srchUrl = 'OimVoFilterUrl'
+        modName = 'OimVoParentFilter'
+        print "%s: srchUrl: %s" % (modName, srchUrl)
+        try:
+            self.url = GratiaURLS().GetUrl(srchUrl)
+            print "%s: SUCCESS: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
+            print "%s: retUrl: %s" % (modName, self.url)
+        except:
+            print "%s: FAILED: GratiaURLS().GetUrl(url = %s)" % (modName,srchUrl)
+            pass
+        super(OimVoParentFilter, self).__init__(self.url)
+
+    def parse(self, results):
+        dom = xml.dom.minidom.parseString(results)
+        vo_by_id = {}
+        vo_2_id_parent = {}
+        vo_2_vo_parent = {}
+        for child in dom.getElementsByTagName('VO'):
+            try:
+                vo_id = child.getElementsByTagName('ID')[0].firstChild.data
+                vo_name = child.getElementsByTagName('Name')[0].firstChild.data.lower()
+                parent_tag = child.getElementsByTagName('ParentVO')[0]
+                vo_by_id[vo_id] = vo_name
+                parent_id = parent_tag.getElementsByTagName('ID')
+                if len(parent_id) > 0:
+                    vo_2_id_parent[vo_name] = parent_id[0].firstChild.data
+            except:
+                pass
+        for vo_name_i in vo_2_id_parent:
+            vo_2_vo_parent[vo_name_i] = vo_by_id[vo_2_id_parent[vo_name_i]]
+        return vo_2_vo_parent
+
+    def vo_ownership_to_parent_vo_ownership(self,vo_ownership_dict):
+      vo_2_vo_parent = self.results()
+      for vo_i in vo_2_vo_parent:
+          prev_owned = []
+          if vo_ownership_dict.has_key(vo_i):
+              prev_owned = vo_ownership_dict[vo_i]
+          curr_vo = vo_i
+          while vo_2_vo_parent.has_key(curr_vo):
+              curr_vo = vo_2_vo_parent[curr_vo]
+              if vo_ownership_dict.has_key(curr_vo):
+                  prev_owned += vo_ownership_dict[curr_vo]
+          vo_ownership_dict[vo_i] = prev_owned
+      for vo_i in vo_ownership_dict:
+          vo_ownership_dict[vo_i] = set(vo_ownership_dict[vo_i])
+      return vo_ownership_dict
+
+oim_vo_parent_filter = OimVoParentFilter()
+
 class OimVOOwnership(query_handler.PeriodicUpdater):
 
     """
@@ -60,6 +113,9 @@ class OimVOOwnership(query_handler.PeriodicUpdater):
                     add_to_dict_grouping(vo_ownership_dict,t[0].lower(),t[1].lower())
                     vo_set.add(t[0].lower())
                     facility_set.add(t[1].lower())
+        vo_ownership_dict = oim_vo_parent_filter.vo_ownership_to_parent_vo_ownership(vo_ownership_dict)
+        for vo_i in vo_ownership_dict:
+            vo_set.add(vo_i)
         return vo_ownership_dict, vo_set, facility_set
 
 
@@ -106,6 +162,7 @@ class OimVOOwnership(query_handler.PeriodicUpdater):
         return sql_select_owned
         
     def alter_sql(self,sql_string,conn,**my_kw):
+        oim_vo_parent_filter.results()
         if my_kw.has_key('opportunistic-filter'):
             filter_val = my_kw['opportunistic-filter']
             if filter_val == 'BOTH':
