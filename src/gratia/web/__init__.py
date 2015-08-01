@@ -111,49 +111,43 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         if relTime:
             if relTime == 'absolute':
                 data['relTime'] = 'absolute'
-		starttime = data.get('starttime', None)
-                filter_dict['starttime'] = starttime
-		while True: 
-		 	try:
-				valid = time.strptime(starttime,
-                                    '%Y-%m-%d %H:%M:%S')
-				break
-			except ValueError: 
-				relTime = 1209600
-				break
-		endtime = data.get('endtime', None)
-		filter_dict['endtime'] = endtime
-		while True: 
-			try: 
-                		valid2 = time.strptime(endtime,
-                                    '%Y-%m-%d %H:%M:%S')
-				break
-			except ValueError: 
-				relTime = 1209600
-				break
-                # try to determine default span
-                try:
-                    valid = datetime.datetime(*valid[:6])
-                    valid2 = datetime.datetime(*valid2[:6])
-                    timedelta = (valid2 - valid)
-                    myinterval = timedelta.days * 86400 + timedelta.seconds
-                    if myinterval < 4*86400:
-                        default_span = 3600
-                    elif myinterval <= 30*86400: 
-                        default_span = 86400
-                    elif myinterval < 365*86400:
-                        default_span = 86400*7
-                    else:
-                        default_span = 86400*30
-                except:
+            starttime = data.get('starttime', None)
+            filter_dict['starttime'] = starttime
+            try:
+                valid = time.strptime(starttime,'%Y-%m-%d %H:%M:%S')
+            except: 
+                relTime = 1209600
+            endtime = data.get('endtime', None)
+            filter_dict['endtime'] = endtime
+            try: 
+                valid2 = time.strptime(endtime,'%Y-%m-%d %H:%M:%S')
+            except: 
+                relTime = 1209600
+            # try to determine default span
+            try:
+                valid = datetime.datetime(*valid[:6])
+                valid2 = datetime.datetime(*valid2[:6])
+                timedelta = (valid2 - valid)
+                myinterval = timedelta.days * 86400 + timedelta.seconds
+                if myinterval < 4*86400:
+                    default_span = 3600
+                elif myinterval <= 30*86400: 
                     default_span = 86400
-                # Set the span, defaulting to the determined default_span
-                try:
-                    filter_dict['span'] = int(data['span'])
-                except:
-                    filter_dict['span'] = default_span
-            if relTime != 'absolute':
-		data['relTime'] = relTime
+                elif myinterval < 365*86400:
+                    default_span = 86400*7
+                else:
+                    default_span = 86400*30
+            except:
+                default_span = 86400
+            # Set the span, defaulting to the determined default_span
+            try:
+                filter_dict['span'] = int(data['span'])
+            except:
+                filter_dict['span'] = default_span
+            if relTime == 'absolute':
+                data['relTime'] = 'absolute'
+            else:
+                data['relTime'] = relTime
                 try:
                     interval = int(relTime)
                 except:
