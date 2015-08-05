@@ -1879,6 +1879,7 @@
             <input name="span" type="eval" kind="sql">86400</input>
             <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-13*86400</input>
             <input name="endtime" partial="up" type="datetime" kind="sql">time.time()</input>
+            <input name="resource-type" kind="sql"> Batch </input>
             <input name="includeFailed" kind="sql"> true </input>
             <input name="includeSuccess" kind="sql"> true </input>
             <input name="facility" kind="sql"> .* </input>
@@ -1918,7 +1919,7 @@
                 VO.VOName regexp :vo AND
                 VC.VOName regexp :role AND
                 (NOT (VC.VOName regexp :exclude-role)) AND
-                (R.ResourceType = 'Batch' or R.ResourceType = '') AND
+                (R.ResourceType = :resource-type) AND
                 R.CommonName regexp :user AND
                 (:includeFailed='true' OR ApplicationExitCode=0) AND
                 (:includeSuccess ='true' OR ApplicationExitCode!=0) AND
@@ -1951,6 +1952,7 @@
             <input name="span" type="eval" kind="sql">86400</input>
             <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-13*86400</input>
             <input name="endtime" partial="up" type="datetime" kind="sql">time.time()</input>
+            <input name="resource-type" kind="sql"> Batch </input>
             <input name="includeFailed" kind="sql"> true </input>
             <input name="includeSuccess" kind="sql"> true </input>
             <input name="facility" kind="sql"> .* </input>
@@ -1991,7 +1993,7 @@
                 VO.VOName regexp :vo AND
                 VC.VOName regexp :role AND
                 (NOT (VC.VOName regexp :exclude-role)) AND
-                (R.ResourceType = 'Batch' or R.ResourceType = '') AND
+                (R.ResourceType = :resource-type) AND
                 R.CommonName regexp :user AND
                 (:includeFailed='true' OR ApplicationExitCode=0) AND
                 (:includeSuccess ='true' OR ApplicationExitCode!=0) AND

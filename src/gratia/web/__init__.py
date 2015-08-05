@@ -49,8 +49,8 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         self.site_owner = self.template('site_owner.tmpl')(self.site_owner)
         self.site = self.template('site.tmpl')(self.site)
         self.vo = self.template('vo.tmpl')(self.vo)
-        self.bysite = self.template('bysite.tmpl')(self.bysite)
-        self.byvo = self.template('byvo.tmpl')(self.byvo)
+        self.bysite = self.template('bysite.tmpl')(self.bysite_func)
+        self.byvo = self.template('byvo.tmpl')(self.byvo_func)
         self.monbyvo = self.template('monbyvo.tmpl')(self.monbyvo)
         self.monbyvo_running_graphsonly = self.plain_template('monbyvo_running_graphsonly.tmpl')\
             (self.monbyvo_running_graphsonly)
@@ -168,7 +168,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
 
         self.copy_if_present(filter_dict, data, 'facility', 'vo', \
             'exclude-facility', 'exclude-vo', 'user', 'user', 'exclude-dn', \
-            'vo_set', 'facility_set', 'probe')
+            'vo_set', 'facility_set', 'probe','opportunistic-filter')
         if len(filter_dict.get('facility', '')) == 0 and 'facility_set' in \
                 filter_dict:
             try:
@@ -265,7 +265,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
             data['title'] = "OSG Storage Main"
         return data
 
-    def bysite(self, *args, **kw):
+    def bysite_func(self, *args, **kw):
         data = dict(kw)
         data['given_kw'] = dict(kw)
         self.user_auth(data)
@@ -417,7 +417,7 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
         data['title'] = "OSG Field-Of-Science Accounting"
         return data
 
-    def byvo(self, *args, **kw):
+    def byvo_func(self, *args, **kw):
         data = dict(kw)
         data['given_kw'] = dict(kw)
         self.user_auth(data)
@@ -871,19 +871,36 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
     def vo_opp(self, *args, **kw):
         data = dict(kw)
         self.user_auth(data)
-        vos_url = self.metadata.get('vos_url', '/gratia/xml/vo_corrected_table')
-        registered_vos_url = self.metadata.get('registered_vos_url', \
-            '/gratia/xml/vo')
-        keep_vos = [i.strip() for i in self.metadata.get('keep_vos', \
-            '').split(',') if len(i.strip()) > 0]
-        if kw.get('filter', 'true').lower() == 'false':
-            vos = self.get_variable_values(vos_url)
+        values = ['Opportunistic-by-VO', 'Opportunistic-by-Facility','Owned-by-VO', 'Owned-by-Facility']
+        self.focus(kw, data, 'vo_opp', values[0], values)
+
+        if data['focus']['value'] == values[0]:
+            data['opportunistic-filter'] = 'OPPORTUNISTIC'
+            data = self.byvo_func(*args, **data)
+            data['inner_tmpl'] = self.getTemplateFilename('byvo.tmpl')
+            data['title'] = 'VO Opportunistic Usage'
+        elif data['focus']['value'] == values[1]:
+            data['opportunistic-filter'] = 'OPPORTUNISTIC'
+            data = self.bysite_func(*args, **data)
+            data['inner_tmpl'] = self.getTemplateFilename('bysite.tmpl')
+            data['title'] = 'Facility Opportunistic Usage'
+        elif data['focus']['value'] == values[2]:
+            data['opportunistic-filter'] = 'OWNED'
+            data = self.byvo_func(*args, **data)
+            data['inner_tmpl'] = self.getTemplateFilename('byvo.tmpl')
+            data['title'] = 'VO Owned Usage'
+        elif data['focus']['value'] == values[3]:
+            data['opportunistic-filter'] = 'OWNED'
+            data = self.bysite_func(*args, **data)
+            data['inner_tmpl'] = self.getTemplateFilename('bysite.tmpl')
+            data['title'] = 'Facility Owned Usage'
         else:
-            vos = self.get_vo_list(vos_url, registered_vos_url, keep_vos)
-        data['vos'] = vos
-        data['current_vo'] = kw.get('vo', None)
+            data['opportunistic-filter'] = 'OPPORTUNISTIC'
+            data = self.byvo_func(*args, **data)
+            data['inner_tmpl'] = self.getTemplateFilename('byvo.tmpl')
+            data['title'] = 'VO Opportunistic Usage'
+
         data['static_url'] = self.metadata.get('static_url', '/store/gratia')
-        data['title'] = 'VO Opportunistic Usage'
         return data
 
     def vo_opp2(self, *args, **kw):
