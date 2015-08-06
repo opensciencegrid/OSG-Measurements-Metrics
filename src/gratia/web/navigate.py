@@ -1,10 +1,12 @@
 
 import urllib
+import traceback
 
 from graphtool.base.xml_config import XmlConfig
 from template import Template
 
 from auth import Authenticate
+import gratia.database.sites_periodic_updater as sites_periodic_updater
 
 class Navigation(Authenticate, Template):
 #class Navigation(Template):
@@ -14,13 +16,19 @@ class Navigation(Authenticate, Template):
         self.site_sets = {}
         self.vo_sets = {}
         self.focus_set = {}
+        self.periodic_updater_set = set()
         for setsDom in self.dom.getElementsByTagName("sets"):
             for setDom in setsDom.getElementsByTagName("set"):
                 name = setDom.getAttribute("name")
                 kind = setDom.getAttribute("kind")
                 focus = setDom.getAttribute("focus")
+                periodic_updater = setDom.getAttribute("periodic_updater_set").lower().strip() == "true"
                 text = str(setDom.firstChild.data).strip()
-                info = [i.strip() for i in text.split(',')]
+                if periodic_updater:
+                    self.periodic_updater_set.add(name)
+                    info = text
+                else:
+                    info = [i.strip() for i in text.split(',')]
                 if kind == 'site':
                     self.site_sets[name] = info
                 elif kind == 'vo':
@@ -104,7 +112,17 @@ class Navigation(Authenticate, Template):
                 info['%s by site' % vo] = '%s?set=%s&vo=%s' % (page, vo,
                     set_info)
         for site, members in self.site_sets.items():
-            set_info = '|'.join(members)
+            if site in self.periodic_updater_set:
+                vals =[]
+                try:
+                    exc_pu = "vals = sites_periodic_updater.%s.results()"%members
+                    exec exc_pu
+                except:
+                    traceback.print_exc()
+                    vals.append("NONE")
+                set_info = '|'.join(vals)
+            else:
+                set_info = '|'.join(members)
             set_info = urllib.quote(set_info, safe='|')
             page = self.focus_set.get(site, 'site')
             if page == 'both':

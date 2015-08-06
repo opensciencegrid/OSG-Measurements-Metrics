@@ -40,7 +40,6 @@ setup/setup_Web.py
 src/gratia/__init__.py
 src/gratia/config/DBSecurity.xml
 src/gratia/config/__init__.py
-src/gratia/config/__init__.pyc
 src/gratia/config/campus_bar_queries.xml
 src/gratia/config/development.conf
 src/gratia/config/generic_gip_queries.xml
@@ -96,6 +95,7 @@ src/gratia/database/metrics.py
 src/gratia/database/opportunistic_filter.py
 src/gratia/database/query_handler.py
 src/gratia/database/query_handler_deprecated.py
+src/gratia/database/sites_periodic_updater.py
 src/gratia/gip/__init__.py
 src/gratia/gip/analysis.py
 src/gratia/gip/common.py
@@ -194,6 +194,7 @@ src/osg_measurements_metrics_web.egg-info/top_level.txt
 static/bootstrap/css/bootstrap.min.css
 static/bootstrap/img/glyphicons-halflings-white.png
 static/bootstrap/img/glyphicons-halflings.png
+static/bootstrap/js/analyze_links.js
 static/bootstrap/js/bootstrap.min.js
 static/bootstrap/js/jquery-1.8.3.min.js
 static/images/doe.png
