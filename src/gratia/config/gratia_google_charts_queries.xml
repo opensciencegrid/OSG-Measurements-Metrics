@@ -32,7 +32,7 @@
           AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
         </filler>
       </sql>
-      <results>
+      <results module="graphtool.database.query_handler" function="simple_results_parser">
         <inputs>
           <input name="pivots"> 0,1,2,3 </input>
           <input name="results"> 4,5 </input>
@@ -62,6 +62,35 @@
           level_formatters :  [null,null,null,graphtool.GC_COMMON.format_common_name],
           size_formatter   :  graphtool.GC_COMMON.format_number_2dec,
           value_formatter  :  graphtool.GC_COMMON.format_percentage
+        };
+      </attribute>
+    </query>
+    
+    <query name="gc_facility_hours_bar_smry" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(IF(CommonName regexp 'Thain' AND Cores = 1, 8, Cores)*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">["Facility","Time"]</attribute>
+      <attribute name="column_names">Time Spent on Jobs</attribute>
+      <attribute name="column_units">Hours</attribute>
+      <attribute name="graph_type">gc_combo_chart</attribute>
+      <attribute name="graph_kind">google_charts</attribute>
+      <attribute name="title">Hours Spent on Jobs By Facility</attribute>
+      <results module="graphtool.database.query_handler" function="simple_results_parser">
+        <inputs>
+          <input name="pivots"> 0,1 </input>
+          <input name="results"> 2 </input>
+          <input name="pivot_transform">json_pivot_arr</input>
+        </inputs>
+      </results>
+      <attribute name="js_chart_setup">
+        gc_obj.chart_properties = {
+            seriesType: 'bars',
+            isStacked: true
+        };
+        gc_obj.chart_formatters = {
         };
       </attribute>
     </query>
