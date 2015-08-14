@@ -15,9 +15,12 @@
 
   <class name="GratiaWeb" type="Gratia">
       <sets>
+          <set kind="site" focus="both" name="WLCG Sites" periodic_updater_set="true">oim_wlcg_sites</set>
+          <!-- Pages being reemplazed with WLCG filter
           <set kind="site" focus="both" name="CMS T2 Sites" periodic_updater_set="true">oim_cms_t2_sites</set>
-          <!-- <set kind="site" focus="both" name="CMS T2 Sites">Nebraska.*, UCSD.*, CIT.*, GLOW.*, MIT_CMS.*, Purdue.*, UFlorida.*, UERJ.*, SPRACE.*</set> -->
+          <set kind="site" focus="both" name="CMS T2 Sites">Nebraska.*, UCSD.*, CIT.*, GLOW.*, MIT_CMS.*, Purdue.*, UFlorida.*, UERJ.*, SPRACE.*</set>
           <set kind="site" focus="both" name="ATLAS T2 Sites">AGLT2.*, .*_ATLAS_.*, IU_OSG.*, MWT2_.*, WT2.*, OU_OCHEP_.*, OU_OSCER_ATLAS.*, UC_Teraport.*, UTA_SWT2.*, SWT2_.*</set>
+          -->
           <set kind="vo" focus="both" name="Non-HEP VOs">nanohub,glow,sdss,dteam,ligo,osg,engage,osgedu,tigre,nysgrid,cigi,compbiogrid,des,fmri,gpn,grase,gugrid,i2u2,mariachi,nwicg,sbgrid,star,hcc,nebiogrid</set>
       </sets>
       <attribute name="base_url">/gratia</attribute>

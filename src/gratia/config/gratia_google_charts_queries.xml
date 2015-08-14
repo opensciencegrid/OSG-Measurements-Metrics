@@ -72,7 +72,7 @@
         <filler name="column"> sum(IF(CommonName regexp 'Thain' AND Cores = 1, 8, Cores)*WallDuration)/3600 </filler>
         <filler name="where"> AND WallDuration > 0 </filler>
       </sql>
-      <attribute name="pivot_name">["Facility","Time"]</attribute>
+      <attribute name="pivot_name">[{type:"string",name:"Facility"},{type:"datetime",name:"Time"}]</attribute>
       <attribute name="column_names">Time Spent on Jobs</attribute>
       <attribute name="column_units">Hours</attribute>
       <attribute name="graph_type">gc_combo_chart</attribute>
@@ -88,7 +88,15 @@
       <attribute name="js_chart_setup">
         gc_obj.chart_properties = {
             seriesType: 'bars',
-            isStacked: true
+            isStacked: true,
+            bar: { groupWidth: '90%' },
+            legend:   { 
+                        textStyle: {fontSize: 12},
+                        position:  'top',
+                        alignment: 'right',
+                        maxLines: 5
+                      },
+            chartArea:{width:'80%',height:'50%'}
         };
         gc_obj.chart_formatters = {}
       </attribute>
@@ -104,7 +112,7 @@
          <filler name="column"> sum(R.Cores*R.WallDuration)/3600 as WallHours </filler>
          <filler name="having"> HAVING sum(R.Cores*R.WallDuration)/3600 >= :min_hours </filler>
        </sql>
-      <attribute name="pivot_name">["VO"]</attribute>
+      <attribute name="pivot_name">[{type:"string",name:"VO"}]</attribute>
       <attribute name="column_names">Wall Time</attribute>
       <attribute name="column_units">Hours</attribute>
       <attribute name="graph_type">gc_pie_chart</attribute>
@@ -120,7 +128,7 @@
       <attribute name="js_chart_setup">
         gc_obj.chart_properties = {
           title:this.title,
-          slices: {  0: {offset: 0.2}}
+          slices: {  0: {offset: 0.1}}
         
         };
         gc_obj.chart_formatters = {}
