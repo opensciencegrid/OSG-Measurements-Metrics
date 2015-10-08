@@ -41,6 +41,15 @@
       <attribute name="AuthDBPassword"> ****** </attribute>
       <attribute name="Port"> 3306 </attribute>
     </connection>
+    
+    <connection name="gratia-hep-cloud-facility">
+      <attribute name="Interface"> MySQL </attribute>
+      <attribute name="Database"> gratia </attribute>
+      <attribute name="Host"> hep-cloud.db.host </attribute>
+      <attribute name="AuthDBUsername"> ****** </attribute>
+      <attribute name="AuthDBPassword"> ****** </attribute>
+      <attribute name="Port"> 3306 </attribute>
+    </connection>
 
     <connection name="gratia-itb">
       <attribute name="Interface"> MySQL </attribute>

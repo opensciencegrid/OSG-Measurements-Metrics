@@ -25,7 +25,7 @@
                                sum(R.CpuUserDuration + R.CpuSystemDuration)/sum(R.Cores*R.WallDuration)
         </filler>
         <filler name="having"> HAVING sum(R.Cores*R.WallDuration)/3600 >= :min_hours </filler>
-        <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
+        <filler name="join"> LEFT JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
         <filler name="where"> 
           AND R.WallDuration > 0
           AND PNC.ReportableProjectName regexp :projectname  

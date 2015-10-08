@@ -18,6 +18,7 @@
   <import module="gratia.config" data_file="rsv_summary.xml" />
   <import module="gratia.config" data_file="gratia_fermi_storage_queries.xml" />
   <import module="gratia.config" data_file="gratia_google_charts_queries.xml" />
+  <import module="gratia.config" data_file="gratia_hep_cloud_facility_queries.xml" />
 
   <import module="graphtool.tools.query_output">XmlGenerator</import>
   <import module="graphtool.tools.csv_output">CsvGenerator</import>
@@ -40,6 +41,7 @@
     <queryobj> RSVSummaryQueries </queryobj>
     <queryobj> GratiaFermiStorageQueries </queryobj>
     <queryobj> GratiaGoogleChartsQueries </queryobj>
+    <queryobj> GratiaHEPCloudFacilityQueries </queryobj>
   </class>
 
   <class type="XmlGenerator" name="site_xml">
@@ -80,6 +82,7 @@
     <queryobj> RSVSummaryQueries </queryobj>
     <queryobj> GratiaFermiStorageQueries </queryobj>
     <queryobj> GratiaGoogleChartsQueries </queryobj>
+    <queryobj> GratiaHEPCloudFacilityQueries </queryobj>
   </class>
 
   <class type="CsvGenerator" name="query_csv_secure">

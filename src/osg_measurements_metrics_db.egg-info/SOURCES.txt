@@ -40,6 +40,7 @@ setup/setup_Web.py
 src/gratia/__init__.py
 src/gratia/config/DBSecurity.xml
 src/gratia/config/__init__.py
+src/gratia/config/__init__.pyc
 src/gratia/config/campus_bar_queries.xml
 src/gratia/config/development.conf
 src/gratia/config/generic_gip_queries.xml
@@ -58,6 +59,7 @@ src/gratia/config/gratia_glidein_bar_queries.xml
 src/gratia/config/gratia_google_charts_queries.xml
 src/gratia/config/gratia_graphs.xml
 src/gratia/config/gratia_graphs_basic.xml
+src/gratia/config/gratia_hep_cloud_facility_queries.xml
 src/gratia/config/gratia_pie_queries.xml
 src/gratia/config/gratia_realtime_queries.xml
 src/gratia/config/gratia_site_queries.xml
