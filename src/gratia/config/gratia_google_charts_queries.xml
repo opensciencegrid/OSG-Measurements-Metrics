@@ -55,8 +55,7 @@
             headerHeight                      : 30              ,
             fontColor                         : 'black'         ,
             showScale                         : true            ,
-            useWeightedAverageForAggregation  : true            ,
-            generateTooltip                   : gc_obj.defaultToolTip.bind(gc_obj)
+            useWeightedAverageForAggregation  : true
         };
         gc_obj.chart_formatters = {
           level_formatters :  [null,null,null,graphtool.GC_COMMON.format_common_name],
