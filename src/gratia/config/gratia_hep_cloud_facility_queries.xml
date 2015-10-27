@@ -113,7 +113,8 @@
           M.probename regexp :probe AND
           R.VOName regexp :vo AND
           (NOT (S.SiteName regexp :exclude-facility)) AND
-          (NOT (R.VOName regexp :exclude-vo))
+          (NOT (R.VOName regexp :exclude-vo)) AND
+          (NOT (R.Status = 1 AND R.Charge = 0))
           <slot name="where"/>
         GROUP BY
           <slot name="group"/>,
@@ -146,7 +147,9 @@
     
     <!-- Master Summary Data Queries -->
     
-    <query name="vo_aws_daily_hours" base="GratiaGenericHEPCloudFacilityQueries.master_summary_data">
+    <!-- Job Usage Record Queries -->
+    
+    <query name="vo_aws_daily_hours" base="GratiaGenericHEPCloudFacilityQueries.job_usage_record">
       <inputs>
         <input name="span" type="int" kind="sql">86400</input>
         <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-13*86400</input>
@@ -155,7 +158,7 @@
       <sql>
         <filler name="group">VO.VOName,R.HostDescription
         </filler>
-        <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
+        <filler name="column"> sum(R.Processors*R.WallDuration)/3600 </filler>
       </sql>
       <results module="graphtool.database.query_handler" function="results_parser">
         <inputs>
@@ -171,8 +174,6 @@
       <attribute name="column_names">Wall Time</attribute>
       <attribute name="column_units">Hours</attribute>
     </query>
-    
-    <!-- Job Usage Record Queries -->
     
     <query name="vo_aws_charges" base="GratiaGenericHEPCloudFacilityQueries.job_usage_record">
       <inputs>
