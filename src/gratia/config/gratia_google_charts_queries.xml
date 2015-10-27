@@ -25,14 +25,14 @@
                                sum(R.CpuUserDuration + R.CpuSystemDuration)/sum(R.Cores*R.WallDuration)
         </filler>
         <filler name="having"> HAVING sum(R.Cores*R.WallDuration)/3600 >= :min_hours </filler>
-        <filler name="join"> JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
+        <filler name="join"> LEFT JOIN ProjectNameCorrection PNC ON (PNC.ProjectNameCorrid=R.ProjectNameCorrid) </filler>
         <filler name="where"> 
           AND R.WallDuration > 0
           AND PNC.ReportableProjectName regexp :projectname  
           AND (NOT (PNC.ReportableProjectName regexp :exclude-projectname))
         </filler>
       </sql>
-      <results>
+      <results module="graphtool.database.query_handler" function="simple_results_parser">
         <inputs>
           <input name="pivots"> 0,1,2,3 </input>
           <input name="results"> 4,5 </input>
@@ -40,7 +40,7 @@
         </inputs>
       </results>
       <attribute name="title">Wall Hours &amp; Efficiency Map</attribute>
-      <attribute name="pivot_name">["VO","Project","Facility","User"]</attribute>
+      <attribute name="pivot_name">VO,Project,Facility,User</attribute>
       <attribute name="column_names">Wall Time,Efficiency</attribute>
       <attribute name="column_units">Hours,%</attribute>
       <attribute name="graph_type">gc_tree_map</attribute>
@@ -55,14 +55,84 @@
             headerHeight                      : 30              ,
             fontColor                         : 'black'         ,
             showScale                         : true            ,
-            useWeightedAverageForAggregation  : true            ,
-            generateTooltip                   : gc_obj.defaultToolTip.bind(gc_obj)
+            useWeightedAverageForAggregation  : true
         };
         gc_obj.chart_formatters = {
           level_formatters :  [null,null,null,graphtool.GC_COMMON.format_common_name],
           size_formatter   :  graphtool.GC_COMMON.format_number_2dec,
           value_formatter  :  graphtool.GC_COMMON.format_percentage
         };
+      </attribute>
+    </query>
+    
+    <query name="gc_facility_hours_bar_smry" base="GratiaGenericQuery.master_summary">
+      <sql>
+        <filler name="group"> S.SiteName </filler>
+        <filler name="column"> sum(IF(CommonName regexp 'Thain' AND Cores = 1, 8, Cores)*WallDuration)/3600 </filler>
+        <filler name="where"> AND WallDuration > 0 </filler>
+      </sql>
+      <attribute name="pivot_name">Facility,Time</attribute>
+      <attribute name="column_names">Time Spent on Jobs</attribute>
+      <attribute name="column_units">Hours</attribute>
+      <attribute name="graph_type">gc_combo_chart</attribute>
+      <attribute name="graph_kind">google_charts</attribute>
+      <attribute name="title">Hours Spent on Jobs By Facility</attribute>
+      <results module="graphtool.database.query_handler" function="simple_results_parser">
+        <inputs>
+          <input name="pivots"> 0,1 </input>
+          <input name="results"> 2 </input>
+          <input name="pivot_transform">json_pivot_arr</input>
+        </inputs>
+      </results>
+      <attribute name="js_chart_setup">
+        gc_obj.chart_properties = {
+            seriesType: 'bars',
+            isStacked: true,
+            bar: { groupWidth: '90%' },
+            legend:   { 
+                        textStyle: {fontSize: 12},
+                        position:  'top',
+                        alignment: 'right',
+                        maxLines: 5
+                      },
+            chartArea:{width:'80%',height:'50%'}
+        };
+        gc_obj.chart_formatters = {}
+      </attribute>
+    </query>
+
+    <query name="gc_osg_vo_hours_pie" base="GratiaGenericQuery.simple_master_summary">
+      <inputs>
+          <input kind="sql" type="float" name="min_hours"> 10 </input>
+          <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-14*86400</input>
+       </inputs>
+       <sql>
+         <filler name="group"> VO.VOName </filler>
+         <filler name="column"> sum(R.Cores*R.WallDuration)/3600 as WallHours </filler>
+         <filler name="having"> HAVING sum(R.Cores*R.WallDuration)/3600 >= :min_hours </filler>
+       </sql>
+      <attribute name="pivot_name">VO</attribute>
+      <attribute name="column_names">Wall Time</attribute>
+      <attribute name="column_units">Hours</attribute>
+      <attribute name="graph_type">gc_pie_chart</attribute>
+      <attribute name="graph_kind">google_charts</attribute>
+      <attribute name="title">Wall Hours by VO</attribute>
+      <results module="graphtool.database.query_handler" function="simple_results_parser">
+        <inputs>
+          <input name="pivots"> 0 </input>
+          <input name="results"> 1 </input>
+          <input name="pivot_transform">json_pivot_arr</input>
+        </inputs>
+      </results>
+      <attribute name="js_chart_setup">
+        gc_obj.chart_properties = {
+          title:this.title,
+          slices: {  0: {offset: 0.1},
+                     1: {offset: 0.05},
+                     2: {offset: 0.025}
+                   }
+        };
+        gc_obj.chart_formatters = {}
       </attribute>
     </query>
     

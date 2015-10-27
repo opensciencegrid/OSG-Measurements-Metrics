@@ -1,5 +1,4 @@
-
-<h1>Opportunistic Usage over the last year</h1>
+<h1>Opportunistic Usage</h1>
 
 <h3>What is Opportunistic Usage?</h3>
 <p>
@@ -20,40 +19,8 @@ owns any of the hardware, we call that usage "owned".  In this way, we can be
 ensured that, in a worst-case-scenario, we are under-reporting opportunistic
 usage and never over-reporting it.
 </p>
+#include $focus.tmpl
 
-#if $current_vo != None
-    <p><img src="$static_url/today/${current_vo}_opp_usage.png"/></p>
-    <p>The above image shows the opportunistic usage for the $current_vo.
-       Each bar shows the number of CPU hours used per week at a site that
-       the VO does not own.
-    </p>
-#end if
+#include $inner_tmpl
 
-<table>
-#for $idx in $range(len($vos))
-#if $idx % 8 == 0
-    #if $idx != 0
-        </tr>
-    #end if
-    #if $idx+1 != len($vos)
-        <tr>
-    #end if
-#end if
-<td> <a href="$base_url/vo_opp?vo=$vos[$idx]"/>
-$vos[$idx] <br/> <img src="$static_url/today/${vos[$idx]}_opp_usage.png" height="60" width="80"/>
-</a></td>
-#end for
-#if len($vos) % 8 != 0
-#for $idx in $range(8-(len($vos) % 8))
-  <td>&nbsp;</td>
-#end for
-</tr>
-#end if
-</table>
 
-<p>Click on any thumbnail in the above table to access more details about the VO's opportunistic CPU usage</p>
-
-<p>This page shows the VO's opportunistic usage sorted by site.  To compare
-   the amount of opportunistic usage versus the amount of owned usage, 
-   <a href="$base_url/vo_opp2">click here</a>.
-</p>

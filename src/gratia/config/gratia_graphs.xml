@@ -17,6 +17,7 @@
   <import module="gratia.config" data_file="rsv_queries.xml"/>
   <import module="gratia.config" data_file="rsv_summary.xml"/>
   <import module="gratia.config" data_file="gratia_fermi_storage_queries.xml" />
+  <import module="gratia.config" data_file="gratia_hep_cloud_facility_queries.xml" />
   <import module="gratia.graphs.gratia_graphs">*</import>
 
   <class type="Grapher" name="gratia_pie_grapher">
@@ -53,7 +54,11 @@
     <attribute name="display_name"> Fermi Storage Graphs </attribute>
     <queryobj> GratiaFermiStorageQueries </queryobj>
   </class>
-
+  
+  <class type="Grapher" name="gratia_hep_cloud_grapher">
+    <attribute name="display_name"> HEP Cloud Facility </attribute>
+    <queryobj> GratiaHEPCloudFacilityQueries </queryobj>
+  </class>
 
   <class type="Grapher" name="gratia_site_grapher">
       <attribute name="security">OIMSecurity</attribute>

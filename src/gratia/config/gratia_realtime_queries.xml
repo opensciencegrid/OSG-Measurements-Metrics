@@ -81,7 +81,7 @@
       <connection>gratia-rt</connection>
     </aggregate>
 
-    <query name="vo_hours_bar_smry" base="GratiaGenericRealtime.ts">
+    <query name="vo_hours_bar_smry_rt" base="GratiaGenericRealtime.ts">
       <sql>
         <filler name="group">VC.ReportableVOName</filler>
         <filler name="column">count(*)</filler>
