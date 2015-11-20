@@ -8,6 +8,7 @@
   <import module="gratia.config" data_file="text_queries.xml" />
   <import module="gratia.config" data_file="vo_ownership_queries.xml"/>
   <import module="gratia.config" data_file="rsv_queries.xml"/>
+  <import module="gratia.database.opportunistic_filter"/>
 
   <class name="LogLoader" type="GraphToolLogging">
     <log module="gratia.config">logging-devel.conf</log>
