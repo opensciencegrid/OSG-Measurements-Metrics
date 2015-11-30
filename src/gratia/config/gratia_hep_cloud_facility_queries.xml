@@ -229,11 +229,12 @@
     <query name="spot_status_count" base="GratiaGenericHEPCloudFacilityQueries.job_usage_record">
       <inputs>
         <input name="charge-type" kind="sql">spot</input>
+        <input name="overbid-charge-description" kind="sql">overbid</input>
         <input name="exclude-stopped" kind="sql">NO</input>
       </inputs>
       <sql>
-        <filler name="group_case"> (case when (R.ChargeDescription='Spot Instance was terminated due to an increase in the market price' and R.Status=1 and R.Charge =0) 
-                                   then 'stopped due to price'
+        <filler name="group_case"> (case when (R.ChargeDescription regexp :overbid-charge-description and R.Status=1 and R.Charge =0) 
+                                   then 'overbid'
                                    when not(R.Status=1 and R.Charge =0)
                                    then 'running' end) as col_status
         </filler>
