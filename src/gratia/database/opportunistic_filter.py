@@ -4,6 +4,10 @@ import re
 import xml.dom.minidom
 from gratia.web.gratia_urls import GratiaURLS
 
+#Include import on website/website-devel xml to load on startup
+from graphtool.database import DynamicSQLFuncSecurity
+DynamicSQLFuncSecurity.registerAuthorizedModAndFunc("gratia.database.opportunistic_filter", "oim_vo_ownership.alter_sql")
+
 def create_in_from_enumerable(enumerable,is_num=False):
     str_in = "("
     str_placeholder = "%s" if is_num else "'%s'"
