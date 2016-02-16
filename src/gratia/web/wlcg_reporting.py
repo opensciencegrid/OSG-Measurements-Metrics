@@ -268,7 +268,7 @@ class WLCGReporter(Authenticate):
         #################################################################
         # cpuinfodictionary call     2014Jan22 - wbh
         #################################################################
-	hepspecCpuDict,normconstCpuDict = self.getcpuinfodictionary()
+        hepspecCpuDict,normconstCpuDict = self.getcpuinfodictionary()
 
         data['title'] = "Reported WLCG data for %s %i" % \
             (calendar.month_name[month], year)
