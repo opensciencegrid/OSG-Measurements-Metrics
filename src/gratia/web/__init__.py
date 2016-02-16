@@ -100,71 +100,72 @@ class Gratia(ImageMap, SubclusterReport, JOTReporter, VOInstalledCapacity, \
             if c in str: return False
         return True
 
+    def handle_time_parameters(self,data,filter_dict):
+      relativetime = data.get('relativetime', None)
+      #default values are current time, 2 weeks query span
+      default_query_span = 1209600
+      # Extract the query parameters
+      starttime  = data.get('starttime', None)
+      endtime    = data.get('endtime', None)
+      span       = data.get('span', None)
+      query_span = 0
+      # if it is not the absolute parameter, tries to cast to an integer
+      if relativetime != 'absolute':
+        try:
+          relativetime = int(relativetime)
+        except:
+          relativetime = None
+      if relativetime is None or relativetime == 'absolute':
+        try:
+          span = int(span)
+        except:
+          span = None
+        try:
+          endtime = time.strptime(endtime,'%Y-%m-%d %H:%M:%S')
+        except: 
+          endtime = time.localtime()
+        try:
+          starttime = time.strptime(starttime,'%Y-%m-%d %H:%M:%S')
+        except: 
+          starttime = time.localtime(time.mktime(endtime)-default_query_span)
+        query_span = time.mktime(endtime)-time.mktime(starttime)
+      else:
+        span       = None
+        endtime = time.localtime()
+        starttime = time.localtime(time.mktime(endtime)-relativetime)
+        query_span = relativetime
+      #if the span is not defined defaults using the following rules
+      if span is None:
+        if query_span < 4*86400:
+          span = 3600
+        elif query_span <= 30*86400: 
+            span = 86400
+        elif query_span < 365*86400:
+            span = 86400*7
+        else:
+            span = 86400*30
+      
+      starttime  = time.strftime('%Y-%m-%d %H:%M:%S',starttime)
+      endtime    = time.strftime('%Y-%m-%d %H:%M:%S',endtime)
+      data['relativetime']        = str(relativetime)
+      data['starttime']           = str(starttime)
+      data['endtime']             = str(endtime)
+      data['span']                = str(span)
+      filter_dict['relativetime'] = str(relativetime)
+      filter_dict['starttime']    = str(starttime)
+      filter_dict['endtime']      = str(endtime)
+      filter_dict['span']         = str(span)
+      
+
     def refine(self, data, filter_dict, facility=True, vo=True, dn=True,\
             hours=True, default_rel_range=14*86400, probe=False):
-        relTime = data.get('relativetime', False)
         data['supports_hours'] = hours
         data['refine_vo'] = vo
         data['refine_facility'] = facility
         data['refine_dn'] = dn
         data['refine_probe'] = probe
-        if relTime:
-            if relTime == 'absolute':
-                data['relTime'] = 'absolute'
-            starttime = data.get('starttime', None)
-            filter_dict['starttime'] = starttime
-            try:
-                valid = time.strptime(starttime,'%Y-%m-%d %H:%M:%S')
-            except: 
-                relTime = 1209600
-            endtime = data.get('endtime', None)
-            filter_dict['endtime'] = endtime
-            try: 
-                valid2 = time.strptime(endtime,'%Y-%m-%d %H:%M:%S')
-            except: 
-                relTime = 1209600
-            # try to determine default span
-            try:
-                valid = datetime.datetime(*valid[:6])
-                valid2 = datetime.datetime(*valid2[:6])
-                timedelta = (valid2 - valid)
-                myinterval = timedelta.days * 86400 + timedelta.seconds
-                if myinterval < 4*86400:
-                    default_span = 3600
-                elif myinterval <= 30*86400: 
-                    default_span = 86400
-                elif myinterval < 365*86400:
-                    default_span = 86400*7
-                else:
-                    default_span = 86400*30
-            except:
-                default_span = 86400
-            # Set the span, defaulting to the determined default_span
-            try:
-                filter_dict['span'] = int(data['span'])
-            except:
-                filter_dict['span'] = default_span
-            if relTime == 'absolute':
-                data['relTime'] = 'absolute'
-            else:
-                data['relTime'] = relTime
-                try:
-                    interval = int(relTime)
-                except:
-                    raise ValueError("relTime must be an integer;" \
-                        " input was %s." % relTime)
-                filter_dict['starttime'] = 'time.time()-%i' % interval
-                filter_dict['endtime'] = 'time.time()'
-                if interval < 4*86400:
-                    filter_dict['span'] = 3600
-                elif interval <= 30*86400: 
-                    filter_dict['span'] = 86400
-                elif interval < 365*86400:
-                    filter_dict['span'] = 86400*7
-                else:
-                    filter_dict['span'] = 86400*30
-        else:
-            data['relTime'] = 'absolute'
+        
+        self.handle_time_parameters(data,filter_dict)
 
         self.copy_if_present(filter_dict, data, 'facility', 'vo', \
             'exclude-facility', 'exclude-vo', 'user', 'user', 'exclude-dn', \
