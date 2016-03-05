@@ -74,6 +74,7 @@
         <filler name="where"> AND WallDuration > 0 </filler>
       </sql>
       <attribute name="pivot_name">Facility,Time</attribute>
+      <attribute name="split_pivots_at">,</attribute>
       <attribute name="column_names">Time Spent on Jobs</attribute>
       <attribute name="column_units">Hours</attribute>
       <attribute name="graph_type">gc_combo_chart</attribute>
