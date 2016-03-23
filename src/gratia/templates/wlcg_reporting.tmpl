@@ -45,7 +45,7 @@
         apel_col_types={"ResourceGroup":'string', "VO":'string', "Njobs":'number', "SumCPU":'number', "SumWCT":'number', "Norm_CPU":'number', "End":'string'};
         var apel_col_labels = {"ResourceGroup":"Resource\nGroup", "VO":"VO", "Njobs":"Jobs", "SumCPU":"CPU\nHours", "SumWCT":"Wall\nHours", "Norm_CPU":"Norm\nCPU\nHours", "End":"Last\nReported"};
 
-        drawTable(apel,apel_col_types, apel_display, apel_col_labels, "wlcg");
+        drawTable(apel,apel_col_types, apel_display, apel_col_labels, "wlcg", 5);  // highlight Norm_CPU column
 
         fedRpt = [
           #if len($fedRpt) > 0
@@ -58,12 +58,12 @@
         fedRpt_col_types={"ResourceGroup":'string', "VO":'string', "ResourcesReporting":'string'};
         var fedRpt_col_labels = {"ResourceGroup":"Resource Group", "VO":"VO", "ResourcesReporting":"Resources Reporting"};
 
-        drawTable(fedRpt, fedRpt_col_types, fedRpt_display, fedRpt_col_labels, "fedRpt");
+        drawTable(fedRpt, fedRpt_col_types, fedRpt_display, fedRpt_col_labels, "fedRpt", -1);
 
       }
 
 
-      function drawTable(rowHash,columnTypes, showColumns, colLables, inDiv) {
+      function drawTable(rowHash,columnTypes, showColumns, colLables, inDiv, highlightCol) {
         var data = new google.visualization.DataTable();
         for (var i in showColumns) {
           data.addColumn(columnTypes[showColumns[i]], colLables[showColumns[i]]);
@@ -84,6 +84,11 @@
           rowArray.push(eachrow);
         }
         data.addRows(rowArray);
+        if (highlightCol >= 0) {
+          var formatter = new google.visualization.ColorFormat();
+          formatter.addRange(null, null, null, 'yellow');
+          formatter.format(data, highlightCol);
+        }
         var table = new google.visualization.Table(document.getElementById(inDiv));
         table.draw(data);
       }
