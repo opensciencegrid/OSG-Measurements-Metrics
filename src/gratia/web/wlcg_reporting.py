@@ -167,6 +167,8 @@ class WLCGReporter(Authenticate):
                                 fed_info[datafields[count]] = thisField
                             if datafields[count] == 'ResourcesReporting':
                                 fed_info[datafields[count]] = thisField
+                            if datafields[count] == 'LCGUserVO':
+                                fed_info[datafields[count]] = thisField
                             if datafields[count] == 'SumCPU':
                                 mySumCPU = int(thisField)
                                 print "debug: ==============================================="
