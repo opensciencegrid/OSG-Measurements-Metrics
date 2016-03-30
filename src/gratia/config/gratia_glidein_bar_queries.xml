@@ -44,7 +44,7 @@
         </results>
         <attribute name="pivot_name">User</attribute>
         <attribute name="grouping_name">Time</attribute>
-        <attribute name="title">Daily Hours By User (Glidein)</attribute>
+        <attribute name="title">Wall Hours By User (Glidein)</attribute>
         <attribute name="column_names">Wall Time</attribute>
         <attribute name="column_units">Hours</attribute>
         <attribute name="graph_type">GratiaStackedBar</attribute>
