@@ -168,9 +168,10 @@
         <inputs>
             <!-- ACCEPTS IN/OUT/BOTH -->
             <input name="transfer_direction(in|out|both)"  kind="sql">BOTH</input>
+            <input name="remote_site"  kind="sql">.*</input>
         </inputs>
         <sql>
-            <filler name="group"> SUBSTRING_INDEX(R.RemoteSite, '.', -2) </filler>
+            <filler name="group"> R.RemoteSite</filler>
             <filler name="column"> sum(TransferSize)/pow(1024, 3)</filler>
             <filler name="where"> 
                 AND 
@@ -181,6 +182,8 @@
                         OR
                         UPPER(TRIM(:transfer_direction(in|out|both))) = 'BOTH'
                     )
+                AND 
+                  R.RemoteSite regexp :remote_site
             </filler>
         </sql>
         <attribute name="pivot_name">VO</attribute>

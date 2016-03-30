@@ -7,7 +7,26 @@
   <p>
         <strong>Message:</strong> $error_message
   </p>
-
+  <div>
+    <form action="$base_url/wlcg_reporting" method="get">
+      <p><b>Select a different month's data - :</b></p>
+      <p><label for="year">Year:</label>
+      <select name="year">
+          #import datetime
+          #for i in range(2007, datetime.datetime.now().year+1)
+              <option value="$i">$i</option>
+          #end for
+      </select>
+      <label for="month">Month:</label>
+      <select name="month">
+          #for i in range(1,13)
+              <option value="$i">$i</option>
+          #end for
+      </select>
+      <input type="submit" value="Go!">
+      </p>
+    </form>
+  </div>
 #else
 
 <h1>WLCG Reporting (Detailed) for $month_name, $year</h1>

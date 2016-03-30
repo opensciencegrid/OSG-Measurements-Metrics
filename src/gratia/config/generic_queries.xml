@@ -920,9 +920,17 @@
         <!-- GOC ticket 15719: Unable to retrieve transfer data USCMS-FNAL-WC1-SE <Tiradani>
              2013Jul12 wbhurst: modified the following line:
              <input name="exclude-vo" kind="sql"> Unknown|unknown|other </input> 
-             -->
+             -->        
         <input name="exclude-vo" kind="sql"> other </input>
         <input name="exclude-facility" kind="sql"> NONE|Generic|Obsolete </input>
+        <!-- Additional filters requested in GRATIAWEB-112 -->
+        <input name="probe" kind="sql"> .* </input>
+        <input name="user" kind="sql"> .* </input>
+        <input name="role" kind="sql"> .* </input>
+        <input name="exclude-user" kind="sql"> NONE </input>
+        <input name="exclude-role" kind="sql"> NONE </input>
+        <input name="include-failed" kind="sql"> YES </input>
+        <input name="include-success" kind="sql"> YES </input>
       </inputs>
       <sql>
        SELECT
@@ -947,7 +955,16 @@
           R.Protocol regexp :protocol AND
           VO.VOName regexp :vo AND
           (NOT (S.SiteName regexp :exclude-facility)) AND
-          (NOT (VO.VOName regexp :exclude-vo))
+          (NOT (VO.VOName regexp :exclude-vo)) AND
+          <!-- Additional filters requested in GRATIAWEB-112 -->
+          (:include-failed = 'YES' OR R.Status = 0) AND
+          (:include-success = 'YES' OR R.Status != 0) AND
+          R.ProbeName regexp :probe AND
+          VC.VOName regexp :role AND
+          (NOT (VC.VOName regexp :exclude-role)) AND
+          R.CommonName regexp :user AND
+          (NOT (R.CommonName regexp :exclude-user)) 
+            
           <slot name="where"/>
         GROUP BY
           <slot name="group"/>,
