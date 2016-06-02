@@ -109,7 +109,7 @@
           formatter.format(data, highlightCol);
         }
         var table = new google.visualization.Table(document.getElementById(inDiv));
-        table.draw(data);
+        table.draw(data, {'allowHtml': 'true'});
       }
 
 
