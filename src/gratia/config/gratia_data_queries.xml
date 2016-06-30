@@ -90,7 +90,7 @@
 
     <query name="gratia_data" base="GratiaGenericQuery.simple_summary">
         <sql>
-            <filler name="group">VO.VOName, S.SiteName</filler>
+            <filler name="group">VO.VOName, (CASE R.ResourceType WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END)</filler>
             <filler name="column">sum(Cores*WallDuration)/3600000</filler>
         </sql>
         <results module="graphtool.database.query_handler" function="results_parser">
@@ -108,7 +108,7 @@
 
     <query name="site_report" base="GratiaGenericQuery.simple_master_summary">
         <sql>
-            <filler name="group">S.SiteName</filler>
+            <filler name="group">(CASE R.ResourceType WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END)</filler>
             <filler name="column">
               CASE when WallDuration>0 THEN sum(CASE when ApplicationExitCode=0 THEN Cores*WallDuration ELSE 0 END)/sum(Cores*WallDuration)*100 ELSE 0 END,
               sum(CASE when ApplicationExitCode=0 THEN Cores*WallDuration ELSE 0 END)/3600,

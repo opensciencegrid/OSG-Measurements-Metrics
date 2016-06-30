@@ -2,27 +2,21 @@
 #from gratia.database.query_handler import displayName
 
 <h2>Project Accounting</h2>
-#include $image_maps
 <h5>Wall hours per Project (Pie)</h5>
-<p>
-  <img src="$base_url/pie_graphs/osg_project_hours$filter_url" usemap="#map">
-</p>
+<p><iframe src="$base_url/html/osg_project_hours$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
+
 <h5>CPU hours per Project</h5>
-<p>
-  <img src="$base_url/bar_graphs/project_cpu_hours$filter_url" usemap="#map">
-</p>
+<p><iframe src="$base_url/html/project_cpu_hours$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
+
 <h5>Wall hours per Project</h5>
-<p>
-  <img src="$base_url/bar_graphs/project_hours$filter_url" usemap="#map">
-</p>
+<p><iframe src="$base_url/html/project_hours$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
+
 <h5>Job Count per Project</h5>
-<p>
-  <img src="$base_url/bar_graphs/project_job_count$filter_url" usemap="#map">
-</p>
+<p><iframe src="$base_url/html/project_job_count$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
+
 <h5>Wall Hours by Project and Site</h5>
-<p>
-  <img src="$base_url/bar_graphs/project_site_hours_bar$filter_url" usemap="#map">
-</p>
+<p><iframe src="$base_url/html/project_site_hours_bar$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
+
 <!--
 <h5>User Non-zero exit code</h5>
 <p><img src="$base_url/bar_graphs/projectname_nonzero_exit$filter_url" usemap="#map"></p>

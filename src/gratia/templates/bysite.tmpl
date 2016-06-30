@@ -1,9 +1,6 @@
 #from urllib import quote
 #from gratia.database.query_handler import displayName
 
-<!-- Image maps -->
-#include $image_maps
-
 
     <h1>$title</h1>
 
@@ -23,14 +20,14 @@
 <!-- Common, grid-wide view. -->
 
 <h2>Computation Hours</h2>
-<p><img usemap="#facility_hours_bar_smry" src="$base_url/bar_graphs/facility_hours_bar_smry$filter_url"/></p>
-<p><img usemap="#osg_facility_hours" src="$base_url/pie_graphs/osg_facility_hours$filter_url"/></p>
+<p><iframe src="$base_url/html/facility_hours_bar_smry$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
+<p><iframe src="$base_url/html/osg_facility_hours$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
 
 <h2>Job Count</h2>
-<p><img usemap="#osg_facility_count" src="$base_url/pie_graphs/osg_facility_count$filter_url"/></p>
+<p><iframe src="$base_url/html/osg_facility_count$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
 
 <h2>Transfer Volumes</h2>
-<p><img usemap="#facility_transfer_volume" src="$base_url/transfer_graphs/facility_transfer_volume$filter_url"/></p>
+<p><iframe src="$base_url/html/facility_transfer_volume$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
 
 <!--
 <h2>Site Availability</h2>

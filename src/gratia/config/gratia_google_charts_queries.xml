@@ -69,7 +69,7 @@
     
     <query name="gc_facility_hours_bar_smry" base="GratiaGenericQuery.master_summary">
       <sql>
-        <filler name="group"> S.SiteName </filler>
+        <filler name="group"> (CASE R.ResourceType WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END) </filler>
         <filler name="column"> sum(IF(CommonName regexp 'Thain' AND Cores = 1, 8, Cores)*WallDuration)/3600 </filler>
         <filler name="where"> AND WallDuration > 0 </filler>
       </sql>

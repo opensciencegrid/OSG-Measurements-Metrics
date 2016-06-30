@@ -1,24 +1,22 @@
 #from urllib import quote
 #from gratia.database.query_handler import displayName
 
-#include $image_maps
-
 <h2>Field Of Science Accounting</h2>
 
 <h5>Wall Hours per Field of Science (Pie)</h5>
-<img src="$base_url/pie_graphs/osg_fos_hours$filter_url" usemap="#map"></p>
+<p><iframe src="$base_url/html/osg_fos_hours$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
 
 <h5>Job Count by Field of Science</h5>
-<p><img src="$base_url/bar_graphs/project_fos_job_cnt$filter_url" usemap="#map"></p>
+<p><iframe src="$base_url/html/project_fos_job_cnt$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
 
 <h5>Wall Hours by Field of Science and Site</h5>
-<p><img src="$base_url/bar_graphs/fos_site_hours_bar$filter_url" usemap="#map"></p>
+<p><iframe src="$base_url/html/fos_site_hours_bar$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
 
 <h5>CPU Hours per Field of Science</h5>
-<img src="$base_url/bar_graphs/fos_cpu_hours$filter_url" usemap="#map"></p>
+<p><iframe src="$base_url/html/fos_cpu_hours$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
 
 <h5>Wall Hours per Field of Science</h5>
-<img src="$base_url/bar_graphs/fos_hours$filter_url" usemap="#map"></p>
+<p><iframe src="$base_url/html/fos_hours$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
 
 <!-- Controls for filtering sites / VOs / dates / etc -->
 #include $refine

@@ -22,6 +22,8 @@ config/gratia_data.cron
 config/gratia_logrotate.conf
 config/gratia_mon.cron
 config/gratia_web_auth_update
+config/gratia_web_xvfb
+config/gratia_web_xvfb_conf
 config/osg_graphs.conf
 config/registration_schema
 config/static_graphs
@@ -41,7 +43,6 @@ src/gratia/__init__.py
 src/gratia/config/DBSecurity.xml
 src/gratia/config/__init__.py
 src/gratia/config/__init__.pyc
-src/gratia/config/campus_bar_queries.xml
 src/gratia/config/development.conf
 src/gratia/config/generic_gip_queries.xml
 src/gratia/config/generic_gratia_status_queries.xml
@@ -58,7 +59,6 @@ src/gratia/config/gratia_fermi_storage_queries.xml
 src/gratia/config/gratia_glidein_bar_queries.xml
 src/gratia/config/gratia_google_charts_queries.xml
 src/gratia/config/gratia_graphs.xml
-src/gratia/config/gratia_graphs_basic.xml
 src/gratia/config/gratia_hep_cloud_facility_queries.xml
 src/gratia/config/gratia_pie_queries.xml
 src/gratia/config/gratia_realtime_queries.xml
@@ -73,22 +73,17 @@ src/gratia/config/logging.conf
 src/gratia/config/matplotlibrc
 src/gratia/config/osg_logo_4c_white.png
 src/gratia/config/osg_logo_4c_white.tif
-src/gratia/config/pilot_bar_queries.xml
 src/gratia/config/pledges.csv
 src/gratia/config/prod-basic.conf
 src/gratia/config/prod.conf
-src/gratia/config/rsv_basic.xml
 src/gratia/config/rsv_queries.xml
 src/gratia/config/rsv_summary.xml
 src/gratia/config/rsv_wlcg.xml
 src/gratia/config/security.xml
 src/gratia/config/static_generator.cfg
 src/gratia/config/text_queries.xml
-src/gratia/config/text_queries_basic.xml
 src/gratia/config/urls_list.conf
 src/gratia/config/vo_ownership_queries.xml
-src/gratia/config/website-basic-devel.xml
-src/gratia/config/website-basic.xml
 src/gratia/config/website-devel.xml
 src/gratia/config/website.xml
 src/gratia/config/wlcg_email.conf
