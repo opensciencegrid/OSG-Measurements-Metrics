@@ -41,8 +41,10 @@
       </results>
       <attribute name="title">Wall Hours &amp; Efficiency Map</attribute>
       <attribute name="pivot_name">VO,Project,Facility,User</attribute>
+      <attribute name="split_pivots_at">,</attribute>
       <attribute name="column_names">Wall Time,Efficiency</attribute>
       <attribute name="column_units">Hours,%</attribute>
+      <attribute name="split_columns_at">,</attribute>
       <attribute name="graph_type">gc_tree_map</attribute>
       <attribute name="graph_kind">google_charts</attribute>
       <attribute name="js_chart_setup">
