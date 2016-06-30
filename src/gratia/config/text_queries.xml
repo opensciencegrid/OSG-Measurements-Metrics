@@ -22,9 +22,31 @@
 
   <import module="graphtool.tools.query_output">XmlGenerator</import>
   <import module="graphtool.tools.html_output">HtmlGenerator</import>
+  <import module="graphtool.tools.selenium.gc_server_img_generator">SeleniumHtmlPNGGenerator</import>
   <import module="graphtool.tools.csv_output">CsvGenerator</import>
 
   <class type="HtmlGenerator" name="query_html">
+    <attribute name="timeout">900</attribute>
+    <queryobj> GratiaStatusQueries </queryobj>
+    <queryobj> GratiaEventsQueries </queryobj>
+    <queryobj> GratiaDataQueries </queryobj>
+    <queryobj> GratiaPieQueries </queryobj>
+    <queryobj> GratiaGlideinBarQueries </queryobj>
+    <queryobj> GratiaBarQueries </queryobj>
+    <queryobj> GratiaRTQueries </queryobj>
+    <queryobj> GratiaTransferQueries </queryobj>
+    <queryobj> GratiaCumulativeQueries </queryobj>
+    <queryobj> GridScanQueries </queryobj>
+    <queryobj> GIPQueries </queryobj>
+    <queryobj> RSVQueries </queryobj>
+    <queryobj> RSVWLCGQueries </queryobj>
+    <queryobj> RSVSummaryQueries </queryobj>
+    <queryobj> GratiaFermiStorageQueries </queryobj>
+    <queryobj> GratiaGoogleChartsQueries </queryobj>
+    <queryobj> GratiaHEPCloudFacilityQueries </queryobj>
+  </class>
+  
+  <class type="SeleniumHtmlPNGGenerator" name="query_selenium_html_png">
     <attribute name="timeout">900</attribute>
     <queryobj> GratiaStatusQueries </queryobj>
     <queryobj> GratiaEventsQueries </queryobj>

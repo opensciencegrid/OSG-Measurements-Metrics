@@ -217,7 +217,7 @@
             VO on (VC.void = VO.void)
           WHERE EndTime >= :starttime AND
           EndTime &lt; :endtime AND
-          S.SiteName regexp :facility AND
+          (CASE R.ResourceType WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END) regexp :facility AND
           CommonName regexp :user AND
           not (CommonName regexp :exclude-user)
           GROUP BY VO.VOName, user
@@ -282,7 +282,7 @@
             <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-14*86400</input>
          </inputs>
       <sql>
-        <filler name="group"> S.SiteName </filler>
+        <filler name="group"> (CASE R.ResourceType WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END) </filler>
         <filler name="column"> sum(R.Cores*R.WallDuration)/3600 as WallHours </filler>
         <filler name="having"> HAVING sum(R.Cores*R.WallDuration)/3600 >= :min_hours </filler>
       </sql>
@@ -303,7 +303,7 @@
             <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-14*86400</input>
          </inputs>
       <sql>
-        <filler name="group"> S.SiteName </filler>
+        <filler name="group"> (CASE R.ResourceType WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END) </filler>
         <filler name="column"> sum(R.CpuUserDuration + R.CpuSystemDuration)/3600 as CpuHours </filler>
         <filler name="having"> HAVING CpuHours >= :min_hours </filler>
       </sql>
@@ -353,7 +353,7 @@
             <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-14*86400</input>
          </inputs>
       <sql>
-        <filler name="group"> S.SiteName </filler>
+        <filler name="group"> (CASE R.ResourceType WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END) </filler>
         <filler name="column"> sum(R.Njobs) </filler>
       </sql>
       <results>
@@ -372,7 +372,7 @@
             <input name="starttime" partial="down" type="datetime" kind="sql">time.time()-14*86400</input>
          </inputs>
       <sql>
-        <filler name="group"> VO.VOName, S.SiteName </filler>
+        <filler name="group"> VO.VOName, (CASE R.ResourceType WHEN 'BatchPilot' THEN R.HostDescription WHEN 'Batch' THEN S.SiteName ELSE '' END) </filler>
         <filler name="column"> sum(Cores*WallDuration)/3600 </filler>
         <filler name="where"> AND WallDuration > 0 </filler>
       </sql>

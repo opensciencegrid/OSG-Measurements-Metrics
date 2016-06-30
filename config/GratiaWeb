@@ -14,6 +14,9 @@ export HOME=/tmp
 export DBPARAM_LOCATION=/etc/DBParam.xml
 export DBSECURITY_LOCATION=/etc/DBParam.xml
 
+source /usr/share/GratiaWeb/gratia_web_xvfb_conf
+XVFB_COMMAND=/usr/share/GratiaWeb/gratia_web_xvfb
+
 case "$1" in
   start)
         # Set up log files so we can read them.
@@ -34,28 +37,56 @@ case "$1" in
         chown $USER /var/log/GratiaWeb.out
         chown $USER /var/run/GratiaWeb.pid
 
+        # Xvfb – the X Virtual FrameBuffer
+        echo "Checking virtual X frame buffer: Xvfb"
+        ps aux | grep "$XVFB_SERVICE_COMMAND" | grep -v grep | awk '{print $2}' > /tmp/GratiaWebXVFB.pid
+        echo "Xvfb PID:"
+        cat /tmp/GratiaWebXVFB.pid
+        cp /tmp/GratiaWebXVFB.pid /var/run/GratiaWebXVFB.pid
+        if [ -s /var/run/GratiaWebXVFB.pid ]; then
+            echo -n "Shutting down virtual X frame buffer: Xvfb"
+            killproc -p /var/run/GratiaWebXVFB.pid "$XVFB_SERVICE_COMMAND"
+            echo
+        fi
+        echo -n "Starting virtual X frame buffer: Xvfb"
+        daemon $XVFB_COMMAND
+        echo
+        export DISPLAY=:$XVFB_DISPLAY
+        echo "Firefox display on XVFB will be $DISPLAY"
         # Actually start the daemon now.
         echo -n "Starting GratiaWeb: "
         #daemon --user $USER --pidfile /var/run/GratiaWeb.pid gratia_web -d
         daemon gratia_web -d
         echo
-	sleep 1
-	ps aux | grep gratia_web | grep -v grep | awk '{print $2}' > /tmp/GratiaWeb.pid
-	cat /tmp/GratiaWeb.pid
-	cp /tmp/GratiaWeb.pid /var/run/GratiaWeb.pid
-	if [ ! -f /var/lock/subsys/gratia_web ]; then
-	    echo "creating /var/lock/subsys/gratia_web"
+        sleep 1
+        ps aux | grep gratia_web | grep -v grep | awk '{print $2}' > /tmp/GratiaWeb.pid
+        cat /tmp/GratiaWeb.pid
+        cp /tmp/GratiaWeb.pid /var/run/GratiaWeb.pid
+        if [ ! -f /var/lock/subsys/gratia_web ]; then
+            echo "creating /var/lock/subsys/gratia_web"
             touch /var/lock/subsys/gratia_web
-	fi
+        fi
         ;;
   stop)
+        # Xvfb – the X Virtual FrameBuffer
+        echo "Checking virtual X frame buffer: Xvfb"
+        ps aux | grep "$XVFB_SERVICE_COMMAND" | grep -v grep | awk '{print $2}' > /tmp/GratiaWebXVFB.pid
+        echo "Xvfb PID:"
+        cat /tmp/GratiaWebXVFB.pid
+        cp /tmp/GratiaWebXVFB.pid /var/run/GratiaWebXVFB.pid
+        if [ -s /var/run/GratiaWebXVFB.pid ]; then
+            echo -n "Shutting down virtual X frame buffer: Xvfb"
+            killproc -p /var/run/GratiaWebXVFB.pid "$XVFB_SERVICE_COMMAND"
+            echo
+        fi
+        
         echo -n "Shutting down GratiaWeb: "
         killproc -p /var/run/GratiaWeb.pid gratia_web
         echo
-	if [ -f /var/lock/subsys/gratia_web ]; then
-	    echo "rm -f /var/lock/subsys/gratia_web"
+        if [ -f /var/lock/subsys/gratia_web ]; then
+            echo "rm -f /var/lock/subsys/gratia_web"
             rm -f /var/lock/subsys/gratia_web
-	fi
+        fi
         ;;
   status)
         status gratia_web

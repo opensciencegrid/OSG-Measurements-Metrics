@@ -1,12 +1,9 @@
 #from urllib import quote
 #from gratia.database.query_handler import displayName
 
-
-#include $image_maps
-
 <h2>Computation Hours</h2>
-<p><img usemap="#glidein_hours_bar_smry" src="$base_url/glidein_bar_graphs/glidein_hours_bar_smry$filter_url"/></p>
-<p><img usemap="#glidein_dn_hours_bar" src="$base_url/glidein_bar_graphs/glidein_dn_hours_bar$filter_url"/></p>
+<p><iframe src="$base_url/html/glidein_hours_bar_smry$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
+<p><iframe src="$base_url/html/glidein_dn_hours_bar$filter_url&no_html_frame=y" frameborder="0" scrolling="no" onload="resizeIframe(this)" ></iframe></p>
 
 <!-- Controls for filtering sites / VOs / dates / etc -->
 #include $refine

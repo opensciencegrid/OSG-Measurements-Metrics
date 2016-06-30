@@ -1,0 +1,6 @@
+#!/bin/bash
+# Xvfb – the X Virtual FrameBuffer
+# Required for firefox + selenium html 2 png
+# defines the screen that will e available for firefox
+export XVFB_DISPLAY=12
+export XVFB_SERVICE_COMMAND="Xvfb :$XVFB_DISPLAY -ac"

@@ -62,6 +62,8 @@
     <mount location="/gratia/gratia_hep_cloud_grapher" content="image/png"> <instance name="gratia_hep_cloud_grapher" /> </mount>
     <mount location="/gratia/rsv_summary_graphs" content="image/png"> <instance name="rsv_summary_grapher" /> </mount>
     <mount location="/gratia/rsv_wlcg_graphs" content="image/png"> <instance name="rsv_wlcg_grapher" /> </mount>
+    <mount location="/gratia/html" content="text/html"> <instance name="query_html" /> </mount>
+    <mount location="/gratia/html_png" content="image/png"> <instance name="query_selenium_html_png" /> </mount>
     <mount location="/gratia/xml" content="text/xml"> <instance name="query_xml" /> </mount>
     <mount location="/gratia/html" content="text/html"> <instance name="query_html" /> </mount>
     <mount location="/gratia/csv" content="text/plain"> <instance name="query_csv" /> </mount>

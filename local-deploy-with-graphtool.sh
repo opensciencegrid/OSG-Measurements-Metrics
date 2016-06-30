@@ -18,9 +18,9 @@ su root -c "service GratiaWeb stop ;
  rpm -e graphtool ; 
 
  cd ../graphtool/dist;
-rpm -ivh graphtool-0.8.1-$2.noarch.rpm ; 
+rpm -ivh graphtool-0.9.0-$2.noarch.rpm ;
  cd ../../OSG-Measurements-Metrics/dist;
-rpm -ivh osg-measurements-metrics-db-1.5-$1.noarch.rpm ; 
-rpm -ivh osg-measurements-metrics-web-1.5-$1.noarch.rpm ; 
+rpm -ivh osg-measurements-metrics-db-1.6-$1.noarch.rpm ;
+rpm -ivh osg-measurements-metrics-web-1.6-$1.noarch.rpm ;
  cd .. ; 
 service GratiaWeb start;"
