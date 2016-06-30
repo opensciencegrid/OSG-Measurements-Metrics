@@ -1,0 +1,5 @@
+#!/bin/bash
+# Xvfb – the X Virtual FrameBuffer
+# Required for firefox + selenium html 2 png
+source /usr/share/GratiaWeb/gratia_web_xvfb_conf
+$XVFB_SERVICE_COMMAND &> /dev/null &
