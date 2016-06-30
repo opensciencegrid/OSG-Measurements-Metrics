@@ -13,7 +13,7 @@ su root -c "service GratiaWeb stop ;
  rpm -e osg-measurements-metrics-web ; 
  rpm -e osg-measurements-metrics-db ; 
  cd ./dist ; 
-rpm -ivh osg-measurements-metrics-db-1.5-$1.noarch.rpm ; 
-rpm -ivh osg-measurements-metrics-web-1.5-$1.noarch.rpm ; 
+rpm -ivh osg-measurements-metrics-db-1.6-$1.noarch.rpm ; 
+rpm -ivh osg-measurements-metrics-web-1.6-$1.noarch.rpm ; 
  cd .. ; 
  service GratiaWeb start"
